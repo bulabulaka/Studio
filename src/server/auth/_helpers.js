@@ -10,7 +10,7 @@ function createUser(req, res) {
   .then(() => {
     const salt = bcrypt.genSaltSync();
     const hash = bcrypt.hashSync(req.body.password, salt);
-    return knex('users')
+    return knex('m_user')
     .insert({
       username: req.body.username,
       password: hash
@@ -22,6 +22,23 @@ function createUser(req, res) {
   });
 }
 
+// function createUser(req, res) {
+//   return handleErrors(req)
+//   .then(() => {
+//     const salt = bcrypt.genSaltSync();
+//     const hash = bcrypt.hashSync(req.body.password, salt);
+//     return knex('users')
+//     .insert({
+//       username: req.body.username,
+//       password: hash
+//     })
+//     .returning('*');
+//   })
+//   .catch((err) => {
+//     res.status(400).json({status: err.message});
+//   });
+// }
+
 function loginRequired(req, res, next) {
   if (!req.user) return res.status(401).json({status: 'Please log in'});
   return next();
@@ -29,7 +46,7 @@ function loginRequired(req, res, next) {
 
 function adminRequired(req, res, next) {
   if (!req.user) res.status(401).json({status: 'Please log in'});
-  return knex('users').where({username: req.user.username}).first()
+  return knex('m_user').where({username: req.user.username}).first()
   .then((user) => {
     if (!user.admin) res.status(401).json({status: 'You are not authorized'});
     return next();

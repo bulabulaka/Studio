@@ -35,5 +35,5 @@
     "run-sequence": "^1.2.2",
     "tiny-lr": "^0.2.1"
   },
-  "name": "Studio"
+  "name": "studio"
 }

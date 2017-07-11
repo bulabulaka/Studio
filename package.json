@@ -29,11 +29,13 @@
     "gulp-jshint": "^2.0.1",
     "gulp-nodemon": "^2.1.0",
     "gulp-plumber": "^1.1.0",
+    "gulp-typescript":"^3.2.0",
     "jshint": "^2.9.3",
     "jshint-stylish": "^2.2.1",
     "mocha": "^3.0.2",
     "run-sequence": "^1.2.2",
-    "tiny-lr": "^0.2.1"
+    "tiny-lr": "^0.2.1",
+    "typescript": "^2.4"
   },
   "name": "studio"
 }

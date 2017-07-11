@@ -1,0 +1,8 @@
+{
+    "comiplerOptions":{
+        "sourceMap":true,
+        "noImplicitAny":true,
+        "module":"amd",
+        "traget":"es5"
+    }
+}

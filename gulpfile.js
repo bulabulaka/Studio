@@ -8,13 +8,17 @@ const runSequence = require('run-sequence');
 const nodemon = require('gulp-nodemon');
 const plumber = require('gulp-plumber');
 const server = require('tiny-lr')();
-
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
 // *** config *** //
 
 const paths = {
   scripts: [
     path.join('src', '**', '*.js'),
     path.join('src', '*.js')    
+  ],
+  tsscripts:[
+    path.join('src','**','*.ts')
   ],
   styles: [
     path.join('src', 'client', 'css', '*.css')
@@ -68,6 +72,15 @@ gulp.task('jscs', () => {
     .pipe(jscs.reporter())
     .pipe(jscs.reporter('fail'));
 });
+
+gulp.task('ts', () => {
+  return gulp.src(paths.tsscripts)
+    .pipe(ts())
+    .pipe(gulp.dest(function(file) {
+      return file.base;})
+    )
+});
+
 
 gulp.task('styles', () => {
   return gulp.src(paths.styles)

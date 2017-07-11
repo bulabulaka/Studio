@@ -1,15 +1,11 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
 const init = require('./passport');
 const knex = require('../db/connection');
 const authHelpers = require('./_helpers');
-
 const options = {};
 
 init();
-
-
 passport.use(new LocalStrategy(options, (username, password, done) => {
   // check to see if the username exists
   knex('m_user').where({ username }).first()

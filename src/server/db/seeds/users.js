@@ -9,7 +9,7 @@ exports.seed = (knex, Promise) => {
       knex('m_user').insert({
         username: 'jeremy',
         password: hash,
-        status : 0
+        status: 0
       })
     );
   })

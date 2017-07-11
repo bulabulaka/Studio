@@ -44,5 +44,5 @@ exports.down = (knex, Promise) => {
         knex.schema.dropTable('m_role'),
         knex.schema.dropTable('m_user')
     ]);
- 
-};
+  };
+

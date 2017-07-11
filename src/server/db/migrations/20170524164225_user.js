@@ -5,7 +5,7 @@ exports.up = (knex, Promise) => {
     table.string('username',50).notNullable().defaultTo('');
     table.string('password',200).notNullable().defaultTo('');
     table.string('salt',200).notNullable().defaultTo('');
-    table.string('status',1).notNullable().defaultTo('');
+    table.tinyint('status').notNullable().defaultTo(0);
 
     table.integer('user_id_creator').unsigned().defaultTo(null).references('id').inTable('m_user');
     table.integer('user_id_modifier').unsigned().defaultTo(null).references('id').inTable('m_user');

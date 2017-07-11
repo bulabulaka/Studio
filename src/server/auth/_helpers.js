@@ -48,7 +48,7 @@ function adminRequired(req, res, next) {
   if (!req.user) res.status(401).json({status: 'Please log in'});
   return knex('m_user').where({username: req.user.username}).first()
   .then((user) => {
-    if (!user.admin) res.status(401).json({status: 'You are not authorized'});
+    if (user.status !== 1) res.status(401).json({status: 'You are not authorized'});
     return next();
   })
   .catch((err) => {

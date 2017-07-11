@@ -59,7 +59,7 @@ gulp.task('jshint', () => {
   return gulp.src(paths.scripts)
     .pipe(plumber())
     .pipe(jshint({
-      esnext: true
+      esnext:true
     }))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
@@ -75,7 +75,7 @@ gulp.task('jscs', () => {
 
 gulp.task('ts', () => {
   return gulp.src(paths.tsscripts)
-    .pipe(ts())
+    .pipe(tsProject())
     .pipe(gulp.dest(function(file) {
       return file.base;})
     )

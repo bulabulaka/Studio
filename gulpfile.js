@@ -15,7 +15,7 @@ const tsProject = ts.createProject("tsconfig.json");
 const paths = {
   scripts: [
     path.join('src', '**', '*.js'),
-    path.join('src', '*.js')    
+    path.join('src', '*.js')
   ],
   tsscripts:[
     path.join('src','**','*.ts'),

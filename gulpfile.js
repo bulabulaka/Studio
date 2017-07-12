@@ -18,7 +18,8 @@ const paths = {
     path.join('src', '*.js')    
   ],
   tsscripts:[
-    path.join('src','**','*.ts')
+    path.join('src','**','*.ts'),
+    path.join('src','*.ts')
   ],
   styles: [
     path.join('src', 'client', 'css', '*.css')
@@ -59,7 +60,7 @@ gulp.task('jshint', () => {
   return gulp.src(paths.scripts)
     .pipe(plumber())
     .pipe(jshint({
-      esnext:true
+      esnext: true
     }))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
@@ -75,7 +76,7 @@ gulp.task('jscs', () => {
 
 gulp.task('ts', () => {
   return gulp.src(paths.tsscripts)
-    .pipe(tsProject())
+    .pipe(ts())
     .pipe(gulp.dest(function(file) {
       return file.base;})
     )

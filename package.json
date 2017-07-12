@@ -6,6 +6,7 @@
     "test": "mocha"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.0",
     "bcryptjs": "^2.3.0",
     "body-parser": "~1.15.1",
     "connect-flash": "^0.1.1",
@@ -23,8 +24,15 @@
     "passport-stub": "^1.1.1"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.0",
+    "@types/core-js": "^0.9.42",
+    "@types/node": "^8.0.10",
+    "@types/passport": "^0.3.3",
+    "@types/passport-local": "^1.0.30",
+    "@types/requirejs": "^2.1.29",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
+    "core-js": "^2.4.1",
     "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^2.0.1",
     "gulp-nodemon": "^2.1.0",

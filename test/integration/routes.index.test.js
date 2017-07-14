@@ -1,49 +1,39 @@
+"use strict";
+exports.__esModule = true;
 process.env.NODE_ENV = 'test';
-
-const chai = require('chai');
-const should = chai.should();
-const chaiHttp = require('chai-http');
+var chai = require("chai");
+var chaiHttp = require("chai-http");
+var app_1 = require("../../src/server/app");
+var should = chai.should();
 chai.use(chaiHttp);
-
-const server = require('../../src/server/app');
-
-describe('routes : index', () => {
-
-  beforeEach((done) => {
-    done();
-  });
-
-  afterEach((done) => {
-    done();
-  });
-
-  describe('GET /', () => {
-    it('should render the index', (done) => {
-      chai.request(server)
-      .get('/')
-      .end((err, res) => {
-        res.redirects.length.should.equal(0);
-        res.status.should.equal(200);
-        res.type.should.equal('text/html');
-        res.text.should.contain('<h1>Welcome to Express!</h1>');
-        res.text.should.contain('<h2>The sum is 3</h2>');
+describe('routes : index', function () {
+    beforeEach(function (done) {
         done();
-      });
     });
-  });
-
-  describe('GET /404', () => {
-    it('should throw an error', (done) => {
-      chai.request(server)
-      .get('/404')
-      .end((err, res) => {
-        res.redirects.length.should.equal(0);
-        res.status.should.equal(404);
-        res.type.should.equal('application/json');
-        res.body.message.should.eql('Not Found');
+    afterEach(function (done) {
         done();
-      });
     });
-  });
-
+    describe('GET /', function () {
+        it('should render the index', function (done) {
+            chai.request(app_1.init_config())
+                .get('/')
+                .end(function (err, res) {
+                res.status.should.equal(200);
+                res.type.should.equal('text/html');
+                done();
+            });
+        });
+    });
+    describe('GET /404', function () {
+        it('should throw an error', function (done) {
+            chai.request(app_1.init_config())
+                .get('/404')
+                .end(function (err, res) {
+                res.status.should.equal(404);
+                res.type.should.equal('application/json');
+                res.body.message.should.eql('Not Found');
+                done();
+            });
+        });
+    });
 });

@@ -1,22 +1,17 @@
-(function() {
-
-  'use strict';
-
-  // *** dependencies *** //
-  const express = require('express');
-
-  const appConfig = require('./config/main-config.js');
-  const routeConfig = require('./config/route-config.js');
-  const errorConfig = require('./config/error-config.js');
-
-  // *** express instance *** //
-  const app = express();
-
-  // *** config *** //
-  appConfig.init(app, express);
-  routeConfig.init(app);
-  errorConfig.init(app);
-
-  module.exports = app;
-
-}());
+"use strict";
+exports.__esModule = true;
+// *** dependencies *** //
+var express = require("express");
+var main_config_1 = require("./config/main-config");
+var route_config_1 = require("./config/route-config");
+var error_config_1 = require("./config/error-config");
+function init_config() {
+    // *** express instance *** //
+    var app = express();
+    // *** config *** //
+    main_config_1.main_config_init(app, express);
+    route_config_1.route_config_init(app);
+    error_config_1.error_config_init(app);
+    return app;
+}
+exports.init_config = init_config;

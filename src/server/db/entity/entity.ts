@@ -1,4 +1,4 @@
-export interface baseEntity{
+class baseEntity{
     id:number;
     user_id_creator:number;
     user_id_modifier:number;
@@ -7,7 +7,7 @@ export interface baseEntity{
     auditstat:number;
 }
 
-export interface m_user extends baseEntity{
+export class m_user extends baseEntity{
     username:string;
     password:string;
     salt:string;

@@ -1,18 +1,21 @@
-const express = require('express');
-const router = express.Router();
-
-const indexController = require('../controllers/index');
-
+"use strict";
+exports.__esModule = true;
+var express_1 = require("express");
+var router = express_1.Router();
+var index_1 = require("../controllers/index");
 router.get('/', function (req, res, next) {
-  const renderObject = {};
-  renderObject.title = 'Welcome to Express!';
-  indexController.sum(1, 2, (error, results) => {
-    if (error) return next(error);
-    if (results) {
-      renderObject.sum = results;
-      res.render('index', renderObject);
-    }
-  });
+    var renderObject = {
+        title: "Welcome to Express!",
+        sum: 0
+    };
+    index_1.sum(1, 2, function (error, results) {
+        if (error)
+            return next(error);
+        if (results) {
+            renderObject.sum = results;
+            res.render('index', renderObject);
+        }
+    });
 });
-
+exports.IndexRouter = router;
 module.exports = router;

@@ -1,27 +1,30 @@
-import  passport = require('passport');
-import LocalStrategy = require('passport-local');
-import init = require('./passport');
-import knex = require('../db/connection');
-import authHelpers = require('./_helpers');
-var options =<any>{};
+import * as passport from "passport";
+import * as LocalStrategy from "passport-local";
+import * as Promise from "bluebird";
+import {comparePass} from "./_helpers";
+import {knex} from "../db/connection";
+import {passport_init} from "./passports";
 
-//var doneR:(error: any, user?: any, options?: IVerifyOptions) = null;
+var options = <any>{};
 
-init();
-passport.use(new LocalStrategy.Strategy(options, (username:string, password:string, done:(error: any, user?: any, options?: LocalStrategy.IVerifyOptions)) => {
-  // check to see if the username exists
-  knex('m_user').where({ username }).first()
-  .then((user) => {
-    if (!user) return done(null, false);
-    if (!authHelpers.comparePass(password, user.password)) {
-      return done(null, false);
-    } else {
-      return done(null, user);
-    }
-  })
-  .catch((err) => { return done(err); });
-}));
+passport_init();
+passport.use(new LocalStrategy.Strategy(options, (username: string, password: string, done: (error: any, user?: any, options?: LocalStrategy.IVerifyOptions) => void) => {
+    // check to see if the username exists
+    knex('m_user').where({username}).first()
+      .then((user) => {
+        if (!user) return done(null, false);
+        if (!comparePass(password, user.password)) {
+          return done(null, false);
+        } else {
+          return done(null, user);
+        }
+      })
+      .catch((err) => {
+        return done(err);
+      });
+  }
+));
 
-export = passport;
+export const local = passport;
 
 

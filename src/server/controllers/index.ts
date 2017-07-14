@@ -1,6 +1,4 @@
-const knex = require('../db/connection');
-
-function sum(num1, num2, callback) {
+export function sum(num1: number, num2: any, callback: any) {
   const total = num1 + num2;
   if (isNaN(total)) {
     const error = 'Something went wrong!';
@@ -10,6 +8,3 @@ function sum(num1, num2, callback) {
   }
 }
 
-module.exports = {
-  sum
-};

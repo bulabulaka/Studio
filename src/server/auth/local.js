@@ -1,24 +1,26 @@
 "use strict";
+exports.__esModule = true;
 var passport = require("passport");
 var LocalStrategy = require("passport-local");
-var init = require("./passport");
-var knex = require("../db/connection");
-var authHelpers = require("./_helpers");
+var _helpers_1 = require("./_helpers");
+var connection_1 = require("../db/connection");
+var passports_1 = require("./passports");
 var options = {};
-//var doneR:(error: any, user?: any, options?: IVerifyOptions) = null;
-init();
+passports_1.passport_init();
 passport.use(new LocalStrategy.Strategy(options, function (username, password, done) {
     // check to see if the username exists
-    knex('m_user').where({ username: username }).first()
+    connection_1.knex('m_user').where({ username: username }).first()
         .then(function (user) {
         if (!user)
             return done(null, false);
-        if (!authHelpers.comparePass(password, user.password)) {
+        if (!_helpers_1.comparePass(password, user.password)) {
             return done(null, false);
         }
         else {
             return done(null, user);
         }
-    })["catch"](function (err) { return done(err); });
+    })["catch"](function (err) {
+        return done(err);
+    });
 }));
-module.exports = passport;
+exports.local = passport;

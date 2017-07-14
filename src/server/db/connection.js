@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
+var knexfile_1 = require("../../../knexfile");
 var environment = process.env.NODE_ENV;
-var config = require('../../../knexfile.js')[environment];
-module.exports = require('knex')(config);
+exports.knex = new knexfile_1.knexConfig(environment).knex;

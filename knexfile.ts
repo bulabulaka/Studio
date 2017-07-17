@@ -1,5 +1,6 @@
 import * as Knex from "knex";
 import {Config} from "knex";
+
 const databaseName = 'studio';
 const development: Config = {
   client: 'mysql',
@@ -29,22 +30,14 @@ const test: Config = {
 export class knexConfig {
   knex_Config: Config;
   knex: Knex;
-  private seed: any;
 
   constructor(environment: string) {
     if (environment === "development") {
       this.knex_Config = development;
-      this.seed = {
-        directory: __dirname + '/src/server/db/seeds'
-      };
     } else {
       this.knex_Config = test;
-      this.seed = {
-        directory: __dirname + '/src/server/db/seeds'
-      };
     }
     this.knex = Knex(this.knex_Config);
-    this.knex.seed.make("users.ts",this.seed);
   }
 }
 

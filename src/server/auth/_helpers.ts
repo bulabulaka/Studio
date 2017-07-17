@@ -7,7 +7,7 @@ export function comparePass(userPassword, databasePassword) {
 }
 
 export function createUser(req, res) {
-  return this.handleErrors(req)
+  return handleErrors(req)
     .then(() => {
       const salt = bcrypt.genSaltSync();
       const hash = bcrypt.hashSync(req.body.password, salt);
@@ -62,6 +62,7 @@ function handleErrors(req) {
     }
   });
 }
+
 
 
 

@@ -37,7 +37,7 @@ export function main_config_init(app: any, express: any) {
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(flash());
-  app.use(express.static(path.join(__dirname, '..', '..', 'client')));
+  app.use(express.static(path.join(process.env.DIST_PATH, 'dist')));
 }
 
 

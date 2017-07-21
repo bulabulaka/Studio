@@ -11,3 +11,5 @@ run server:
 run client:
 1: ng build
 2: ng server
+
+run Studio: npm run build

@@ -3,11 +3,12 @@ import * as chai from "chai";
 import {init_config as server} from "../../src/server/app";
 import chaiHttp = require("chai-http");
 import {knex} from "../../src/server/db/connection";
+
 const should = chai.should();
 
 chai.use(chaiHttp);
 
-describe('routes : auth', () => {
+describe('routes : /api/auth', () => {
 
   beforeEach(() => {
     return knex.migrate.rollback()
@@ -23,10 +24,10 @@ describe('routes : auth', () => {
     return knex.migrate.rollback();
   });
 
-  describe('POST /auth/register', () => {
+  describe('POST /api/auth/register', () => {
     it('should register a new user', (done) => {
       chai.request(server())
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send({
           username: 'michael',
           password: 'herman'
@@ -45,7 +46,7 @@ describe('routes : auth', () => {
      password: 'johnson123'
      });
      chai.request(server)
-     .post('/auth/register')
+     .post('/api/auth/register')
      .send({
      username: 'michael',
      password: 'herman'
@@ -60,7 +61,7 @@ describe('routes : auth', () => {
      });*/
     it('should throw an error if the username is < 6 characters', (done) => {
       chai.request(server())
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send({
           username: 'six',
           password: 'herman'
@@ -75,7 +76,7 @@ describe('routes : auth', () => {
     });
     it('should throw an error if the password is < 6 characters', (done) => {
       chai.request(server())
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send({
           username: 'michael',
           password: 'six'
@@ -89,10 +90,10 @@ describe('routes : auth', () => {
         });
     });
   });
-  describe('POST /auth/login', () => {
+  describe('POST /api/auth/login', () => {
     it('should login a user', (done) => {
       chai.request(server())
-        .post('/auth/login')
+        .post('/api/auth/login')
         .send({
           username: 'jeremy',
           password: 'johnson123'
@@ -107,7 +108,7 @@ describe('routes : auth', () => {
     });
     it('should not login an unregistered user', (done) => {
       chai.request(server())
-        .post('/auth/login')
+        .post('/api/auth/login')
         .send({
           username: 'michael',
           password: 'johnson123'
@@ -126,7 +127,7 @@ describe('routes : auth', () => {
      password: 'johnson123'
      });
      chai.request(server)
-     .post('/auth/login')
+     .post('/api/auth/login')
      .send({
      username: 'jeremy',
      password: 'johnson123'
@@ -141,14 +142,14 @@ describe('routes : auth', () => {
      });*/
   });
 
-  describe('GET /auth/logout', () => {
+  describe('GET /api/auth/logout', () => {
     /* it('should logout a user', (done) => {
      passportStub.login({
      username: 'jeremy',
      password: 'johnson123'
      });
      chai.request(server)
-     .get('/auth/logout')
+     .get('/api/auth/logout')
      .end((err, res) => {
      should.not.exist(err);
      res.status.should.eql(200);
@@ -159,7 +160,7 @@ describe('routes : auth', () => {
      });*/
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
-        .get('/auth/logout')
+        .get('/api/auth/logout')
         .end((err, res) => {
           should.exist(err);
           res.status.should.eql(401);
@@ -170,7 +171,7 @@ describe('routes : auth', () => {
     });
   });
 
-  describe('GET /user', () => {
+  describe('GET /api/user', () => {
     /*it('should return a success', (done) => {
      passportStub.login({
      username: 'jeremy',
@@ -188,7 +189,7 @@ describe('routes : auth', () => {
      });*/
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
-        .get('/user')
+        .get('/api/user')
         .end((err, res) => {
           should.exist(err);
           res.status.should.eql(401);
@@ -198,14 +199,14 @@ describe('routes : auth', () => {
         });
     });
   });
-  describe('GET /admin', () => {
+  describe('GET /api/admin', () => {
     /*it('should return a success', (done) => {
      passportStub.login({
      username: 'kelly',
      password: 'bryant123'
      });
      chai.request(server)
-     .get('/admin')
+     .get('/api/admin')
      .end((err, res) => {
      should.not.exist(err);
      res.status.should.eql(200);
@@ -216,7 +217,7 @@ describe('routes : auth', () => {
      });*/
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
-        .get('/user')
+        .get('/api/user')
         .end((err, res) => {
           should.exist(err);
           res.status.should.eql(401);
@@ -231,7 +232,7 @@ describe('routes : auth', () => {
      password: 'johnson123'
      });
      chai.request(server)
-     .get('/admin')
+     .get('/api/admin')
      .end((err, res) => {
      should.exist(err);
      res.status.should.eql(401);

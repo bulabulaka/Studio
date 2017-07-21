@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && tsc src/server/server.ts && node src/server/server.js",
     "lint": "ng lint",
     "test": "mocha"
   },
@@ -18,9 +18,11 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.28",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.0",
     "body-parser": "~1.15.1",
+    "bootstrap": "^4.0.0-alpha.6",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.3",
     "core-js": "^2.4.1",

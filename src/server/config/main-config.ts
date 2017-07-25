@@ -38,6 +38,17 @@ export function main_config_init(app: any, express: any) {
   app.use(passport.session());
   app.use(flash());
   app.use(express.static(path.join(process.env.DIST_PATH, 'dist')));
+
+  //logging information middleware
+  app.use(function (req, res, next) {
+    console.log(new Date().getTime());
+    //when res.end() is called, it will emit a "finish" event.
+    res.on('finish', () => {
+      console.log(new Date().getTime());
+      console.log(res.statusCode);
+    });
+    next();
+  });
 }
 
 

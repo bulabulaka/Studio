@@ -16,3 +16,4 @@ src/server/server.js
 test/integration/*.js
 test/unit/*.js
 
+/src/server/db/migrations/user.js

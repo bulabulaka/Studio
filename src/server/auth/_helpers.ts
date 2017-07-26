@@ -14,7 +14,11 @@ export function createUser(req, res) {
       return knex('m_user')
         .insert({
           username: req.body.username,
-          password: hash
+          password: hash,
+          auditstat: 0,
+          expiry_date: knex.raw('now()'),
+          creator_id: 1,
+          created_datetime: knex.raw('now()')
         })
         .returning('*');
     })

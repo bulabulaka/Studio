@@ -1,4 +1,5 @@
 import {Router} from "express";
+
 const router = Router();
 import {sum} from "../controllers/index";
 
@@ -16,5 +17,4 @@ router.get('/', function (req, res, next) {
   });
 });
 
-export const IndexRouter: Router = router;
-module .exports = router;
+export const IndexRouter = router;

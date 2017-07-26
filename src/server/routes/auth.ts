@@ -1,5 +1,6 @@
 import {Router} from "express";
 import * as Promise from "bluebird";
+
 const router = Router();
 import {createUser, loginRequired, loginRedirect} from "../auth/_helpers";
 import {local} from "../auth/local";
@@ -52,5 +53,4 @@ function handleResponse(res, code, statusMsg) {
   res.status(code).json({status: statusMsg});
 }
 
-export const AuthRouter: Router = router;
-module.exports = router;
+export const AuthRouter = router;

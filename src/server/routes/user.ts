@@ -1,4 +1,5 @@
 import {Router} from "express";
+
 const router = Router();
 import {loginRequired, adminRequired} from "../auth/_helpers";
 
@@ -14,5 +15,4 @@ function handleResponse(res, code, statusMsg) {
   res.status(code).json({status: statusMsg});
 }
 
-export const UserRouter: Router = router;
-module.exports = router;
+export const UserRouter = router;

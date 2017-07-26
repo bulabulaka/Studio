@@ -1,6 +1,6 @@
 import * as bcrypt from "bcryptjs"
 
-exports.seed = (knex, Promise) => {
+export const seed = (knex, Promise) => {
   return knex('m_user').del()
     .then(() => {
       const salt = bcrypt.genSaltSync();

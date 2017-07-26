@@ -1,7 +1,7 @@
-// *** routes *** //
-import * as routes from "../routes/index";
-import * as authRoutes from "../routes/auth";
-import * as userRoutes from "../routes/user";
+// *** routes *** //z
+import {IndexRouter} from "../routes/index";
+import {AuthRouter} from "../routes/auth";
+import {UserRouter} from "../routes/user";
 import * as path from "path";
 
 export function route_config_init(app) {
@@ -9,9 +9,10 @@ export function route_config_init(app) {
   app.get('', (req, res) => {
     res.sendFile(path.join(process.env.DIST_PATH, 'dist/main.html'));
   });
-  app.use('/api', routes);
-  app.use('/api/auth', authRoutes);
-  app.use('/api', userRoutes);
+
+  app.use('/api', IndexRouter);
+  app.use('/api/auth', AuthRouter);
+  app.use('/api', UserRouter);
 }
 
 

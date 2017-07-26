@@ -11,6 +11,7 @@ src/server/controllers/*.js
 src/server/db/*js
 src/server/db/entity/*.js
 src/server/db/seeds/*.js
+src/server/db/migrations/*.js
 src/server/routes/*.js
 src/server/server.js
 test/integration/*.js

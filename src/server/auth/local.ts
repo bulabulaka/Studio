@@ -5,7 +5,7 @@ import {comparePass} from "./_helpers";
 import {knex} from "../db/connection";
 import {passport_init} from "./passports";
 
-var options = <any>{};
+let options = <any>{};
 
 passport_init();
 passport.use(new LocalStrategy.Strategy(options, (username: string, password: string, done: (error: any, user?: any, options?: LocalStrategy.IVerifyOptions) => void) => {

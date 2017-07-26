@@ -16,7 +16,6 @@ export function createUser(req, res) {
           username: req.body.username,
           password: hash,
           auditstat: 0,
-          expiry_date: knex.raw('now()'),
           creator_id: 1,
           created_datetime: knex.raw('now()')
         })

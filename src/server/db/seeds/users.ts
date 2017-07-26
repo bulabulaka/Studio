@@ -10,7 +10,6 @@ export const seed = (knex, Promise) => {
           username: 'jeremy',
           password: hash,
           auditstat: 0,
-          expiry_date: knex.raw('now()'),
           creator_id: 1,
           created_datetime: knex.raw('now()')
         })
@@ -24,7 +23,6 @@ export const seed = (knex, Promise) => {
           username: 'kelly',
           password: hash,
           auditstat: 0,
-          expiry_date: knex.raw('now()'),
           creator_id: 1,
           created_datetime: knex.raw('now()')
         })

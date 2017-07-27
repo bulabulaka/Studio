@@ -8,7 +8,7 @@ const development: Config = {
     database: databaseName,
     port: 3306,
     user: 'root',
-    password: 'WJL52wld'
+    password: 'Studio9527'
   },
   migrations: {
     directory: __dirname + '/src/server/db/migrations'
@@ -20,25 +20,31 @@ const test: Config = {
     database: databaseName + '_test',
     port: 3306,
     user: 'root',
-    password: 'WJL52wld'
+    password: 'Studio9527'
   },
   migrations: {
     directory: __dirname + '/src/server/db/migrations'
   }
 };
 
-export class knexConfig {
-  knex_Config: Config;
-  knex: Knex;
+const config = {
+  'development':development,
+  'test':test
+};
+export = config;
 
-  constructor(environment: string) {
-    if (environment === "development") {
-      this.knex_Config = development;
-    } else {
-      this.knex_Config = test;
-    }
-    this.knex = Knex(this.knex_Config);
-  }
-}
+// export class knexConfig {
+//   knex_Config: Config;
+//   knex: Knex;
+
+//   constructor(environment: string) {
+//     if (environment === "development") {
+//       this.knex_Config = development;
+//     } else {
+//       this.knex_Config = test;
+//     }
+//     this.knex = Knex(this.knex_Config);
+//   }
+// }
 
 

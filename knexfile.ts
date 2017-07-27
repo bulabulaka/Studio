@@ -1,4 +1,3 @@
-import * as Knex from "knex";
 import {Config} from "knex";
 
 const databaseName = 'studio';
@@ -28,23 +27,10 @@ const test: Config = {
 };
 
 const config = {
-  'development':development,
-  'test':test
+  'development': development,
+  'test': test
 };
 export = config;
 
-// export class knexConfig {
-//   knex_Config: Config;
-//   knex: Knex;
-
-//   constructor(environment: string) {
-//     if (environment === "development") {
-//       this.knex_Config = development;
-//     } else {
-//       this.knex_Config = test;
-//     }
-//     this.knex = Knex(this.knex_Config);
-//   }
-// }
 
 

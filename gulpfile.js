@@ -18,8 +18,9 @@ const paths = {
     path.join('src', '*.js')
   ],
   tsscripts:[
-    path.join('src','**','*.ts'),
-    path.join('src','*.ts')
+    path.join('src','src/server/server.ts'),
+    path.join('knexfile.ts'),
+    path.join('/src/server/db/migrations/*.ts')
   ],
   styles: [
     path.join('src', 'client', 'css', '*.css')

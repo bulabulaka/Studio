@@ -3,18 +3,6 @@ typings/
 dist/
 *.env
 .idea/
-knexfile.js
-src/server/app.js
-src/server/auth/*.js
-src/server/config/*.js
-src/server/controllers/*.js
-src/server/db/*js
-src/server/db/entity/*.js
-src/server/db/seeds/*.js
-src/server/db/migrations/*.js
-src/server/routes/*.js
-src/server/server.js
-test/integration/*.js
-test/unit/*.js
+**.js
+npm-debug.log
 
-/src/server/db/migrations/user.js

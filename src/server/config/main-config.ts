@@ -1,6 +1,5 @@
 // *** main dependencies *** //
 import * as path from "path";
-import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as session from "express-session";
 import flash = require("connect-flash");
@@ -25,7 +24,6 @@ export function main_config_init(app: any, express: any) {
   if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));
   }
-  app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: false}));
   // uncomment if using express-session

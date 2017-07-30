@@ -1,15 +1,72 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {} from '../shared/index';
+import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs/Rx';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
+  hasSubmit: boolean;
+  formErrors = {
+    'username': '',
+    'password': ''
+  };
 
-  constructor() { }
+  //Error info
+  validationMessages = {
+    'username': {
+      'required': '',
+      'usernameVaild': ''
+    },
+    'password': {
+      'required': ''
+    }
+  };
+
+
+  constructor(private formBuilder: FormBuilder, private router: Router) {
+    this.loginForm = this.formBuilder.group({
+      'username': ['',
+        [Validators.required]
+      ],
+      'password': ['', Validators.required]
+    });
+    this.loginForm.valueChanges.subscribe(data => this.onValueChanged(data));
+    this.hasSubmit = false;
+  }
 
   ngOnInit() {
   }
 
+  onValueChanged(data?: any) {
+    if (!this.loginForm) {
+      return;
+    }
+    const form = this.loginForm;
+
+    for (const field in this.formErrors) {
+      this.formErrors[field] = '';
+      const control = form.get(field);
+
+      if (control && control.dirty && !control.valid) {
+        const messages = this.validationMessages[field];
+        for (const key in control.errors) {
+          if (!this.formErrors[field]) {
+            this.formErrors[field] += messages[key] + ' ';
+          } else {
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  onSubmit() {
+    this.hasSubmit = true;
+  }
 }

@@ -18,7 +18,7 @@ const paths = {
     path.join('src', '*.js')
   ],
   tsscripts:[
-    path.join('src','src/server/server.ts'),
+    path.join('/src/server/server.ts'),
     path.join('knexfile.ts'),
     path.join('/src/server/db/migrations/*.ts')
   ],
@@ -75,7 +75,7 @@ gulp.task('jscs', () => {
     .pipe(jscs.reporter('fail'));
 });
 
-gulp.task('ts', () => {
+gulp.task('tsc', () => {
   return gulp.src(paths.tsscripts)
     .pipe(ts())
     .pipe(gulp.dest(function(file) {

@@ -1,9 +1,9 @@
 import {Router} from "express";
 import * as Promise from "bluebird";
-
-const router = Router();
 import {createUser, loginRequired, loginRedirect} from "../auth/_helpers";
 import {local} from "../auth/local";
+
+const router = Router();
 
 router.post('/register', loginRedirect, (req, res, next) => {
   return createUser(req, res)

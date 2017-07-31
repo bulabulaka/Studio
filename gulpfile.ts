@@ -1,3 +1,4 @@
+/*
 // *** dependencies *** //
 
 const path = require('path');
@@ -20,7 +21,7 @@ const paths = {
   tsscripts:[
     path.join('/src/server/server.ts'),
     path.join('knexfile.ts'),
-    path.join('/src/server/db/migrations/*.ts')
+    path.join('/src/server/db/migrations/!*.ts')
   ],
   styles: [
     path.join('src', 'client', 'css', '*.css')
@@ -111,3 +112,4 @@ gulp.task('watch', () => {
   gulp.watch(paths.scripts, ['jshint', 'jscs']);
   gulp.watch(paths.styles, ['styles']);
 });
+*/

@@ -32,7 +32,7 @@ export function loginRequired(req, res, next) {
 }
 
 export function adminRequired(req, res, next) {
-  if (!req.user) res.status(401).json({status: 'Please log in'});
+  if (!req.user) return res.status(401).json({status: 'Please log in'});
   return knex('m_user').where({username: req.user.username}).first()
     .then((user) => {
       if (user.status !== 1) res.status(401).json({status: 'You are not authorized'});

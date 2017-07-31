@@ -1,6 +1,6 @@
-import * as bcrypt from "bcryptjs";
-import * as Promise from "bluebird";
-import {knex} from "../db/connection";
+import * as bcrypt from 'bcryptjs';
+import * as Promise from 'bluebird';
+import {knex} from '../db/connection';
 
 export function comparePass(userPassword, databasePassword) {
   return bcrypt.compareSync(userPassword, databasePassword);

@@ -1,8 +1,6 @@
-import * as passport from "passport";
-import * as Promise from "bluebird";
-import {knex} from "../db/connection";
-import {m_user} from "../db/entity/entity";
-
+import * as passport from 'passport';
+import {knex} from '../db/connection';
+import {m_user} from '../db/entity/entity';
 
 export function passport_init() {
   passport.serializeUser((user: m_user, done) => {

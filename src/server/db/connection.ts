@@ -13,6 +13,7 @@ const knex =  Knex(knexConfig[environment]);
 const extendKnex:ExtendedKnex = {
     entities: new Entities(knex),
     knex:knex
-}.
-//attachEntityContainerTo(knex,knex);
-export = extendKnex;
+}
+
+export = knex;
+//export = extendKnex;

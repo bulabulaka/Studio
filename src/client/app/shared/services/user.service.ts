@@ -4,12 +4,14 @@ import {Observable, BehaviorSubject, Subject, ReplaySubject} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {ApiService} from './api.service';
-import {User} from '../models/user.model';
+import {m_user} from '../../../../shared/models/index';
+import {ResultValue} from '../../../../shared/models/index';
+import {environment} from '../../../environments/environment';
 
 
 @Injectable()
 export class UserService {
-  private currentUserSubject = new BehaviorSubject<User>(new User());
+  private currentUserSubject = new BehaviorSubject<m_user>(new m_user());
   public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged();
 
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
@@ -18,11 +20,12 @@ export class UserService {
   constructor(private apiService: ApiService, private http: Http) {
   }
 
-  login(credentials): Observable<User> {
-    return this.apiService.post('/auth/login', {username: credentials.username, password: credentials.password})
+  login(username: string, password: string): Observable<{ resultValue: ResultValue<m_user> }> {
+    return this.apiService.post('/auth/login', {username: username, password: password})
       .map(data => {
-        this.currentUserSubject.next(data);
-        this.isAuthenticatedSubject.next(true);
+        if (data.resultValue.RCode === environment.success_code && data.resultValue.Data) {
+          this.currentUserSubject.next(data.resultValue.Data);
+        }
         return data;
       })
   }

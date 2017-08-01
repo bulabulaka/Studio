@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {User, UserService} from '../shared/index';
+import {UserService} from '../shared/index';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Rx';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -69,14 +70,13 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.hasSubmit = true;
     const loginUser = this.loginForm.value;
-    let user = new User();
-    user.username = loginUser.username;
-    user.password = loginUser.password;
-    this.userService.login(user)
+    this.userService.login(loginUser.username, loginUser.password)
       .subscribe(response => {
         this.hasSubmit = false;
+        if (response.resultValue.RCode === environment.success_code) {
+          window.location.href = '/api/auth/logout';
+        }
         console.log(response);
-        window.location.href = '/api/auth/logout';
       })
   }
 }

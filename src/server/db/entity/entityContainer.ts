@@ -19,7 +19,7 @@ export class BaseEntityContainer<T extends BaseEntity> {
     //entity.creator_id = userContext.id;
     //entity.modifier_id = userContent.id;
   
-    return this.conn(this.tableName).returning('id').insert(entity).th;
+    return this.conn(this.tableName).returning('id').insert(entity);
   }
 
   //Number of rows affected will return
@@ -54,7 +54,7 @@ export class Entities{
 
   public constructor(knexConn:Knex){
     this.m_uers = new BaseEntityContainer<m_user>('m_user',knexConn);
-
+    //TBD Add other tables here
   }
   
 }

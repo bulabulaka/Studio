@@ -22,13 +22,16 @@ router.post('/register', loginRedirect, (req, res, next) => {
 router.post('/login', loginRedirect, (req, res, next) => {
   local.authenticate('local', (err, user, info) => {
     if (err) {
-      handleResponse(res, 500, 'error');
+      return next(err);
     }
     if (!user) {
       handleResponse(res, 404, 'User not found');
     }
     if (user) {
-      handleResponse(res, 200, 'success');
+      req.logIn(user, (err) => {
+        if (err) next(err);
+        handleResponse(res, 200, 'success');
+      });
     }
   })(req, res, next);
 });

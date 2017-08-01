@@ -1,16 +1,17 @@
 // *** main dependencies *** //
-import * as path from "path";
-import * as bodyParser from "body-parser";
-import * as session from "express-session";
-import flash = require("connect-flash");
-import * as morgan from "morgan";
-import * as nunjucks from "nunjucks";
-import * as passport from "passport";
-import * as dotenv from "dotenv";
+import * as path from 'path';
+import * as bodyParser from 'body-parser';
+import * as session from 'express-session';
+import flash = require('connect-flash');
+import * as morgan from 'morgan';
+import * as nunjucks from 'nunjucks';
+import * as passport from 'passport';
+import * as dotenv from 'dotenv';
 // *** load environment variables *** //
 dotenv.config();
 
 export function main_config_init(app: any, express: any) {
+
   // *** view folders *** //
   const viewFolders = [path.join(__dirname, '..', 'views')];
   // *** view engine *** //
@@ -29,7 +30,7 @@ export function main_config_init(app: any, express: any) {
   // uncomment if using express-session
   app.use(session({
     secret: process.env.SECRET_KEY,
-    resave: false,
+    resave: true,
     saveUninitialized: true
   }));
   app.use(passport.initialize());

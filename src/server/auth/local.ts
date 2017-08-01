@@ -1,16 +1,15 @@
-import * as passport from "passport";
-import * as LocalStrategy from "passport-local";
-import * as Promise from "bluebird";
-import {comparePass} from "./_helpers";
-import {knex} from "../db/connection";
-import {passport_init} from "./passports";
+import * as passport from 'passport';
+import * as LocalStrategy from 'passport-local';
+import {comparePass} from './_helpers';
+import {knex} from '../db/connection';
+import {passport_init} from './passports';
 
 let options = <any>{};
 
 passport_init();
 passport.use(new LocalStrategy.Strategy(options, (username: string, password: string, done: (error: any, user?: any, options?: LocalStrategy.IVerifyOptions) => void) => {
     // check to see if the username exists
-    knex('m_user').where({username}).first()
+    knex('m_user').where('username', username).first()
       .then((user) => {
         if (!user) return done(null, false);
         if (!comparePass(password, user.password)) {

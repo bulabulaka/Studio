@@ -1,7 +1,7 @@
-import {Router} from "express";
-import * as Promise from "bluebird";
-import {createUser, loginRequired, loginRedirect} from "../auth/_helpers";
-import {local} from "../auth/local";
+import {Router} from 'express';
+import * as Promise from 'bluebird';
+import {createUser, loginRequired, loginRedirect} from '../auth/_helpers';
+import {local} from '../auth/local';
 
 const router = Router();
 

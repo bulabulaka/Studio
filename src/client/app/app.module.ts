@@ -4,7 +4,8 @@ import {RouterModule} from '@angular/router';
 import {SharedModule} from './shared/index'
 import {AppComponent} from './app.component';
 import {CanNotFindPageComponent, NoPermissionComponent} from './error-handle/index';
-import {LoginComponent} from './login/login.component'
+import {LoginComponent} from './login/login.component';
+import {ApiService, AuthGuardService, UserService} from './shared/index';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   {
@@ -19,6 +20,11 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   {
     path: 'no_permission',
     component: NoPermissionComponent
+  },
+  {
+    path: 'workspace',
+    loadChildren: './workspace/workspace.module#WorkspaceModule',
+    canActivate: [AuthGuardService]
   },
   {
     path: '**',
@@ -39,7 +45,11 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     SharedModule,
     rootRouting
   ],
-  providers: [],
+  providers: [
+    ApiService,
+    AuthGuardService,
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

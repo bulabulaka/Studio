@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {} from '../shared/index';
+import {User, UserService} from '../shared/index';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Rx';
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   };
 
 
-  constructor(private formBuilder: FormBuilder, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService) {
     this.loginForm = this.formBuilder.group({
       'username': ['',
         [Validators.required]
@@ -68,5 +68,15 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.hasSubmit = true;
+    const loginUser = this.loginForm.value;
+    let user = new User();
+    user.username = loginUser.username;
+    user.password = loginUser.password;
+    this.userService.login(user)
+      .subscribe(response => {
+        this.hasSubmit = false;
+        console.log(response);
+        window.location.href = '/api/auth/logout';
+      })
   }
 }

@@ -52,9 +52,9 @@ export class BaseEntityContainer<T extends BaseEntity> {
 export class Entities {
   m_uers: BaseEntityContainer<m_user>;
 
-  public constructor(knexConn: Knex) {
-    this.m_uers = new BaseEntityContainer<m_user>('m_user', knexConn);
-
+  public constructor(knexConn:Knex){
+    this.m_uers = new BaseEntityContainer<m_user>('m_user',knexConn);
+    //TBD Add other tables here
   }
 
 }

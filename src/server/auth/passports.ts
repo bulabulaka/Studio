@@ -1,6 +1,6 @@
 import * as passport from 'passport';
 import {knex} from '../db/connection';
-import {m_user} from '../db/entity/entity';
+import {m_user} from '../../shared/models/entity.model';
 
 export function passport_init() {
   passport.serializeUser((user: m_user, done) => {

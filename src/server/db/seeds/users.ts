@@ -1,4 +1,4 @@
-import * as bcrypt from "bcryptjs"
+import * as bcrypt from 'bcryptjs'
 
 export const seed = (knex, Promise) => {
   return knex('m_user').del()

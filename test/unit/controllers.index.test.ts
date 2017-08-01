@@ -1,7 +1,9 @@
 process.env.NODE_ENV = 'test';
-import  * as chai from "chai";
+import * as chai from 'chai';
+
 const should = chai.should();
-import {sum} from "../../src/server/controllers/index";
+import {sum} from '../../src/server/controllers/index';
+
 
 describe('controllers : index', () => {
 

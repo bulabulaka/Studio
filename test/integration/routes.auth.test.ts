@@ -1,8 +1,8 @@
 process.env.NODE_ENV = 'test';
-import * as chai from "chai";
-import {init_config as server} from "../../src/server/app";
-import chaiHttp = require("chai-http");
-import {knex} from "../../src/server/db/connection";
+import * as chai from 'chai';
+import {init_config as server} from '../../src/server/app';
+import chaiHttp = require('chai-http');
+import {knex} from '../../src/server/db/connection';
 
 const should = chai.should();
 
@@ -16,7 +16,7 @@ describe('routes : /api/auth', () => {
         return knex.migrate.latest();
       })
       .then(() => {
-        return knex.seed.run({directory: "src/server/db/seeds"});
+        return knex.seed.run({directory: 'src/server/db/seeds'});
       });
   });
 
@@ -36,7 +36,7 @@ describe('routes : /api/auth', () => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('success');
+          res.body.resultValue.RCode.should.eql(0);
           done();
         });
     });
@@ -102,7 +102,7 @@ describe('routes : /api/auth', () => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('success');
+          res.body.resultValue.RCode.should.eql(0);
           done();
         });
     });
@@ -114,10 +114,10 @@ describe('routes : /api/auth', () => {
           password: 'johnson123'
         })
         .end((err, res) => {
-          should.exist(err);
-          res.status.should.eql(404);
+          should.not.exist(err);
+          res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('User not found');
+          res.body.resultValue.RMsg.should.eql('User not found');
           done();
         });
     });

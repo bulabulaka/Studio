@@ -1,10 +1,11 @@
 import {Router} from 'express';
-import {handleResponse} from '../shared/index'
+import {handleResponse, verifyToken} from '../shared/index'
 
 const router = Router();
-import {loginRequired, adminRequired} from '../auth/_helpers';
+import {adminRequired} from '../auth/_helpers';
 
-router.get('/user', loginRequired, (req, res, next) => {
+router.get('/user', verifyToken, (req, res, next) => {
+  console.log(res.locals.decoded);
   handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'success', null);
 });
 

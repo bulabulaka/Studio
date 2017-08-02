@@ -26,11 +26,6 @@ export function createUser(req, res) {
     });
 }
 
-export function loginRequired(req, res, next) {
-  if (!req.user) return res.status(401).json({status: 'Please log in'});
-  return next();
-}
-
 export function adminRequired(req, res, next) {
   if (!req.user) return res.status(401).json({status: 'Please log in'});
   return knex('m_user').where({username: req.user.username}).first()
@@ -41,12 +36,6 @@ export function adminRequired(req, res, next) {
     .catch((err) => {
       res.status(500).json({status: 'Something bad happened'});
     });
-}
-
-export function loginRedirect(req, res, next) {
-  if (req.user) return res.status(401).json(
-    {status: 'You are already logged in'});
-  return next();
 }
 
 function handleErrors(req) {

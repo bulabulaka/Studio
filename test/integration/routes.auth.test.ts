@@ -162,10 +162,10 @@ describe('routes : /api/auth', () => {
       chai.request(server())
         .get('/api/auth/logout')
         .end((err, res) => {
-          should.exist(err);
-          res.status.should.eql(401);
+          should.not.exist(err);
+          res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('Please log in');
+          res.body.resultValue.RCode.should.eql(-1);
           done();
         });
     });
@@ -191,10 +191,10 @@ describe('routes : /api/auth', () => {
       chai.request(server())
         .get('/api/user')
         .end((err, res) => {
-          should.exist(err);
-          res.status.should.eql(401);
+          should.not.exist(err);
+          res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('Please log in');
+          res.body.resultValue.RCode.should.eql(-1);
           done();
         });
     });
@@ -219,10 +219,10 @@ describe('routes : /api/auth', () => {
       chai.request(server())
         .get('/api/user')
         .end((err, res) => {
-          should.exist(err);
-          res.status.should.eql(401);
+          should.not.exist(err);
+          res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('Please log in');
+          res.body.resultValue.RCode.should.eql(-1);
           done();
         });
     });

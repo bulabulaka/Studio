@@ -20,8 +20,15 @@ export class UserService {
   constructor(private apiService: ApiService, private http: Http) {
   }
 
-  login(username: string, password: string): Observable<{ resultValue: ResultValue<m_user> }> {
+  login(username: string, password: string): Observable<{ resultValue: ResultValue<string> }> {
     return this.apiService.post('/auth/login', {username: username, password: password})
+      .map(data => {
+        return data;
+      })
+  }
+
+  getCurrentUserInfo(): Observable<{ resultValue: ResultValue<m_user> }> {
+    return this.apiService.get('/user')
       .map(data => {
         if (data.resultValue.RCode === environment.success_code && data.resultValue.Data) {
           this.currentUserSubject.next(data.resultValue.Data);

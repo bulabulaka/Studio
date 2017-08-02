@@ -4,16 +4,19 @@ import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {environment} from '../../../environments/environment';
+import {CookieService} from 'angular2-cookie/core';
+import {token} from 'morgan';
 
 @Injectable()
 export class ApiService {
-  constructor(private http: Http) {
+  constructor(private http: Http, private cookieService: CookieService) {
   }
 
-  private setHeaders(): Headers {
+  setHeaders(): Headers {
     let headersConfig = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'x-access-token': this.cookieService.get(environment.cookie_key)
     };
     return new Headers(headersConfig);
   }

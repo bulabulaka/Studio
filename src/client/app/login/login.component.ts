@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/form
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Rx';
 import {environment} from '../../environments/environment';
+import {CookieService} from 'angular2-cookie/core';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,7 @@ export class LoginComponent implements OnInit {
   };
 
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private cookieService: CookieService) {
     this.loginForm = this.formBuilder.group({
       'username': ['',
         [Validators.required]
@@ -74,7 +75,12 @@ export class LoginComponent implements OnInit {
       .subscribe(response => {
         this.hasSubmit = false;
         if (response.resultValue.RCode === environment.success_code) {
-          window.location.href = '/api/auth/logout';
+          // window.location.href = '/api/user';
+          let token = response.resultValue.Data;
+          this.cookieService.put(environment.cookie_key, token);
+          this.userService.getCurrentUserInfo().subscribe(response => {
+            console.log(response);
+          })
         }
         console.log(response);
       })

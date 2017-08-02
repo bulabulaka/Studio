@@ -7,5 +7,6 @@ export const environment = {
   production: false,
   api_url: '/api',
   success_code: 0,
-  fail_code: -1
+  fail_code: -1,
+  cookie_key: 'token'
 };

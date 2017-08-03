@@ -5,7 +5,7 @@ import {SharedModule} from './shared/index'
 import {AppComponent} from './app.component';
 import {CanNotFindPageComponent, NoPermissionComponent} from './error-handle/index';
 import {LoginComponent} from './login/login.component';
-import {ApiService, AuthGuardService, UserService} from './shared/index';
+import {ApiService, AuthGuardService, UserService, NgCookieService} from './shared/index';
 import {CookieService} from 'angular2-cookie/services/cookies.service';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
@@ -50,7 +50,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     ApiService,
     AuthGuardService,
     UserService,
-    CookieService
+    CookieService,
+    NgCookieService
   ],
   bootstrap: [AppComponent]
 })

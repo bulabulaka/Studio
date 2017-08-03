@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {UserService} from '../shared/index';
+import {m_user} from '../../../shared/index'
 
 @Component({
   selector: 'app-workspace',
@@ -7,10 +9,19 @@ import {Component, OnInit} from '@angular/core';
 })
 export class WorkspaceComponent implements OnInit {
 
-  constructor() {
+  currentUser: m_user;
+
+  constructor(private userService: UserService) {
+
   }
 
   ngOnInit() {
+    this.userService.currentUser.subscribe(
+      (response) => {
+        this.currentUser = response;
+        console.log(this.currentUser);
+      }
+    )
   }
 
 }

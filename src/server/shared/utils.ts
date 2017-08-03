@@ -1,12 +1,13 @@
-import {ResultValue} from '../../shared/models/index';
+import {ResultValue} from '../../shared/index';
 import jwt = require('jsonwebtoken');
 
-export function handleResponse<T>(res, resStatusCode: number, code: number, msg: string, data: T, totalPage?: number) {
+export function handleResponse<T>(res, resStatusCode: number, code: number, msg: string, data: T, totalPage?: number, token?: string) {
   let resultData = new ResultValue<T>();
   resultData.RCode = code;
   resultData.RMsg = msg;
   resultData.Data = data;
   resultData.TotalPage = totalPage;
+  resultData.Token = token;
   res.status(resStatusCode).json({resultValue: resultData});
 }
 

@@ -28,7 +28,7 @@ router.post('/login', (req, res, next) => {
         return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'User not found', null);
       } else {
         let token = jwt.sign(user.id, process.env.JWT_SECRET);
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', token);
+        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', user, 0, token);
       }
     })
     .catch((err) => {

@@ -3,4 +3,5 @@ export class ResultValue<T> {
   RMsg: string;
   Data: T;
   TotalPage?: number;
+  Token?: string;
 }

@@ -1,8 +1,10 @@
 // *** routes *** //z
-import {IndexRouter} from "../routes/index";
-import {AuthRouter} from "../routes/auth";
-import {UserRouter} from "../routes/user";
-import * as path from "path";
+import {IndexRouter} from '../routes/index';
+import {AuthRouter} from '../routes/auth';
+import {UserRouter} from '../routes/user';
+import {PermissionRouter} from '../routes/permission';
+
+import * as path from 'path';
 
 export function route_config_init(app) {
   // *** register routes *** //
@@ -12,6 +14,7 @@ export function route_config_init(app) {
 
   app.use('/api', IndexRouter);
   app.use('/api/auth', AuthRouter);
+  app.use('/api/permission', PermissionRouter);
   app.use('/api', UserRouter);
 }
 

@@ -19,7 +19,7 @@ export function createUser(req, res) {
           creator_id: 1,
           created_datetime: knex.raw('now()')
         })
-        .returning('*');
+        .returning('id');
     })
     .catch((err) => {
       res.status(400).json({status: err.message});

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../shared/index';
-import {m_user} from '../../../shared/index'
+import {m_user} from '../../../shared/index';
+import {EventBusService} from '../shared/index';
 
 @Component({
   selector: 'app-workspace',
@@ -8,10 +9,10 @@ import {m_user} from '../../../shared/index'
   styleUrls: ['./workspace.component.scss']
 })
 export class WorkspaceComponent implements OnInit {
+  public isCollapse = false;
+  public currentUser: m_user;
 
-  currentUser: m_user;
-
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private eventBusService: EventBusService) {
 
   }
 
@@ -19,9 +20,17 @@ export class WorkspaceComponent implements OnInit {
     this.userService.currentUser.subscribe(
       (response) => {
         this.currentUser = response;
-        console.log(this.currentUser);
       }
-    )
+    );
+
+    this.eventBusService.topToggleBtn.subscribe(value => {
+      this.toggleMenuStatus(value);
+    })
+
+  }
+
+  private toggleMenuStatus(isCollapse: boolean) {
+    this.isCollapse = isCollapse;
   }
 
 }

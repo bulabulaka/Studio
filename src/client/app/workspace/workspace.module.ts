@@ -2,6 +2,9 @@ import {NgModule, ModuleWithProviders} from '@angular/core';
 import {WorkspaceComponent} from './workspace.component';
 import {SharedModule} from '../shared/shared.module';
 import {RouterModule} from '@angular/router';
+import {TopMenuComponent} from './top-menu/top-menu.component';
+import {LeftNavComponent} from './left-nav/left-nav.component';
+import {SideMenuComponent} from './left-nav/side-menu/side-menu.component';
 
 const workspaceRoutes: ModuleWithProviders = RouterModule.forChild([
   {
@@ -15,7 +18,7 @@ const workspaceRoutes: ModuleWithProviders = RouterModule.forChild([
     SharedModule,
     workspaceRoutes
   ],
-  declarations: [WorkspaceComponent]
+  declarations: [WorkspaceComponent, TopMenuComponent, LeftNavComponent, SideMenuComponent]
 })
 export class WorkspaceModule {
 }

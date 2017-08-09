@@ -1,3 +1,9 @@
-<p>
-  workspace works!
-</p>
+<div class="layout-wrapper {{isCollapse?'layout-menu-slim':'layout-menu-static'}}">
+  <app-top-menu [currentUser]="currentUser"></app-top-menu>
+  <div class="layout-main">
+    <app-left-nav></app-left-nav>
+    <div class="layout-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

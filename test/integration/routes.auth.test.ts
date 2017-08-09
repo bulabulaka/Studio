@@ -37,6 +37,7 @@ describe('routes : /api/auth', () => {
           res.status.should.eql(200);
           res.type.should.eql('application/json');
           res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.Data.should.eql(3);
           done();
         });
     });

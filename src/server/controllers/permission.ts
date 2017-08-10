@@ -12,13 +12,21 @@ export function VerifyPermissionData(permission: permission, callback: any) {
     mPermission.created_datetime = new Date();
     mPermission.creator_id = permission.creator_id;
 
-    let service_api: m_service_api = new m_service_api();
-    service_api.route = permission.route;
-    service_api.method = permission.method;
-    service_api.created_datetime = new Date();
-    service_api.creator_id = permission.creator_id;
-
-    callback(null, mPermission, service_api);
+    if (mPermission.kind === 0) {
+      let mPage: m_page = new m_page();
+      mPage.route = permission.route;
+      mPage.created_datetime = new Date();
+      mPage.creator_id = permission.creator_id;
+      mPage.auditstat = 0;
+      callback(null, mPermission, null, mPage);
+    } else {
+      let mServiceApi: m_service_api = new m_service_api();
+      mServiceApi.route = permission.route;
+      mServiceApi.method = permission.method;
+      mServiceApi.created_datetime = new Date();
+      mServiceApi.creator_id = permission.creator_id;
+      callback(null, mPermission, mServiceApi);
+    }
   } else {
     error = 'data is invalidate';
     callback(error);

@@ -12,7 +12,6 @@ export class BaseEntityContainer<T extends BaseEntity> {
   //return new id
   public insert(entity: T) {
     entity.created_datetime = new Date();
-    entity.auditstat = 1;
     return knex(this.tableName).insert(entity).returning('id');
   }
 

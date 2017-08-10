@@ -1,26 +1,34 @@
 import {Router} from 'express';
 import {handleResponse, verifyToken} from '../shared/index';
 import {knex} from '../db/connection';
-import {BaseEntityContainer} from '../db/entity/entityContainer';
-import {m_permission} from '../../shared/index';
+import {m_permission, m_service_api, m_page, permission} from '../../shared/index';
+import {VerifyPermissionData} from '../controllers/permission';
 
 const router = Router();
 
 router.post('/add_permission', verifyToken, (req, res, next) => {
-  const reqBody = req.body;
-  let baseEntityContainer = new BaseEntityContainer('m_permission');
-  baseEntityContainer.insert(reqBody.permission)
-    .then((response) => {
-      if (response[0]) {
-        //used for debugger
-        /* knex('m_permission').first().then((response) => {
-           console.log(response);
-         });*/
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', response[0]);
-      } else {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'Insert Fail', null);
-      }
+  VerifyPermissionData(req.body.permission, (error, mPermission, mServiceApi) => {
+    if (error) return next(error);
+    knex.transaction((trx) => {
+      return knex('m_permission')
+        .transacting(trx)
+        .insert(mPermission)
+        .then((ids) => {
+          mServiceApi.permission_id = ids[0];
+          return knex('m_service_api').insert(mServiceApi).transacting(trx);
+        })
+        .then(trx.commit)
+        .catch((e) => {
+          trx.rollback();
+          return next(e);
+        })
+    }).then(() => {
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', null);
+    }).catch((e) => {
+      return next(e)
     });
+  });
 });
+
 
 export const PermissionRouter = router;

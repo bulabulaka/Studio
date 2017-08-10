@@ -28,5 +28,20 @@ export const seed = (knex, Promise) => {
         })
       );
     });
+  /* .then(() => {
+     return Promise.join(
+       knex('m_permission').insert(
+         {
+           name: 'test',
+           auditstat: 1,
+           kind: 0,
+           description: 'tests',
+           creator_id: 1,
+           order_no: 1,
+           created_datetime: new Date()
+         }
+       )
+     );
+   });*/
 };
 

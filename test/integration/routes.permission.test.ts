@@ -3,6 +3,7 @@ import * as chai from 'chai';
 import {init_config as server} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
+import {permission} from '../../src/shared/index';
 
 const should = chai.should();
 
@@ -25,16 +26,20 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission', () => {
     it('should add a new permission', (done) => {
+      let new_permission = new permission();
+      new_permission.auditstat = 1;
+      new_permission.name = 'test';
+      new_permission.kind = 0;
+      new_permission.description = 'tests';
+      new_permission.creator_id = 1;
+      new_permission.order_no = 1;
+      new_permission.created_datetime = new Date();
+      new_permission.route = 'tests';
+      new_permission.method = 'post';
       chai.request(server())
         .post('/api/permission/add_permission')
         .send({
-          permission: {
-            name: 'test',
-            kind: 0,
-            description: 'tests',
-            creator_id: 1,
-            order_no: 1
-          },
+          permission: new_permission,
           token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
         })
         .end((err, res) => {
@@ -42,7 +47,6 @@ describe('routes : /api/permission', () => {
           res.status.should.eql(200);
           res.type.should.eql('application/json');
           res.body.resultValue.RCode.should.eql(0);
-          res.body.resultValue.Data.should.eql(1);
           done();
         });
     });

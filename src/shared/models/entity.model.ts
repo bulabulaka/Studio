@@ -4,13 +4,13 @@ export class BaseEntity {
   created_datetime: Date;
   modifier_id: number;
   modified_datetime: Date;
-  auditstat: number;
 }
 
 export class m_user extends BaseEntity {
   username: string;
   password: string;
-  expiry_date: Date
+  auditstat: number;
+  expiry_date: Date;
 }
 
 export class m_userinfo extends BaseEntity {
@@ -25,12 +25,14 @@ export class m_role extends BaseEntity {
   name: string;
   description: string;
   order_no: number;
+  auditstat: number;
 }
 
 export class m_permission_group extends BaseEntity {
   name: string;
   description: string;
   order_no: number;
+  auditstat: number;
 }
 
 export class m_user_role extends BaseEntity {
@@ -72,6 +74,7 @@ export class m_page extends BaseEntity {
   permission_id: number;
   title: string;
   route: string;
+  auditstat: number;
 }
 
 export class m_operate_log extends BaseEntity {
@@ -92,6 +95,7 @@ export class m_dictionary_index extends BaseEntity {
   description: string;
   key: string;
   order_no: number;
+  auditstat: number;
 }
 
 export class m_dictionary_data extends BaseEntity {
@@ -99,6 +103,7 @@ export class m_dictionary_data extends BaseEntity {
   name: string;
   value: string;
   order_no: number;
+  auditstat: number;
 }
 
 export class m_log_detail extends BaseEntity {

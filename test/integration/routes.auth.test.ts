@@ -71,7 +71,7 @@ describe('routes : /api/auth', () => {
           should.exist(err);
           res.status.should.eql(400);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('Username must be longer than 6 characters');
+          res.body.message.should.eql('Username must be longer than 6 characters');
           done();
         });
     });
@@ -86,7 +86,7 @@ describe('routes : /api/auth', () => {
           should.exist(err);
           res.status.should.eql(400);
           res.type.should.eql('application/json');
-          res.body.status.should.eql('Password must be longer than 6 characters');
+          res.body.message.should.eql('Password must be longer than 6 characters');
           done();
         });
     });

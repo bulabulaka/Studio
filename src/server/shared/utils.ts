@@ -16,7 +16,7 @@ export function verifyToken(req, res, next) {
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) return next(err);
-      res.locals.decoded = decoded;
+      res.locals.userId = decoded;
       next();
     })
   } else {

@@ -22,7 +22,8 @@ export function createUser(req, res) {
         .returning('id');
     })
     .catch((err) => {
-      res.status(400).json({status: err.message});
+      res.locals.errorCode = 400;
+      res.locals.errorMsg = err.message;
     });
 }
 

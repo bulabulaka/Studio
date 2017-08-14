@@ -88,7 +88,7 @@ export class m_operate_log extends BaseEntity {
   method: string;
   route: string;
   user_id: number;
-  finish_datetime: Date;
+  duration_time: number;
 }
 
 export class m_dictionary_index extends BaseEntity {

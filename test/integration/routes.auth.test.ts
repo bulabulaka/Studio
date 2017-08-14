@@ -41,25 +41,6 @@ describe('routes : /api/auth', () => {
           done();
         });
     });
-    /* it('should throw an error if a user is logged in', (done) => {
-     passportStub.login({
-     username: 'jeremy',
-     password: 'johnson123'
-     });
-     chai.request(server)
-     .post('/api/auth/register')
-     .send({
-     username: 'michael',
-     password: 'herman'
-     })
-     .end((err, res) => {
-     should.exist(err);
-     res.status.should.eql(401);
-     res.type.should.eql('application/json');
-     res.body.status.should.eql('You are already logged in');
-     done();
-     });
-     });*/
     it('should throw an error if the username is < 6 characters', (done) => {
       chai.request(server())
         .post('/api/auth/register')
@@ -122,43 +103,9 @@ describe('routes : /api/auth', () => {
           done();
         });
     });
-    /*   it('should throw an error if a user is logged in', (done) => {
-     passportStub.login({
-     username: 'jeremy',
-     password: 'johnson123'
-     });
-     chai.request(server)
-     .post('/api/auth/login')
-     .send({
-     username: 'jeremy',
-     password: 'johnson123'
-     })
-     .end((err, res) => {
-     should.exist(err);
-     res.status.should.eql(401);
-     res.type.should.eql('application/json');
-     res.body.status.should.eql('You are already logged in');
-     done();
-     });
-     });*/
   });
 
   describe('GET /api/auth/logout', () => {
-    /* it('should logout a user', (done) => {
-     passportStub.login({
-     username: 'jeremy',
-     password: 'johnson123'
-     });
-     chai.request(server)
-     .get('/api/auth/logout')
-     .end((err, res) => {
-     should.not.exist(err);
-     res.status.should.eql(200);
-     res.type.should.eql('application/json');
-     res.body.status.should.eql('success');
-     done();
-     });
-     });*/
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
         .get('/api/auth/logout')
@@ -173,21 +120,6 @@ describe('routes : /api/auth', () => {
   });
 
   describe('GET /api/user', () => {
-    /*it('should return a success', (done) => {
-     passportStub.login({
-     username: 'jeremy',
-     password: 'johnson123'
-     });
-     chai.request(server)
-     .get('/user')
-     .end((err, res) => {
-     should.not.exist(err);
-     res.status.should.eql(200);
-     res.type.should.eql('application/json');
-     res.body.status.should.eql('success');
-     done();
-     });
-     });*/
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
         .get('/api/user')
@@ -201,21 +133,6 @@ describe('routes : /api/auth', () => {
     });
   });
   describe('GET /api/admin', () => {
-    /*it('should return a success', (done) => {
-     passportStub.login({
-     username: 'kelly',
-     password: 'bryant123'
-     });
-     chai.request(server)
-     .get('/api/admin')
-     .end((err, res) => {
-     should.not.exist(err);
-     res.status.should.eql(200);
-     res.type.should.eql('application/json');
-     res.body.status.should.eql('success');
-     done();
-     });
-     });*/
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
         .get('/api/user')
@@ -227,20 +144,6 @@ describe('routes : /api/auth', () => {
           done();
         });
     });
-    /*it('should throw an error if a user is not an admin', (done) => {
-     passportStub.login({
-     username: 'jeremy',
-     password: 'johnson123'
-     });
-     chai.request(server)
-     .get('/api/admin')
-     .end((err, res) => {
-     should.exist(err);
-     res.status.should.eql(401);
-     res.type.should.eql('application/json');
-     res.body.status.should.eql('You are not authorized');
-     done();
-     });
-     });*/
+
   });
 });

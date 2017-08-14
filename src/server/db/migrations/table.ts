@@ -120,14 +120,14 @@ exports.up = (knex, Promise) => {
       table.string('ip', 50).notNullable();
       table.string('user_agent', 500);
       table.string('accept_encoding', 100).notNullable();
-      table.string('content_type', 100).notNullable();
+      table.string('content_type', 100);
       table.string('access_token', 200);
       table.text('params');
       table.string('query', 1024);
       table.string('method', 10).notNullable();
       table.string('route', 1000).notNullable();
       table.integer('user_id');
-      table.dateTime('finish_datetime').notNullable();
+      table.integer('duration_time').notNullable();
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));
       table.integer('modifier_id');

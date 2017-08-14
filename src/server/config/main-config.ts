@@ -6,11 +6,12 @@ import * as morgan from 'morgan';
 import * as nunjucks from 'nunjucks';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
+import {LogOperate} from '../controllers/log';
 
 // *** load environment variables *** //
 dotenv.config();
 
-export function main_config_init(app: any, express: any) {
+export function main_config_init(knex: any, app: any, express: any) {
 
   // *** view folders *** //
   const viewFolders = [path.join(__dirname, '..', 'views')];
@@ -32,23 +33,8 @@ export function main_config_init(app: any, express: any) {
   app.use(express.static(path.join(process.env.DIST_PATH, 'dist')));
 
   //logging information middleware
-  app.use(function (req: express.Request, res: express.Response, next) {
-    console.log(req.ip);
-    console.log(req.headers['x-access-token']);
-    console.log(req.headers['user-agent']);
-    console.log(req.headers['content-type']);
-    console.log(req.headers['accept-encoding']);
-    console.log(req.path);
-    console.log(req.method);
-    console.log(req.params);
-    console.log(req.query);
-    console.log(new Date());
-    //when res.end() is called, it will emit a "finish" event.
-    res.on('finish', () => {
-      console.log(new Date());
-      console.log(res.statusCode);
-    });
-    next();
+  app.use((req: express.Request, res: express.Response, next: any) => {
+    LogOperate(knex, req, res, next);
   });
 }
 

@@ -1,17 +1,15 @@
 import * as bcrypt from 'bcryptjs';
 import * as Promise from 'bluebird';
+import * as express from 'express';
 import {knex} from '../db/connection';
+import {handleResponse} from '../shared/index';
 
-export function comparePass(userPassword, databasePassword) {
-  return bcrypt.compareSync(userPassword, databasePassword);
-}
-
-export function createUser(req, res) {
-  return handleErrors(req)
+export function createUser(req: express.Request, res: express.Response, next: any) {
+  handleErrors(req)
     .then(() => {
       const salt = bcrypt.genSaltSync();
       const hash = bcrypt.hashSync(req.body.password, salt);
-      return knex('m_user')
+      knex('m_user')
         .insert({
           username: req.body.username,
           password: hash,
@@ -19,27 +17,20 @@ export function createUser(req, res) {
           creator_id: 1,
           created_datetime: knex.raw('now()')
         })
-        .returning('id');
+        .then((ids) => {
+          handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'Regist Success', ids[0]);
+        })
+        .catch((err) => {
+          next(err);
+        });
     })
     .catch((err) => {
       res.locals.errorCode = 400;
-      res.locals.errorMsg = err.message;
+      next(err);
     });
 }
 
-export function adminRequired(req, res, next) {
-  if (!req.user) return res.status(401).json({status: 'Please log in'});
-  return knex('m_user').where({username: req.user.username}).first()
-    .then((user) => {
-      if (user.status !== 1) res.status(401).json({status: 'You are not authorized'});
-      return next();
-    })
-    .catch((err) => {
-      res.status(500).json({status: 'Something bad happened'});
-    });
-}
-
-function handleErrors(req) {
+function handleErrors(req: express.Request) {
   return new Promise((resolve, reject) => {
     if (req.body.username.length < 6) {
       reject({
@@ -55,7 +46,3 @@ function handleErrors(req) {
     }
   });
 }
-
-
-
-

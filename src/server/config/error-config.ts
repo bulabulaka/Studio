@@ -9,8 +9,9 @@ export function error_config_init(app: any) {
   // development error handler (will print stacktrace)
   if (app.get('env') === 'development') {
     app.use(function (err: Error, req, res, next) {
+      res.locals.err = err;
       res.status(res.locals.errorCode || 500).send({
-        message: res.locals.errorMsg || err.message,
+        message: err.message,
         error: err
       });
     });
@@ -18,8 +19,9 @@ export function error_config_init(app: any) {
 
   // production error handler (no stacktraces leaked to user)
   app.use(function (err: Error, req, res, next) {
+    res.locals.err = err;
     res.status(res.locals.errorCode || 500).send({
-      message: res.locals.errorMsg || err.message,
+      message: err.message,
       error: {}
     });
   });

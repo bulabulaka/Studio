@@ -1,17 +1,16 @@
 import * as express from 'express';
 import {m_operate_log, m_log_detail} from '../../shared/index';
-
-const environment = process.env.NODE_ENV;
+import * as _ from 'lodash';
 
 export function LogOperate(knex: any, req: express.Request, res: express.Response, next: any) {
   let ip = req.ip;
-  let accessToken = req.headers['x-access-token'];
+  let accessToken = req.headers['x-access-token'] || req.body.token || req.query.token;
   let userAgent = req.headers['user-agent'];
   let contentType = req.headers['content-type'];
   let acceptEncoding = req.headers['accept-encoding'];
   let path = req.path;
   let method = req.method;
-  let params = req.params;
+  let params = req.body;
   let query = req.query;
   let startTime = new Date().getTime();
   //when res.end() is called, it will emit a "finish" event.
@@ -33,12 +32,12 @@ export function LogOperate(knex: any, req: express.Request, res: express.Respons
     if (accessToken) {
       operateLog.access_token = accessToken;
     }
-    /*if (params) {
-      operateLog.params = params;
+    if (!_.isEmpty(params)) {
+      operateLog.params = JSON.stringify(params);
     }
-    if (query) {
-      operateLog.query = query;
-    }*/
+    if (!_.isEmpty(query)) {
+      operateLog.query = JSON.stringify(query);
+    }
     operateLog.method = method;
     operateLog.route = path;
     operateLog.duration_time = timeOfDuration;
@@ -52,7 +51,7 @@ export function LogOperate(knex: any, req: express.Request, res: express.Respons
     logDetail.return_code = statusCode;
     logDetail.return_message = res.statusMessage;
     if (res.locals.err) {
-      logDetail.error_message = res.locals.err;
+      logDetail.error_message = JSON.stringify(res.locals.err);
     }
     knex.transaction((trx) => {
       knex('m_operate_log')

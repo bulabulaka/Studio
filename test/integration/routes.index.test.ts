@@ -1,19 +1,26 @@
 process.env.NODE_ENV = 'test';
-import * as chai from "chai";
+import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-import {init_config} from "../../src/server/app";
+import {init_config} from '../../src/server/app';
+import {knex} from '../../src/server/db/connection';
 
 const should = chai.should();
 chai.use(chaiHttp);
 
 describe('routes : index', () => {
 
-  beforeEach((done) => {
-    done();
+  beforeEach(() => {
+    return knex.migrate.rollback()
+      .then(() => {
+        return knex.migrate.latest();
+      })
+      .then(() => {
+        return knex.seed.run({directory: 'src/server/db/seeds'});
+      });
   });
 
-  afterEach((done) => {
-    done();
+  afterEach(() => {
+    return knex.migrate.rollback();
   });
 
   describe('GET /api', () => {

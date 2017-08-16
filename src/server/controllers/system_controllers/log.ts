@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {m_operate_log, m_log_detail} from '../../shared/index';
+import {m_operate_log, m_log_detail} from '../../../shared/index';
 import * as _ from 'lodash';
 
 export function LogOperate(knex: any, req: express.Request, res: express.Response, next: any) {
@@ -51,7 +51,7 @@ export function LogOperate(knex: any, req: express.Request, res: express.Respons
     logDetail.return_code = statusCode;
     logDetail.return_message = res.statusMessage;
     if (res.locals.err) {
-      logDetail.error_message = JSON.stringify(res.locals.err);
+      logDetail.error_message = JSON.stringify({message: res.locals.err.message, stack: res.locals.err.stack || ''});
     }
     knex.transaction((trx) => {
       knex('m_operate_log')

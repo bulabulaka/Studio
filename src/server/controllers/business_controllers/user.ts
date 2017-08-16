@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcryptjs';
 import * as Promise from 'bluebird';
 import * as express from 'express';
-import {knex} from '../db/connection';
-import {handleResponse} from '../shared/index';
+import {knex} from '../../db/connection';
+import {handleResponse} from '../../shared/index';
 
 export function createUser(req: express.Request, res: express.Response, next: any) {
   handleErrors(req)

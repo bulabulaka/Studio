@@ -1,7 +1,7 @@
 import {Router} from "express";
 
 const router = Router();
-import {sum} from "../controllers/index";
+import {sum} from "../controllers/business_controllers/index";
 
 router.get('/', function (req, res, next) {
   let renderObject = {

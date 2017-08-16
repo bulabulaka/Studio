@@ -3,7 +3,7 @@ import {m_user} from '../../shared/models/index';
 import {handleResponse, verifyToken, comparePass} from '../shared/index';
 import jwt = require('jsonwebtoken');
 import {knex} from '../db/connection';
-import {createUser} from '../controllers/user';
+import {createUser} from '../controllers/business_controllers/user';
 import * as express from 'express';
 
 const router = Router();

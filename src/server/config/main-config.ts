@@ -6,7 +6,7 @@ import * as morgan from 'morgan';
 import * as nunjucks from 'nunjucks';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
-import {LogOperate} from '../controllers/log';
+import {LogOperate} from '../controllers/system_controllers/log';
 
 // *** load environment variables *** //
 dotenv.config();

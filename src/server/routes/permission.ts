@@ -2,11 +2,17 @@ import {Router} from 'express';
 import {handleResponse, verifyToken} from '../shared/index';
 import {knex} from '../db/connection';
 import {m_permission, m_service_api, m_page, permission} from '../../shared/index';
-import {Add_Update_Permission, Add_Update_Permission_Group} from '../controllers/permission';
+import {Get_Permissions, Add_Update_Permission, Add_Update_Permission_Group} from '../controllers/system_controllers/permission';
+import * as express from 'express';
 
 const router = Router();
 
-router.post('/add_permission', verifyToken, (req, res, next) => {
+//get all permissions
+router.get('/get_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+  Get_Permissions(req, res, next);
+});
+
+router.post('/add_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission('insert', req.body.permission, (error, mPermission?: m_permission, mServiceApi?: m_service_api, mPage?: m_page) => {
     if (error) return next(error);
     knex.transaction((trx) => {
@@ -34,7 +40,7 @@ router.post('/add_permission', verifyToken, (req, res, next) => {
   });
 });
 
-router.put('/update_permission', verifyToken, (req, res, next) => {
+router.put('/update_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission('update', req.body.permission, (error, mPermission?: m_permission, mServiceApi?: m_service_api, mPage?: m_page) => {
     if (error) return next(error);
     knex.transaction((trx) => {
@@ -61,12 +67,12 @@ router.put('/update_permission', verifyToken, (req, res, next) => {
   });
 });
 
-/*router.delete('/delete_permission', verifyToken, (req, res, next) => {
+/*router.delete('/delete_permission', verifyToken, (req:, res: express.Response, next: any) => {
 
 });*/
 
 
-router.post('/add_permission_group', verifyToken, (req, res, next) => {
+router.post('/add_permission_group', verifyToken, (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission_Group('insert', req.body.permission_group, (error, permissionGroup) => {
     if (error) return next(error);
     knex('m_permission_group').returning('id').insert(permissionGroup)
@@ -79,7 +85,7 @@ router.post('/add_permission_group', verifyToken, (req, res, next) => {
   });
 });
 
-router.put('/update_permission_group', verifyToken, (req, res, next) => {
+router.put('/update_permission_group', verifyToken, (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission_Group('update', req.body.permission_group, (error, permissionGroup) => {
     if (error) return next(error);
     knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)

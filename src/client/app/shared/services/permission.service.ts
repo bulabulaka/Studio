@@ -10,7 +10,7 @@ export class PermissionService {
   }
 
   addPermission(permission: permission): Observable<{ resultValue: ResultValue<number> }> {
-    return this.apiService.post('/api/permission/add_permission', {permission: permission})
+    return this.apiService.post('/permission/add_permission', {permission: permission})
       .map(data => data)
   }
 }

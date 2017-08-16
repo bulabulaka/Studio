@@ -8,7 +8,9 @@
             <label class="col-sm-2 control-label">用户名：</label>
             <div class="col-sm-10">
               <input formControlName="username" type="text" class="form-control" placeholder="请输入用户名...">
-              <div *ngIf="formErrors.username" class="text-danger">用户名必须输入！</div>
+              <div *ngIf="formErrors.username" class="text-danger">
+                <span>{{formErrors.username}}</span>
+              </div>
             </div>
           </div>
           <div class="form-group" [ngClass]="{ 'has-error': formErrors.password }">
@@ -16,7 +18,9 @@
             <div class="col-sm-10">
               <input formControlName="password" type="password" class="form-control"
                      placeholder="请输入密码...">
-              <div *ngIf="formErrors.password" class="text-danger">密码必须输入！</div>
+              <div *ngIf="formErrors.password" class="text-danger">
+                <span>{{formErrors.password}}</span>
+              </div>
             </div>
           </div>
           <div class="form-group">

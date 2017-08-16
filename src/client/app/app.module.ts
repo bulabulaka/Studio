@@ -5,8 +5,9 @@ import {SharedModule} from './shared/index'
 import {AppComponent} from './app.component';
 import {CanNotFindPageComponent, NoPermissionComponent} from './error-handle/index';
 import {LoginComponent} from './login/login.component';
-import {ApiService, AuthGuardService, UserService, NgCookieService, EventBusService} from './shared/index';
+import {ApiService, AuthGuardService, UserService, NgCookieService, EventBusService, PermissionService} from './shared/index';
 import {CookieService} from 'angular2-cookie/services/cookies.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   {
@@ -43,6 +44,7 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     SharedModule,
     rootRouting
   ],
@@ -52,7 +54,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     UserService,
     CookieService,
     NgCookieService,
-    EventBusService
+    EventBusService,
+    PermissionService
   ],
   bootstrap: [AppComponent]
 })

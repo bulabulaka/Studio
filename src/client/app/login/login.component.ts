@@ -21,11 +21,11 @@ export class LoginComponent implements OnInit {
   //Error info
   validationMessages = {
     'username': {
-      'required': '',
+      'required': '用户名不能为空',
       'usernameVaild': ''
     },
     'password': {
-      'required': ''
+      'required': '密码不能为空'
     }
   };
 

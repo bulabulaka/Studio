@@ -9,7 +9,11 @@ import {SideMenuComponent} from './left-nav/side-menu/side-menu.component';
 const workspaceRoutes: ModuleWithProviders = RouterModule.forChild([
   {
     path: '',
-    component: WorkspaceComponent
+    component: WorkspaceComponent,
+    children: [
+      {path: '', redirectTo: 'permission', pathMatch: 'full'},
+      {path: 'permission', loadChildren: '../permission/permission.module#PermissionModule'}
+    ]
   }
 ]);
 

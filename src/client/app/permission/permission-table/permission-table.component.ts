@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {flyIn} from '../../shared/index';
+import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {PermissionService, UserService} from '../../shared/index';
 import {permission, m_user} from '../../../../shared/index';
@@ -17,7 +18,7 @@ export class PermissionTableComponent implements OnInit {
 
   numPages = 3;
   maxSize = 5;
-  itemsPerPage = 5;
+  itemsPerPage = 10;
   totalItems = 15;
   currentPage = 1;
 
@@ -45,7 +46,7 @@ export class PermissionTableComponent implements OnInit {
     }
   };
 
-  constructor(private formBuilder: FormBuilder, private permissionService: PermissionService, private userService: UserService) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private permissionService: PermissionService, private userService: UserService) {
     this.permissionForm = this.formBuilder.group({
       'name': ['',
         [Validators.required]
@@ -96,7 +97,7 @@ export class PermissionTableComponent implements OnInit {
     this.permissionService.addPermission(_permission).subscribe((response) => {
       this.hasSubmit = false;
       if (response.resultValue.RCode === environment.success_code) {
-        this.permissionArray.push(_permission);
+        //跳转到第一页
       }
     });
   }
@@ -111,6 +112,11 @@ export class PermissionTableComponent implements OnInit {
         this.currentUser = response;
       }
     );
+    this.permissionService.getPermission(this.currentPage, this.itemsPerPage).subscribe(
+      (response) => {
+        this.permissionArray = response.resultValue.Data;
+      }
+    )
   }
 
   newPermission() {

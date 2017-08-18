@@ -38,11 +38,13 @@ export class m_permission_group extends BaseEntity {
 export class m_user_role extends BaseEntity {
   user_id: number;
   role_id: number;
+  auditstat: number;
 }
 
 export class m_role_permission_group extends BaseEntity {
   role_id: number;
   permission_group_id: number;
+  auditstat: number;
 }
 
 export class m_permission extends BaseEntity {
@@ -56,12 +58,14 @@ export class m_permission extends BaseEntity {
 export class m_permission_group_permission extends BaseEntity {
   permission_id: number;
   permission_group_id: number;
+  auditstat: number;
 }
 
 export class m_user_permission_group extends BaseEntity {
   user_id: number;
   permission_group_id: number;
   flag: number;
+  auditstat: number;
 }
 
 export class m_service_api extends BaseEntity {

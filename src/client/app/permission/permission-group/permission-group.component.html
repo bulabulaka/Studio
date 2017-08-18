@@ -1,0 +1,119 @@
+<div class="user-table-container" [@flyIn]="'active'">
+  <form class="form-vertical" role="form">
+    <div class="row">
+      <div class="col-sm-10">
+        <div class="input-group">
+          <input class="form-control" type="text" placeholder="权限组名称">
+          <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i> 搜索</button>
+                    </span>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="input-group pull-right">
+          <button type="button" (click)="showAddPermissionGroupDialog()" pButton icon="fa-external-link-square"
+                  label="创建权限组">
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="comment-item-container">
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>权限组名称</th>
+            <th>描述</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let permissionGroup of permissionGroupArray; let i = index">
+            <td>{{(permissionGroupsCurrentPage-1) * itemsPerPage + i+1}}</td>
+            <td>{{permissionGroup.name}}</td>
+            <td>{{permissionGroup.description}}</td>
+            <td>
+              <button pButton type="button" label="删除" icon="fa-times" class="ui-button-danger"></button>
+              <button pButton type="button" label="修改权限"
+                      (click)="ShowPermissionGroupPermissionsDialog(permissionGroup.id)"
+                      icon="fa-pencil-square-o"></button>
+              <button pButton type="button" label="添加权限" icon="fa-plus"></button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <p-paginator [rows]="itemsPerPage" [totalRecords]="permissionGroupsTotalCount"
+                     (onPageChange)="permissionGroupsPaginate($event)"></p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(visible)]="display" modal="modal" [responsive]="true" width="600">
+  <p-header>创建权限组</p-header>
+  <form [formGroup]="permissionGroupForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+    <div class="form-group" [ngClass]="{ 'has-error': formErrors.name}">
+      <label class="col-sm-2 control-label">权限组名称：</label>
+      <div class="col-sm-10">
+        <input formControlName="name" type="text" class="form-control" placeholder="请输入权限组名...">
+        <div *ngIf="formErrors.name" class="text-danger">
+          <span>{{formErrors.name}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" [ngClass]="{'has-error':formErrors.description}">
+      <label class="col-sm-2 control-label">权限组描述：</label>
+      <div class="col-sm-10">
+        <textarea formControlName="description" class="form-control" cols="40" rows="10"
+                  placeholder="请输入权限组的描述"></textarea>
+        <div *ngIf="formErrors.description" class="text-danger">
+          <span>{{formErrors.description}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" pButton icon="fa-check" [disabled]="!permissionGroupForm.valid || hasSubmit"
+                label="确定"></button>
+        <button type="button" pButton icon="fa-close" (click)="display=false" label="取消"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog [(visible)]="showPermissions" modal="modal" [responsive]="true" width="600">
+  <p-header>权限组所拥有的权限</p-header>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="comment-item-container">
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>权限名称</th>
+            <th>方法</th>
+            <th>路由</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let permission of permissionArray; let i = index">
+            <td>{{(currentPage - 1) * itemsPerPage + i+1}}</td>
+            <td>{{permission.name}}</td>
+            <td>{{permission.method}}</td>
+            <td>{{permission.route}}</td>
+            <td>
+              <button pButton type="button" label="删除" class="ui-button-danger" icon="fa-times"></button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <p-paginator [rows]="itemsPerPage" [totalRecords]="permissionsTotalCount"
+                     (onPageChange)="permissionsPaginate($event)"></p-paginator>
+      </div>
+    </div>
+  </div>
+</p-dialog>

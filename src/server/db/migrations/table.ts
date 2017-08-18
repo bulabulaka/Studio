@@ -49,6 +49,7 @@ exports.up = (knex, Promise) => {
       table.increments('id').unique();
       table.integer('user_id').notNullable().unsigned().references('id').inTable('m_user');
       table.integer('role_id').notNullable().unsigned().references('id').inTable('m_role');
+      table.tinyint('auditstat').notNullable();
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));
       table.integer('modifier_id');
@@ -58,6 +59,7 @@ exports.up = (knex, Promise) => {
       table.increments('id').unique();
       table.integer('role_id').notNullable().unsigned().references('id').inTable('m_role');
       table.integer('permission_group_id').notNullable().unsigned().references('id').inTable('m_permission_group');
+      table.tinyint('auditstat').notNullable();
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));
       table.integer('modifier_id');
@@ -79,6 +81,7 @@ exports.up = (knex, Promise) => {
       table.increments('id').unique();
       table.integer('permission_id').notNullable().unsigned().references('id').inTable('m_permission');
       table.integer('permission_group_id').notNullable().unsigned().references('id').inTable('m_permission_group');
+      table.tinyint('auditstat').notNullable();
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));
       table.integer('modifier_id');
@@ -89,6 +92,7 @@ exports.up = (knex, Promise) => {
       table.integer('user_id').notNullable().unsigned().references('id').inTable('m_user');
       table.integer('permission_group_id').notNullable().unsigned().references('id').inTable('m_permission_group');
       table.tinyint('flag').notNullable().comment('add or minus permission group');
+      table.tinyint('auditstat').notNullable();
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));
       table.integer('modifier_id');

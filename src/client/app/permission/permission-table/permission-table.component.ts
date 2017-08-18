@@ -16,11 +16,9 @@ import {environment} from '../../../environments/environment';
 })
 export class PermissionTableComponent implements OnInit {
 
-  numPages = 3;
-  maxSize = 5;
-  itemsPerPage = 10;
-  totalItems = 15;
-  currentPage = 1;
+  public itemsPerPage = 10;
+  public currentPage = 1;
+  public totalCount = 0;
 
   public currentUser: m_user;
   permissionArray: permission[] = [];
@@ -114,9 +112,27 @@ export class PermissionTableComponent implements OnInit {
     );
     this.permissionService.getPermission(this.currentPage, this.itemsPerPage).subscribe(
       (response) => {
-        this.permissionArray = response.resultValue.Data;
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.permissionArray = response.resultValue.Data;
+          this.totalCount = response.resultValue.TotalCount;
+        }
       }
     )
+  }
+
+  //分页
+  paginate(event) {
+    if (event && event.page >= 0) {
+      this.permissionService.getPermission((event.page + 1), this.itemsPerPage).subscribe(
+        (response) => {
+          if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+            this.permissionArray = response.resultValue.Data;
+            this.totalCount = response.resultValue.TotalCount;
+            this.currentPage = event.page + 1;
+          }
+        }
+      )
+    }
   }
 
   newPermission() {

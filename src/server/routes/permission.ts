@@ -2,7 +2,13 @@ import {Router} from 'express';
 import {handleResponse, verifyToken} from '../shared/index';
 import {knex} from '../db/connection';
 import {m_permission, m_service_api, m_page, permission} from '../../shared/index';
-import {Get_Permissions, Add_Update_Permission, Add_Update_Permission_Group} from '../controllers/system_controllers/permission';
+import {
+  Get_Permissions,
+  Add_Update_Permission,
+  Add_Update_Permission_Group,
+  Get_Permission_Groups,
+  Get_Permission_Group_Permissions
+} from '../controllers/system_controllers/permission';
 import * as express from 'express';
 
 const router = Router();
@@ -77,7 +83,7 @@ router.post('/add_permission_group', verifyToken, (req: express.Request, res: ex
     if (error) return next(error);
     knex('m_permission_group').returning('id').insert(permissionGroup)
       .then((ids) => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', ids[0]);
+        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
       })
       .catch((e) => {
         return next(e);
@@ -96,6 +102,21 @@ router.put('/update_permission_group', verifyToken, (req: express.Request, res: 
         next(e);
       })
   });
+});
+
+//获取所有的权限组 分页
+router.get('/get_permission_groups', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+  Get_Permission_Groups(req, res, next);
+});
+
+//查询权限组所拥有的权限 分页
+router.get('/get_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+  Get_Permission_Group_Permissions(req, res, next);
+});
+
+//给权限组添加权限
+router.post('/add_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+
 });
 
 

@@ -144,7 +144,7 @@ describe('routes : /api/permission', () => {
           res.status.should.eql(200);
           res.type.should.eql('application/json');
           res.body.resultValue.RCode.should.eql(0);
-          res.body.resultValue.Data.should.eql(2);
+          res.body.resultValue.Data.should.eql(true);
           done();
         })
     })

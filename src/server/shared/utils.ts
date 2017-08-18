@@ -2,12 +2,12 @@ import {ResultValue} from '../../shared/index';
 import jwt = require('jsonwebtoken');
 import * as bcrypt from 'bcryptjs';
 
-export function handleResponse<T>(res, resStatusCode: number, code: number, msg: string, data: T, totalPage?: number, token?: string) {
+export function handleResponse<T>(res, resStatusCode: number, code: number, msg: string, data: T, totalCount?: number, token?: string) {
   let resultData = new ResultValue<T>();
   resultData.RCode = code;
   resultData.RMsg = msg;
   resultData.Data = data;
-  resultData.TotalPage = totalPage;
+  resultData.TotalCount = totalCount;
   resultData.Token = token;
   res.status(resStatusCode).json({resultValue: resultData});
 }

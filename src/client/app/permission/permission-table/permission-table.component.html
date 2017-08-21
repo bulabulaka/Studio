@@ -20,36 +20,34 @@
   </form>
   <div class="row">
     <div class="col-sm-12">
-      <div class="user-item-container">
-        <table class="table table-bordered">
-          <thead>
-          <tr>
-            <th>序号</th>
-            <th>权限名</th>
-            <th>方法</th>
-            <th>路由</th>
-            <th>操作</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let permission of permissionArray; let i = index">
-            <td>{{(currentPage - 1) * itemsPerPage + i+1}}</td>
-            <td>{{permission.name}}</td>
-            <td>{{permission.method}}</td>
-            <td>{{permission.route}}</td>
-            <td>
-              <a [routerLink]="['/manage/usertable/edituser',1]"><i class="fa fa-pencil-square-o"
-                                                                    aria-hidden="true"></i></a>
-              <a href="javascript:void(0);" (click)="blockUser(1)"><i class="fa fa-lock" aria-hidden="true"></i></a>
-              <a href="javascript:void(0);" (click)="unBlockUser(1)"><i class="fa fa-unlock" aria-hidden="true"></i></a>
-              <a href="javascript:void(0);" (click)="resetPwd(1)"><i class="fa fa-user-secret"
-                                                                     aria-hidden="true"></i></a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <p-paginator [rows]="itemsPerPage" [totalRecords]="totalCount" (onPageChange)="paginate($event)"></p-paginator>
-      </div>
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>权限名</th>
+          <th>方法</th>
+          <th>路由</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let permission of permissionArray; let i = index">
+          <td>{{(currentPage - 1) * itemsPerPage + i+1}}</td>
+          <td>{{permission.name}}</td>
+          <td>{{permission.method}}</td>
+          <td>{{permission.route}}</td>
+          <td>
+            <a [routerLink]="['/manage/usertable/edituser',1]"><i class="fa fa-pencil-square-o"
+                                                                  aria-hidden="true"></i></a>
+            <a href="javascript:void(0);" (click)="blockUser(1)"><i class="fa fa-lock" aria-hidden="true"></i></a>
+            <a href="javascript:void(0);" (click)="unBlockUser(1)"><i class="fa fa-unlock" aria-hidden="true"></i></a>
+            <a href="javascript:void(0);" (click)="resetPwd(1)"><i class="fa fa-user-secret"
+                                                                   aria-hidden="true"></i></a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <p-paginator [rows]="itemsPerPage" [totalRecords]="totalCount" (onPageChange)="paginate($event)"></p-paginator>
     </div>
   </div>
 </div>

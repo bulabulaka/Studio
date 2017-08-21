@@ -45,4 +45,22 @@ export class PermissionService {
     return this.apiService.get('/permission/get_permission_group_permissions', params)
       .map(data => data);
   }
+
+  //获取权限组为拥有的所有权限 前端分页
+  getPermissionGroupDoNotHavePermissions(permissionGroupId: number): Observable<{ resultValue: ResultValue<permission[]> }> {
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('permissionGroupId', `${permissionGroupId}`);
+    return this.apiService.get('/permission/get_permission_group_donot_have_permissions', params)
+      .map(data => data);
+  }
+
+  //给权限组添加权限
+  addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number) {
+    return this.apiService.post('/permission/add_permission_group_permissions', {
+      permissionIdArray: permissionIdArray,
+      permissionGroupId: permissionGroupId,
+      permissionIdArrayLength: permissionIdArrayLength,
+      operatorId: operatorId
+    }).map(data => data);
+  }
 }

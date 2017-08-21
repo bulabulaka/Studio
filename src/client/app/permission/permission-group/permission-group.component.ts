@@ -5,6 +5,7 @@ import {flyIn} from '../../shared/index';
 import {PermissionService, UserService} from '../../shared/index';
 import {permission, m_user, m_permission_group} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-permission-group',
@@ -16,17 +17,20 @@ import {environment} from '../../../environments/environment';
 })
 export class PermissionGroupComponent implements OnInit {
 
-  public display: boolean = false;
-  public showPermissions: boolean = false;
+  public displayDialog: boolean = false;
+  public showPermissionsDialog: boolean = false;
+  public showAddPermissionsDialog: boolean = false;
   public currentUser: m_user;
   public permissionGroupArray: m_permission_group[] = [];
-  public permissionArray: permission[] = [];
+  public permissionArray: permission[] = [];//权限组已拥有的权限
+  public doNotHavePermissionArray: permission[] = []; //权限组为拥有的权限
+  public addPermissionsSelectionArray: permission[] = [];
   public permissionGroupsCurrentPage = 1;
   public currentPage = 1;
   public itemsPerPage = 10;//分页大小
   public permissionsTotalCount = 0;
   public permissionGroupsTotalCount = 0;
-  private pg_id: number;
+  private pg_id: number;//current permission group id;
 
   permissionGroupForm: FormGroup;
   hasSubmit: boolean;
@@ -68,18 +72,33 @@ export class PermissionGroupComponent implements OnInit {
     );
   }
 
-  showAddPermissionGroupDialog() {
-    this.display = true;
+  //添加权限组弹出框
+  addPermissionGroupDialog() {
+    this.displayDialog = true;
   }
 
-  ShowPermissionGroupPermissionsDialog(pg_id: number) {
+  //权限组已有权限弹出框
+  permissionGroupPermissionsDialog(pg_id: number) {
     this.pg_id = pg_id;
     this.permissionService.getPermissionGroupPermissions(pg_id, 1, this.itemsPerPage)
       .subscribe((response) => {
         if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
           this.permissionArray = response.resultValue.Data;
           this.permissionsTotalCount = response.resultValue.TotalCount;
-          this.showPermissions = true;
+          this.showPermissionsDialog = true;
+        }
+      });
+  }
+
+  //权限组添加权限弹出框
+  addPermissionGroupPermissionsDialog(pg_id: number) {
+    this.pg_id = pg_id;
+    this.addPermissionsSelectionArray = [];
+    this.permissionService.getPermissionGroupDoNotHavePermissions(pg_id)
+      .subscribe((response) => {
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.doNotHavePermissionArray = response.resultValue.Data;
+          this.showAddPermissionsDialog = true;
         }
       });
   }
@@ -110,7 +129,7 @@ export class PermissionGroupComponent implements OnInit {
   //添加新的权限组
   onSubmit() {
     this.hasSubmit = true;
-    this.display = false;
+    this.displayDialog = false;
     const permissionGroupFormVal = this.permissionGroupForm.value;
     let permissionGroup = new m_permission_group();
     permissionGroup.name = permissionGroupFormVal.name;
@@ -124,6 +143,22 @@ export class PermissionGroupComponent implements OnInit {
         //跳转到第一页
       }
     });
+  }
+
+  //给权限组添加新权限
+  addPermissionSubmit(pg_id: number) {
+    this.hasSubmit = true;
+    let permissionIdArray: string = '';
+    _(this.addPermissionsSelectionArray).forEach((n) => {
+      permissionIdArray += n.id + ',';
+    });
+    this.permissionService.addPermissionGroupPermissions(pg_id, permissionIdArray, this.addPermissionsSelectionArray.length, this.currentUser.id)
+      .subscribe((response) => {
+        if (response.resultValue.RCode === environment.success_code) {
+          this.showAddPermissionsDialog = false;
+          this.hasSubmit = false;
+        }
+      });
   }
 
   //权限组所拥有的权限分页

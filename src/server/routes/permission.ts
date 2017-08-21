@@ -7,7 +7,9 @@ import {
   Add_Update_Permission,
   Add_Update_Permission_Group,
   Get_Permission_Groups,
-  Get_Permission_Group_Permissions
+  Get_Permission_Group_Permissions,
+  Get_Permission_Group_Donot_Have_Permissions,
+  Add_Permission_Group_Permissions
 } from '../controllers/system_controllers/permission';
 import * as express from 'express';
 
@@ -114,9 +116,14 @@ router.get('/get_permission_group_permissions', verifyToken, (req: express.Reque
   Get_Permission_Group_Permissions(req, res, next);
 });
 
+//查询权限组未拥有的权限
+router.get('/get_permission_group_donot_have_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+  Get_Permission_Group_Donot_Have_Permissions(req, res, next);
+});
+
 //给权限组添加权限
 router.post('/add_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-
+  Add_Permission_Group_Permissions(req, res, next);
 });
 
 

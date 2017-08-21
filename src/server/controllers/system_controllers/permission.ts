@@ -158,3 +158,41 @@ export function Get_Permission_Group_Permissions(req: express.Request, res: expr
       return next(err);
     })
 }
+
+export function Get_Permission_Group_Donot_Have_Permissions(req: express.Request, res: express.Response, next: any) {
+  let error = '';
+  let query = req.query;
+  if (_.isEmpty(query) || !query.permissionGroupId) {
+    error = 'query is invalid';
+    res.locals.errorCode = 400;
+    return next(error);
+  }
+  let pgId = parseInt(query.permissionGroupId);
+  knex.raw(`CALL get_permission_group_donot_have_permissions(${pgId});`)
+    .then((rows: RowDataPacket[]) => {
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', rows[0][0]);
+    })
+    .catch((err: QueryError) => {
+      return next(err);
+    })
+}
+
+export function Add_Permission_Group_Permissions(req: express.Request, res: express.Response, next: any) {
+  let error = '';
+  let permissionIdArray = req.body.permissionIdArray;
+  let permissionGroupId = req.body.permissionGroupId;
+  let permissionIdArrayLength = req.body.permissionIdArrayLength;
+  let operatorId = req.body.operatorId;
+  if (!permissionIdArray || !permissionGroupId || !permissionIdArrayLength || !operatorId) {
+    error = `data is invalid`;
+    return next(error);
+  }
+  knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
+    .then((rows: RowDataPacket[]) => {
+      console.log(rows);
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', 0);
+    })
+    .catch((err: QueryError) => {
+      return next(err);
+    })
+}

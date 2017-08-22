@@ -2,7 +2,7 @@ import {NgModule, ModuleWithProviders} from '@angular/core';
 import {PermissionComponent} from './permission.component';
 import {PermissionTableComponent} from './permission-table/permission-table.component';
 import {SharedModule} from '../shared/shared.module';
-import {Data, RouterModule} from '@angular/router';
+import {RouterModule} from '@angular/router';
 import {DialogModule, ButtonModule, PaginatorModule, DataTableModule} from 'primeng/primeng';
 import {PermissionGroupComponent} from './permission-group/permission-group.component';
 

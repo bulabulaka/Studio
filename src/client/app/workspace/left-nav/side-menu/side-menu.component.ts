@@ -14,8 +14,10 @@ export class SideMenuComponent implements OnInit {
       isOpen: false,
       icon: 'fa-home',
       children: [
-        {name: '权限管理', icon: 'fa-send', route: 'permission/permission_table'},
-        {name: '权限组管理', icon: 'fa-send', route: 'permission/permission_group'}
+        {name: '用户管理', icon: 'fa-send', route: 'user/user_table'},
+        {name: '角色管理', icon: 'fa-send', route: 'role/role_table'},
+        {name: '权限组管理', icon: 'fa-send', route: 'permission/permission_group'},
+        {name: '权限管理', icon: 'fa-send', route: 'permission/permission_table'}
       ]
     }
   ];

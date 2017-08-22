@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   api_url: 'http://localhost:3000/api',
-  success_code: 0,
-  fail_code: -1,
+  success_code: 1,
+  fail_code: 0,
   cookie_key: 'token'
 };

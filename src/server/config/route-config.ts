@@ -3,6 +3,7 @@ import {IndexRouter} from '../routes/index';
 import {AuthRouter} from '../routes/auth';
 import {UserRouter} from '../routes/user';
 import {PermissionRouter} from '../routes/permission';
+import {RoleRouter} from '../routes/role';
 
 import * as path from 'path';
 
@@ -15,6 +16,7 @@ export function route_config_init(app) {
   app.use('/api', IndexRouter);
   app.use('/api/auth', AuthRouter);
   app.use('/api/permission', PermissionRouter);
+  app.use('/api/role', RoleRouter);
   app.use('/api', UserRouter);
 }
 

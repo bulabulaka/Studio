@@ -5,7 +5,7 @@ import {SharedModule} from './shared/index'
 import {AppComponent} from './app.component';
 import {CanNotFindPageComponent, NoPermissionComponent} from './error-handle/index';
 import {LoginComponent} from './login/login.component';
-import {ApiService, AuthGuardService, UserService, NgCookieService, EventBusService, PermissionService} from './shared/index';
+import {ApiService, AuthGuardService, UserService, NgCookieService, EventBusService, PermissionService, RoleService} from './shared/index';
 import {CookieService} from 'angular2-cookie/services/cookies.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -55,7 +55,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     CookieService,
     NgCookieService,
     EventBusService,
-    PermissionService
+    PermissionService,
+    RoleService
   ],
   bootstrap: [AppComponent]
 })

@@ -12,7 +12,9 @@ const workspaceRoutes: ModuleWithProviders = RouterModule.forChild([
     component: WorkspaceComponent,
     children: [
       {path: '', redirectTo: 'permission', pathMatch: 'full'},
-      {path: 'permission', loadChildren: '../permission/permission.module#PermissionModule'}
+      {path: 'permission', loadChildren: '../permission/permission.module#PermissionModule'},
+      {path: 'role', loadChildren: '../role/role.module#RoleModule'},
+      {path: 'user', loadChildren: '../user/user.module#UserModule'}
     ]
   }
 ]);

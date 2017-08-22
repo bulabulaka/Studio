@@ -30,7 +30,7 @@ export class PermissionGroupComponent implements OnInit {
   public itemsPerPage = 10;//分页大小
   public permissionsTotalCount = 0;
   public permissionGroupsTotalCount = 0;
-  private pg_id: number;//current permission group id;
+  public pg_id: number;//current permission group id;
 
   permissionGroupForm: FormGroup;
   hasSubmit: boolean;
@@ -154,10 +154,11 @@ export class PermissionGroupComponent implements OnInit {
     });
     this.permissionService.addPermissionGroupPermissions(pg_id, permissionIdArray, this.addPermissionsSelectionArray.length, this.currentUser.id)
       .subscribe((response) => {
-        if (response.resultValue.RCode === environment.success_code) {
-          this.showAddPermissionsDialog = false;
-          this.hasSubmit = false;
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+
         }
+        this.showAddPermissionsDialog = false;
+        this.hasSubmit = false;
       });
   }
 

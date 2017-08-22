@@ -189,8 +189,11 @@ export function Add_Permission_Group_Permissions(req: express.Request, res: expr
   }
   knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
     .then((rows: RowDataPacket[]) => {
-      console.log(rows);
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', 0);
+      let returnCode = rows[0][2][0].returnCode;
+      if (returnCode === parseInt(process.env.SUCCESS_CODE)) {
+        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
+      }
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'OK', false);
     })
     .catch((err: QueryError) => {
       return next(err);

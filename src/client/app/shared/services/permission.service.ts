@@ -3,7 +3,6 @@ import {Observable} from 'rxjs/Rx';
 import {ApiService} from './api.service';
 import {URLSearchParams} from '@angular/http';
 import {permission, ResultValue, m_permission_group} from '../../../../shared/index';
-import {m_permission} from '../../../../shared/models/entity.model';
 
 @Injectable()
 export class PermissionService {
@@ -55,7 +54,7 @@ export class PermissionService {
   }
 
   //给权限组添加权限
-  addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number) {
+  addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number): Observable<{ resultValue: ResultValue<boolean> }> {
     return this.apiService.post('/permission/add_permission_group_permissions', {
       permissionIdArray: permissionIdArray,
       permissionGroupId: permissionGroupId,

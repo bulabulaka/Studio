@@ -1,50 +1,45 @@
 import * as bcrypt from 'bcryptjs';
-import * as Promise from 'bluebird';
-import * as express from 'express';
 import {knex} from '../../db/connection';
-import {handleResponse} from '../../shared/index';
+import {ReturnModel} from '../../shared/index';
+import {getUserinfo,register,m_user} from '../../../shared/index';
 
-export function createUser(req: express.Request, res: express.Response, next: any) {
-  handleErrors(req)
-    .then(() => {
-      const salt = bcrypt.genSaltSync();
-      const hash = bcrypt.hashSync(req.body.password, salt);
-      knex('m_user')
-        .insert({
-          username: req.body.username,
-          password: hash,
-          auditstat: 0,
-          creator_id: 1,
-          created_datetime: knex.raw('now()')
-        })
-        .then((ids) => {
-          handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'Regist Success', ids[0]);
-        })
-        .catch((err) => {
-          next(err);
-        });
+/*根据用户ID查找用户信息*/
+export function getUserInfoById(getUserinfo:getUserinfo,callback:any){
+   let userId = getUserinfo.userId;
+   knex('m_user').where('id', userId).first()
+    .then((user) => {
+       if (!user) return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'));
+       return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',user));
     })
     .catch((err) => {
-      res.locals.errorCode = 400;
-      next(err);
+       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     });
 }
 
-function handleErrors(req: express.Request) {
-  return new Promise((resolve, reject) => {
-    if (req.body.username.length < 6) {
-      reject({
-        message: 'Username must be longer than 6 characters'
-      });
-    }
-    else if (req.body.password.length < 6) {
-      reject({
-        message: 'Password must be longer than 6 characters'
-      });
-    } else {
-      resolve();
-    }
-  });
+/*新建用户*/
+export function createUser(_register:register,callback:any){
+   if(_register.username.length < 6){
+     return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Username must be longer than 6 characters'));
+   }
+   if(_register.password.length < 6){
+     return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Password must be longer than 6 characters'));
+   }
+  const salt = bcrypt.genSaltSync();
+  const password = bcrypt.hashSync(_register.password, salt);
+  knex('m_user')
+    .insert({
+      username: _register.username,
+      password: password,
+      auditstat: 0,
+      creator_id: 1,
+      created_datetime: knex.raw('now()')
+    })
+    .then((ids) =>{
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'Regist Success',ids[0]));
+    })
+    .catch((err) =>{
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',0 ,err));
+    });
 }
 
 

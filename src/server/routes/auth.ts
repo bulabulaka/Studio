@@ -3,14 +3,8 @@ import {m_user} from '../../shared/models/index';
 import {handleResponse, verifyToken, comparePass} from '../shared/index';
 import jwt = require('jsonwebtoken');
 import {knex} from '../db/connection';
-import {createUser} from '../controllers/business_controllers/user';
-
 
 const router =  express.Router();
-
-router.post('/register', (req: express.Request, res: express.Response, next: any) => {
-  createUser(req, res, next);
-});
 
 router.post('/login', (req: express.Request, res: express.Response, next: any) => {
   const reqUser = req.body;

@@ -1,18 +1,41 @@
 import * as  express from 'express';
-import {handleResponse, verifyToken} from '../shared/index'
-import {knex} from '../db/connection';
+import {verifyToken,handleResponse,ReturnModel} from '../shared/index'
+import {getUserInfoById,createUser} from '../controllers/business_controllers/user';
+import {getUserinfo,register,m_user} from '../../shared/index';
 
 const router = express.Router();
 
+/*根据用户ID查找用户信息*/
 router.get('/get_userinfo', verifyToken, (req:express.Request, res:express.Response, next:any) => {
-  knex('m_user').where('id', res.locals.userId).first()
-    .then((user) => {
-      if (!user) return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'User not found', null);
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', user);
-    })
-    .catch((err) => {
-      return next(err);
+  let userinfo = new getUserinfo();
+  userinfo.userId = res.locals.userId;
+  getUserInfoById(userinfo,(returnVal:ReturnModel<m_user>) =>{
+     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+     }else if(returnVal.error){
+       return next(returnVal.error);
+     }else{
+       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+     }
+  });
+});
+
+/*注册用户*/
+router.post('/register', (req: express.Request, res: express.Response, next: any) => {
+  try{
+    let _register:register = req.body.register;
+    createUser(_register,(returnVal:ReturnModel<number>) =>{
+      if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+      }else if(returnVal.error){
+        return next(returnVal.error);
+      }else{
+        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+      }
     });
+  }catch(err){
+    next(err);
+  }
 });
 
 export const UserRouter = router;

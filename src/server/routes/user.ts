@@ -1,10 +1,10 @@
-import {Router} from 'express';
+import * as  express from 'express';
 import {handleResponse, verifyToken} from '../shared/index'
 import {knex} from '../db/connection';
 
-const router = Router();
+const router = express.Router();
 
-router.get('/get_userinfo', verifyToken, (req, res, next) => {
+router.get('/get_userinfo', verifyToken, (req:express.Request, res:express.Response, next:any) => {
   knex('m_user').where('id', res.locals.userId).first()
     .then((user) => {
       if (!user) return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'User not found', null);

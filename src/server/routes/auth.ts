@@ -1,18 +1,18 @@
-import {Router} from 'express';
+import * as express from 'express';
 import {m_user} from '../../shared/models/index';
 import {handleResponse, verifyToken, comparePass} from '../shared/index';
 import jwt = require('jsonwebtoken');
 import {knex} from '../db/connection';
 import {createUser} from '../controllers/business_controllers/user';
-import * as express from 'express';
 
-const router = Router();
+
+const router =  express.Router();
 
 router.post('/register', (req: express.Request, res: express.Response, next: any) => {
   createUser(req, res, next);
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', (req: express.Request, res: express.Response, next: any) => {
   const reqUser = req.body;
   knex('m_user').where('username', reqUser.username).first()
     .then((user) => {
@@ -29,7 +29,7 @@ router.post('/login', (req, res, next) => {
     });
 });
 
-router.get('/logout', verifyToken, (req, res, next) => {
+router.get('/logout', verifyToken, (req: express.Request, res: express.Response, next: any) => {
   handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'success', null);
 });
 

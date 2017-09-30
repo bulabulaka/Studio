@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import * as express from 'express';
 import {handleResponse, verifyToken} from '../shared/index';
 import {knex} from '../db/connection';
 import {m_permission, m_service_api, m_page, permission} from '../../shared/index';
@@ -11,9 +11,9 @@ import {
   Get_Permission_Group_Donot_Have_Permissions,
   Add_Permission_Group_Permissions
 } from '../controllers/system_controllers/permission';
-import * as express from 'express';
 
-const router = Router();
+
+const router = express.Router();
 
 //get all permissions
 router.get('/get_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {

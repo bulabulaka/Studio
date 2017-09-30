@@ -1,8 +1,7 @@
-import {Router} from 'express';
+import * as express from 'express';
 import {handleResponse, verifyToken} from '../shared/index';
 import {knex} from '../db/connection';
 import {m_role} from '../../shared/index';
-import * as express from 'express';
 import {
   Get_Roles,
   Add_Update_Role,
@@ -11,7 +10,7 @@ import {
   Add_Role_Permission_Groups
 } from '../controllers/system_controllers/role';
 
-const router = Router();
+const router = express.Router();
 
 //获取所有角色 分页
 router.get('/get_roles', verifyToken, (req: express.Request, res: express.Response, next: any) => {

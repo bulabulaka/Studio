@@ -39,13 +39,13 @@ describe('routes : /api/permission', () => {
         .post('/api/permission/add_permission')
         .send({
           permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
+          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
         })
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           done();
         });
     });
@@ -62,13 +62,13 @@ describe('routes : /api/permission', () => {
         .post('/api/permission/add_permission')
         .send({
           permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
+          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
         })
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           done();
         });
     });
@@ -85,7 +85,7 @@ describe('routes : /api/permission', () => {
         .post('/api/permission/add_permission')
         .send({
           permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
+          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
         })
         .end((err, res) => {
           should.exist(err);
@@ -112,13 +112,13 @@ describe('routes : /api/permission', () => {
         .put('/api/permission/update_permission')
         .send({
           permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
+          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
         })
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           done();
         });
     })
@@ -137,13 +137,13 @@ describe('routes : /api/permission', () => {
         .post('/api/permission/add_permission_group')
         .send({
           permission_group: permissionGroup,
-          token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
+          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
         })
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           res.body.resultValue.Data.should.eql(true);
           done();
         })
@@ -164,13 +164,13 @@ describe('routes : /api/permission', () => {
         .put('/api/permission/update_permission_group')
         .send({
           permission_group: permissionGroup,
-          token: 'eyJhbGciOiJIUzI1NiJ9.Mg.xKZd6m-ie89vgofFC4OjLN6M3wUbSPB0u0wWYPY69rs'
+          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
         })
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           done();
         })
     })

@@ -1,5 +1,4 @@
 // *** routes *** //z
-import {IndexRouter} from '../routes/index';
 import {AuthRouter} from '../routes/auth';
 import {UserRouter} from '../routes/user';
 import {PermissionRouter} from '../routes/permission';
@@ -13,11 +12,11 @@ export function route_config_init(app) {
     res.sendFile(path.join(process.env.DIST_PATH, 'dist/main.html'));
   });
 
-  app.use('/api', IndexRouter);
+  app.use('/api/user', UserRouter);
   app.use('/api/auth', AuthRouter);
   app.use('/api/permission', PermissionRouter);
   app.use('/api/role', RoleRouter);
-  app.use('/api', UserRouter);
+
 }
 
 

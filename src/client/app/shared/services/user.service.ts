@@ -31,7 +31,7 @@ export class UserService {
   }
 
   getCurrentUserInfo(): Observable<{ resultValue: ResultValue<m_user> }> {
-    return this.apiService.get('/user')
+    return this.apiService.get('/user/get_userinfo')
       .map(data => {
         if (data.resultValue.RCode === environment.success_code && data.resultValue.Data) {
           this.currentUserSubject.next(data.resultValue.Data);

@@ -36,7 +36,7 @@ describe('routes : /api/auth', () => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           res.body.resultValue.Data.should.eql(3);
           done();
         });
@@ -84,7 +84,7 @@ describe('routes : /api/auth', () => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
+          res.body.resultValue.RCode.should.eql(1);
           done();
         });
     });
@@ -113,37 +113,23 @@ describe('routes : /api/auth', () => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(-1);
+          res.body.resultValue.RCode.should.eql(0);
           done();
         });
     });
   });
 
-  describe('GET /api/user', () => {
+  describe('GET /api/user/get_userinfo', () => {
     it('should throw an error if a user is not logged in', (done) => {
       chai.request(server())
-        .get('/api/user')
+        .get('/api/user/get_userinfo')
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.eql(200);
           res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(-1);
+          res.body.resultValue.RCode.should.eql(0);
           done();
         });
     });
-  });
-  describe('GET /api/admin', () => {
-    it('should throw an error if a user is not logged in', (done) => {
-      chai.request(server())
-        .get('/api/user')
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.eql(200);
-          res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(-1);
-          done();
-        });
-    });
-
   });
 });

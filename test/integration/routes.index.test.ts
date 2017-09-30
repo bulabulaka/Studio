@@ -23,18 +23,6 @@ describe('routes : index', () => {
     return knex.migrate.rollback();
   });
 
-  describe('GET /api', () => {
-    it('should render the index', (done) => {
-      chai.request(init_config())
-        .get('/api')
-        .end((err, res) => {
-          res.status.should.equal(200);
-          res.type.should.equal('text/html');
-          done();
-        });
-    });
-  });
-
   describe('GET /api/404', () => {
     it('should throw an error', (done) => {
       chai.request(init_config())

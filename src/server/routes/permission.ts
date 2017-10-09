@@ -1,7 +1,8 @@
 import * as express from 'express';
-import {handleResponse, verifyToken} from '../shared/index';
+import * as _ from 'lodash';
+import {handleResponse, verifyToken, ReturnModel} from '../shared/index';
 import {knex} from '../db/connection';
-import {m_permission, m_service_api, m_page, permission} from '../../shared/index';
+import {m_permission, m_service_api, m_page, permission,getPermissions} from '../../shared/index';
 import {
   Get_Permissions,
   Add_Update_Permission,
@@ -17,9 +18,26 @@ const router = express.Router();
 
 //get all permissions
 router.get('/get_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Get_Permissions(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    res.locals.errorCode = 400;
+    return next('query is invalid');
+  }
+  let parameterObj = new getPermissions();
+  parameterObj.page = parseInt(query.page);
+  parameterObj.pageSize = parseInt(query.pageSize);
+  Get_Permissions(parameterObj,(returnVal:ReturnModel<permission[]>,totalCount:number) =>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+    }else if(returnVal.error){
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
+//add permission
 router.post('/add_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission('insert', req.body.permission, (error, mPermission?: m_permission, mServiceApi?: m_service_api, mPage?: m_page) => {
     if (error) return next(error);

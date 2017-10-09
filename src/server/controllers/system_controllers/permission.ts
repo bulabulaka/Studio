@@ -1,28 +1,21 @@
-import {permission, m_permission, m_service_api, m_page, m_permission_group} from '../../../shared/index';
-import {handleResponse} from '../../shared/index';
+import {permission, m_permission, m_service_api, m_page, m_permission_group,getPermissions} from '../../../shared/index';
+import {handleResponse,ReturnModel} from '../../shared/index';
 import * as express from 'express';
 import * as _ from 'lodash';
 import {knex} from '../../db/connection';
 import {QueryError, RowDataPacket} from 'mysql';
 
-export function Get_Permissions(req: express.Request, res: express.Response, next: any) {
-  let error = '';
-  let query = req.query;
-  if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
-    error = 'query is invalid';
-    res.locals.errorCode = 400;
-    return next(error);
-  }
-  let currentPage = parseInt(query.page);
-  let pageSize = parseInt(query.pageSize);
+export function Get_Permissions(parameterObj:getPermissions,callback:any) {
+  let currentPage = parameterObj.page;
+  let pageSize = parameterObj.pageSize;
 
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', rows[0][1], totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
     })
     .catch((err: QueryError) => {
-      return next(err);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
     });
 }
 

@@ -3,7 +3,7 @@ import {flyIn} from '../../shared/index';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {PermissionService, UserService} from '../../shared/index';
-import {permission, m_user} from '../../../../shared/index';
+import {permissionModel, m_user} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -21,7 +21,7 @@ export class PermissionTableComponent implements OnInit {
   public totalCount = 0;
 
   public currentUser: m_user;
-  permissionArray: permission[] = [];
+  permissionArray: permissionModel[] = [];
   display: boolean = false;
   permissionForm: FormGroup;
   hasSubmit: boolean;
@@ -83,7 +83,7 @@ export class PermissionTableComponent implements OnInit {
     this.hasSubmit = true;
     this.display = false;
     const permissionFormVal = this.permissionForm.value;
-    let _permission = new permission();
+    let _permission = new permissionModel();
     _permission.method = permissionFormVal.method;
     _permission.route = permissionFormVal.route;
     _permission.name = permissionFormVal.name;

@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import {init_config as server} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
-import {register} from '../../src/shared/index';
+import {registerModel} from '../../src/shared/index';
 
 const should = chai.should();
 
@@ -27,7 +27,7 @@ describe('routes : /api/user', () => {
 
   describe('POST /api/user/register', () => {
     it('should register a new user', (done) => {
-      let _register = new register();
+      let _register = new registerModel();
       _register.username = 'michael';
       _register.password = 'herman';
       chai.request(server())
@@ -45,7 +45,7 @@ describe('routes : /api/user', () => {
         });
     });
     it('should throw an error if the username is < 6 characters', (done) => {
-      let _register = new register();
+      let _register = new registerModel();
       _register.username = 'six';
       _register.password = 'herman';
       chai.request(server())
@@ -62,7 +62,7 @@ describe('routes : /api/user', () => {
         });
     });
     it('should throw an error if the password is < 6 characters', (done) => {
-      let _register = new register();
+      let _register = new registerModel();
       _register.username = 'herman';
       _register.password = 'six';
       chai.request(server())

@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import {knex} from '../../db/connection';
 import {ReturnModel} from '../../shared/index';
-import {register,m_user} from '../../../shared/index';
+import {registerModel,m_user} from '../../../shared/index';
 
 /*根据用户ID查找用户信息*/
 export function getUserInfoById(userId:number,callback:any){
@@ -16,7 +16,7 @@ export function getUserInfoById(userId:number,callback:any){
 }
 
 /*新建用户*/
-export function createUser(_register:register,callback:any){
+export function createUser(_register:registerModel,callback:any){
    if(_register.username.length < 6){
      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Username must be longer than 6 characters'));
    }

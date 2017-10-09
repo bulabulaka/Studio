@@ -1,7 +1,7 @@
 import * as  express from 'express';
 import {verifyToken,handleResponse,ReturnModel} from '../shared/index'
 import {getUserInfoById,createUser} from '../controllers/business_controllers/user';
-import {register,m_user} from '../../shared/index';
+import {registerModel,m_user} from '../../shared/index';
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.get('/get_userinfo', verifyToken, (req:express.Request, res:express.Respo
 /*注册用户*/
 router.post('/register', (req: express.Request, res: express.Response, next: any) => {
   try{
-    let _register:register = req.body.register;
+    let _register:registerModel = req.body.register;
     createUser(_register,(returnVal:ReturnModel<number>) =>{
       if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
         return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);

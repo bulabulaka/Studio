@@ -1,4 +1,4 @@
-import {permission, m_permission, m_service_api, m_page, m_permission_group} from '../../../shared/index';
+import {permissionModel, m_permission, m_service_api, m_page, m_permission_group} from '../../../shared/index';
 import {handleResponse,ReturnModel} from '../../shared/index';
 import * as express from 'express';
 import * as _ from 'lodash';
@@ -16,7 +16,7 @@ export function Get_Permissions(currentPage:number,pageSize:number,callback:any)
     });
 }
 
-export function Add_Update_Permission(flag: string, permission: permission, callback: any) {
+export function Add_Update_Permission(flag: string, permission: permissionModel, callback: any) {
   let error = '';
   if (permission) {
     let mPermission: m_permission = new m_permission();

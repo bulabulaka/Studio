@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import {init_config as server} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
-import {permission, m_permission_group} from '../../src/shared/index';
+import {permissionModel, m_permission_group} from '../../src/shared/index';
 
 const should = chai.should();
 
@@ -26,7 +26,7 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission', () => {
     it('should add a new permission（service api）', (done) => {
-      let new_permission = new permission();
+      let new_permission = new permissionModel();
       new_permission.auditstat = 1;
       new_permission.name = 'test';
       new_permission.kind = 1;
@@ -50,7 +50,7 @@ describe('routes : /api/permission', () => {
         });
     });
     it('should add a new permission (page)', (done) => {
-      let new_permission = new permission();
+      let new_permission = new permissionModel();
       new_permission.auditstat = 1;
       new_permission.name = 'test';
       new_permission.kind = 0;
@@ -73,7 +73,7 @@ describe('routes : /api/permission', () => {
         });
     });
     it('when an error occur,it should rollback', (done) => {
-      let new_permission = new permission();
+      let new_permission = new permissionModel();
       new_permission.auditstat = 1;
       new_permission.name = 'test';
       new_permission.kind = 1;
@@ -98,7 +98,7 @@ describe('routes : /api/permission', () => {
 
   describe('PUT /api/permission/update_permission', () => {
     it('should update a permission (service api)', (done) => {
-      let new_permission = new permission();
+      let new_permission = new permissionModel();
       new_permission.id = 2;
       new_permission.auditstat = 1;
       new_permission.name = 'test';

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
 import {ApiService} from './api.service';
 import {URLSearchParams} from '@angular/http';
-import {permission, ResultValue, m_permission_group} from '../../../../shared/index';
+import {permissionModel, ResultValue, m_permission_group} from '../../../../shared/index';
 
 @Injectable()
 export class PermissionService {
@@ -10,12 +10,12 @@ export class PermissionService {
   constructor(private apiService: ApiService) {
   }
 
-  addPermission(permission: permission): Observable<{ resultValue: ResultValue<boolean> }> {
+  addPermission(permission: permissionModel): Observable<{ resultValue: ResultValue<boolean> }> {
     return this.apiService.post('/permission/add_permission', {permission: permission})
       .map(data => data);
   }
 
-  getPermission(page: number, pageSize: number): Observable<{ resultValue: ResultValue<permission[]> }> {
+  getPermission(page: number, pageSize: number): Observable<{ resultValue: ResultValue<permissionModel[]> }> {
     let params: URLSearchParams = new URLSearchParams();
     params.set('page', `${page}`);
     params.set('pageSize', `${pageSize}`);
@@ -36,7 +36,7 @@ export class PermissionService {
       .map(data => data);
   }
 
-  getPermissionGroupPermissions(permissionGroupId: number, page: number, pageSize: number): Observable<{ resultValue: ResultValue<permission[]> }> {
+  getPermissionGroupPermissions(permissionGroupId: number, page: number, pageSize: number): Observable<{ resultValue: ResultValue<permissionModel[]> }> {
     let params: URLSearchParams = new URLSearchParams();
     params.set(`permissionGroupId`, `${permissionGroupId}`);
     params.set(`page`, `${page}`);
@@ -46,7 +46,7 @@ export class PermissionService {
   }
 
   //获取权限组为拥有的所有权限 前端分页
-  getPermissionGroupDoNotHavePermissions(permissionGroupId: number): Observable<{ resultValue: ResultValue<permission[]> }> {
+  getPermissionGroupDoNotHavePermissions(permissionGroupId: number): Observable<{ resultValue: ResultValue<permissionModel[]> }> {
     let params: URLSearchParams = new URLSearchParams();
     params.set('permissionGroupId', `${permissionGroupId}`);
     return this.apiService.get('/permission/get_permission_group_donot_have_permissions', params)

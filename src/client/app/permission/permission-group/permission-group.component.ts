@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/form
 import {Router} from '@angular/router';
 import {flyIn} from '../../shared/index';
 import {PermissionService, UserService} from '../../shared/index';
-import {permission, m_user, m_permission_group} from '../../../../shared/index';
+import {permissionModel, m_user, m_permission_group} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 import * as _ from 'lodash';
 
@@ -22,9 +22,9 @@ export class PermissionGroupComponent implements OnInit {
   public showAddPermissionsDialog: boolean = false;
   public currentUser: m_user;
   public permissionGroupArray: m_permission_group[] = [];
-  public permissionArray: permission[] = [];//权限组已拥有的权限
-  public doNotHavePermissionArray: permission[] = []; //权限组为拥有的权限
-  public addPermissionsSelectionArray: permission[] = [];
+  public permissionArray: permissionModel[] = [];//权限组已拥有的权限
+  public doNotHavePermissionArray: permissionModel[] = []; //权限组为拥有的权限
+  public addPermissionsSelectionArray: permissionModel[] = [];
   public permissionGroupsCurrentPage = 1;
   public currentPage = 1;
   public itemsPerPage = 10;//分页大小

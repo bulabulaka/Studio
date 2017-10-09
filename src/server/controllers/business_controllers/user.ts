@@ -1,11 +1,10 @@
 import * as bcrypt from 'bcryptjs';
 import {knex} from '../../db/connection';
 import {ReturnModel} from '../../shared/index';
-import {getUserinfo,register,m_user} from '../../../shared/index';
+import {register,m_user} from '../../../shared/index';
 
 /*根据用户ID查找用户信息*/
-export function getUserInfoById(getUserinfo:getUserinfo,callback:any){
-   let userId = getUserinfo.userId;
+export function getUserInfoById(userId:number,callback:any){
    knex('m_user').where('id', userId).first()
     .then((user) => {
        if (!user) return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'));

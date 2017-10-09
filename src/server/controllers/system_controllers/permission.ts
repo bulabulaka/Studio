@@ -1,14 +1,11 @@
-import {permission, m_permission, m_service_api, m_page, m_permission_group,getPermissions} from '../../../shared/index';
+import {permission, m_permission, m_service_api, m_page, m_permission_group} from '../../../shared/index';
 import {handleResponse,ReturnModel} from '../../shared/index';
 import * as express from 'express';
 import * as _ from 'lodash';
 import {knex} from '../../db/connection';
 import {QueryError, RowDataPacket} from 'mysql';
 
-export function Get_Permissions(parameterObj:getPermissions,callback:any) {
-  let currentPage = parameterObj.page;
-  let pageSize = parameterObj.pageSize;
-
+export function Get_Permissions(currentPage:number,pageSize:number,callback:any) {
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;

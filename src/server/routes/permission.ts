@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as _ from 'lodash';
 import {handleResponse, verifyToken, ReturnModel} from '../shared/index';
 import {knex} from '../db/connection';
-import {m_permission, m_service_api, m_page, permission,getPermissions} from '../../shared/index';
+import {m_permission, m_service_api, m_page, permission} from '../../shared/index';
 import {
   Get_Permissions,
   Add_Update_Permission,
@@ -23,10 +23,7 @@ router.get('/get_permissions', verifyToken, (req: express.Request, res: express.
     res.locals.errorCode = 400;
     return next('query is invalid');
   }
-  let parameterObj = new getPermissions();
-  parameterObj.page = parseInt(query.page);
-  parameterObj.pageSize = parseInt(query.pageSize);
-  Get_Permissions(parameterObj,(returnVal:ReturnModel<permission[]>,totalCount:number) =>{
+  Get_Permissions(parseInt(query.page),parseInt(query.pageSize),(returnVal:ReturnModel<permission[]>,totalCount:number) =>{
     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
     }else if(returnVal.error){

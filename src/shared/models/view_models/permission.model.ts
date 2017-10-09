@@ -1,4 +1,4 @@
-import {BaseEntity} from './entity.model';
+import {BaseEntity} from '../entity.model';
 
 export class permission extends BaseEntity {
   name: string;

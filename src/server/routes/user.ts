@@ -1,15 +1,13 @@
 import * as  express from 'express';
 import {verifyToken,handleResponse,ReturnModel} from '../shared/index'
 import {getUserInfoById,createUser} from '../controllers/business_controllers/user';
-import {getUserinfo,register,m_user} from '../../shared/index';
+import {register,m_user} from '../../shared/index';
 
 const router = express.Router();
 
 /*根据用户ID查找用户信息*/
 router.get('/get_userinfo', verifyToken, (req:express.Request, res:express.Response, next:any) => {
-  let userinfo = new getUserinfo();
-  userinfo.userId = res.locals.userId;
-  getUserInfoById(userinfo,(returnVal:ReturnModel<m_user>) =>{
+  getUserInfoById(parseInt(res.locals.userId) ,(returnVal:ReturnModel<m_user>) =>{
      if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
      }else if(returnVal.error){

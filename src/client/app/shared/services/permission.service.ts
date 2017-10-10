@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
 import {ApiService} from './api.service';
 import {URLSearchParams} from '@angular/http';
-import {permissionModel, ResultValue, m_permission_group} from '../../../../shared/index';
+import {permissionModel, ResultValue, permissionGroupModel} from '../../../../shared/index';
 
 @Injectable()
 export class PermissionService {
@@ -23,12 +23,12 @@ export class PermissionService {
       .map(data => data);
   }
 
-  addPermissionGroup(permissionGroup: m_permission_group): Observable<{ resultValue: ResultValue<boolean> }> {
+  addPermissionGroup(permissionGroup: permissionGroupModel): Observable<{ resultValue: ResultValue<boolean> }> {
     return this.apiService.post('/permission/add_permission_group', {permission_group: permissionGroup})
       .map(data => data);
   }
 
-  getPermissionGroups(page: number, pageSize: number): Observable<{ resultValue: ResultValue<m_permission_group[]> }> {
+  getPermissionGroups(page: number, pageSize: number): Observable<{ resultValue: ResultValue<permissionGroupModel[]> }> {
     let params: URLSearchParams = new URLSearchParams();
     params.set('page', `${page}`);
     params.set('pageSize', `${pageSize}`);

@@ -12,6 +12,7 @@ import {
   Get_Permission_Group_Donot_Have_Permissions,
   Add_Permission_Group_Permissions
 } from '../controllers/system_controllers/permission';
+import {permissionGroupModel} from '../../shared/models/view_models/permission-group.model';
 
 
 const router = express.Router();
@@ -39,7 +40,7 @@ router.get('/get_permissions', (req: express.Request, res: express.Response, nex
 
 //add permission
 router.post('/add_permission', (req: express.Request, res: express.Response, next: any) => {
-  let paramObj = req.body.permission;
+  let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
   }
@@ -59,7 +60,7 @@ router.post('/add_permission', (req: express.Request, res: express.Response, nex
 
 //update permission
 router.put('/update_permission', (req: express.Request, res: express.Response, next: any) => {
-  let paramObj = req.body.permission;
+  let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
   }
@@ -81,30 +82,43 @@ router.put('/update_permission', (req: express.Request, res: express.Response, n
 
 });*/
 
-
+/*add permission group*/
 router.post('/add_permission_group', (req: express.Request, res: express.Response, next: any) => {
-  Add_Update_Permission_Group('insert', req.body.permission_group, (error, permissionGroup) => {
-    if (error) return next(error);
-    knex('m_permission_group').returning('id').insert(permissionGroup)
-      .then((ids) => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
-      })
-      .catch((e) => {
-        return next(e);
-      })
+  let paramObj:permissionGroupModel = req.body.permission_group;
+  if(_.isEmpty(paramObj)){
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
+  }
+  Add_Update_Permission_Group(String(process.env.INSERT), paramObj, (returnVal:ReturnModel<boolean>) => {
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
+    }
   });
 });
 
+/*update permission group*/
 router.put('/update_permission_group', (req: express.Request, res: express.Response, next: any) => {
-  Add_Update_Permission_Group('update', req.body.permission_group, (error, permissionGroup) => {
-    if (error) return next(error);
-    knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)
-      .then(() => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', null);
-      })
-      .catch((e) => {
-        next(e);
-      })
+  let paramObj:permissionGroupModel = req.body.permission_group;
+  if(_.isEmpty(paramObj)){
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
+  }
+  Add_Update_Permission_Group(String(process.env.UPDATE), paramObj, (returnVal:ReturnModel<boolean>) => {
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
+    }
   });
 });
 

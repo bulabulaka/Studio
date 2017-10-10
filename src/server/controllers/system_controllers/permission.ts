@@ -4,6 +4,7 @@ import * as express from 'express';
 import * as _ from 'lodash';
 import {knex} from '../../db/connection';
 import {QueryError, RowDataPacket} from 'mysql';
+import {permissionGroupModel} from '../../../shared/models/view_models/permission-group.model';
 
 export function Get_Permissions(currentPage:number,pageSize:number,callback:any) {
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
@@ -120,35 +121,45 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
     }
 }
 
-export function Add_Update_Permission_Group(flag: string, permissionGroup: m_permission_group, callback: any) {
-  let error = '';
-  if (permissionGroup) {
+export function Add_Update_Permission_Group(flag: string, permissionGroup: permissionGroupModel, callback: any) {
+
     let mPermissionGroup = new m_permission_group();
     mPermissionGroup.name = permissionGroup.name;
     mPermissionGroup.description = permissionGroup.description;
     mPermissionGroup.order_no = permissionGroup.order_no;
     mPermissionGroup.auditstat = permissionGroup.auditstat;
     if (flag) {
-      if (flag.toUpperCase() === 'INSERT') {
+      if (flag === String(process.env.INSERT)) {
         mPermissionGroup.creator_id = permissionGroup.creator_id;
         mPermissionGroup.created_datetime = new Date();
-      } else if (flag.toUpperCase() === 'UPDATE') {
+      } else if (flag === String(process.env.UPDATE)) {
         mPermissionGroup.id = permissionGroup.id;
         mPermissionGroup.modified_datetime = new Date();
         mPermissionGroup.modifier_id = permissionGroup.modifier_id;
       } else {
-        error = 'flag is invalid';
-        return callback(error);
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
       }
-      callback(null, mPermissionGroup);
     } else {
-      error = 'flag is invalid';
-      callback(error);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
     }
-  } else {
-    error = 'data is invalid';
-    callback(error);
-  }
+
+    if(flag === String(process.env.INSERT)){
+      knex('m_permission_group').returning('id').insert(permissionGroup)
+        .then((ids) => {
+          return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+        })
+        .catch((e) => {
+          return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, e));
+        });
+    }else{
+      knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)
+        .then(() => {
+          return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+        })
+        .catch((e) => {
+          return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, e));
+        })
+    }
 }
 
 export function Get_Permission_Groups(req: express.Request, res: express.Response, next: any) {

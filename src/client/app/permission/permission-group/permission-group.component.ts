@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/form
 import {Router} from '@angular/router';
 import {flyIn} from '../../shared/index';
 import {PermissionService, UserService} from '../../shared/index';
-import {permissionModel, userModel, m_permission_group} from '../../../../shared/index';
+import {permissionModel, userModel, permissionGroupModel} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 import * as _ from 'lodash';
 
@@ -21,7 +21,7 @@ export class PermissionGroupComponent implements OnInit {
   public showPermissionsDialog: boolean = false;
   public showAddPermissionsDialog: boolean = false;
   public currentUser: userModel;
-  public permissionGroupArray: m_permission_group[] = [];
+  public permissionGroupArray: permissionGroupModel[] = [];
   public permissionArray: permissionModel[] = [];//权限组已拥有的权限
   public doNotHavePermissionArray: permissionModel[] = []; //权限组为拥有的权限
   public addPermissionsSelectionArray: permissionModel[] = [];
@@ -131,7 +131,7 @@ export class PermissionGroupComponent implements OnInit {
     this.hasSubmit = true;
     this.displayDialog = false;
     const permissionGroupFormVal = this.permissionGroupForm.value;
-    let permissionGroup = new m_permission_group();
+    let permissionGroup = new permissionGroupModel();
     permissionGroup.name = permissionGroupFormVal.name;
     permissionGroup.order_no = 1;
     permissionGroup.auditstat = 1;

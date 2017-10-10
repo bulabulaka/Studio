@@ -17,37 +17,35 @@ export function Get_Permissions(currentPage:number,pageSize:number,callback:any)
 }
 
 export function Add_Update_Permission(flag: string, permission: permissionModel, callback: any) {
-  let error = '';
-  if (permission) {
     let mPermission: m_permission = new m_permission();
+    let mPage: m_page;
+    let mServiceApi: m_service_api;
+    //initial permission
     mPermission.name = permission.name;
     mPermission.description = permission.description;
     mPermission.auditstat = permission.auditstat;
     mPermission.order_no = permission.order_no;
     mPermission.kind = permission.kind;
-
     if (flag) {
-      if (flag.toUpperCase() === 'INSERT') {
+      if (flag === String(process.env.INSERT)) {
         mPermission.created_datetime = new Date();
         mPermission.creator_id = permission.creator_id;
-      } else if (flag.toUpperCase() === 'UPDATE') {
+      } else if (flag === String(process.env.UPDATE)) {
         mPermission.id = permission.id;
         mPermission.modified_datetime = new Date();
         mPermission.modifier_id = permission.modifier_id;
       } else {
-        error = 'flag is invalid';
-        return callback(error);
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
       }
     } else {
-      error = 'flag is invalid';
-      return callback(error);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
     }
 
     if (mPermission.kind === 0) {
-      let mPage: m_page = new m_page();
+      mPage = new m_page();
       mPage.route = permission.route;
       mPage.auditstat = 0;
-      if (flag.toUpperCase() === 'INSERT') {
+      if (flag === String(process.env.INSERT)) {
         mPage.created_datetime = new Date();
         mPage.creator_id = permission.creator_id;
       } else {
@@ -55,12 +53,11 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
         mPage.modifier_id = permission.modifier_id;
         mPage.modified_datetime = new Date();
       }
-      callback(null, mPermission, null, mPage);
     } else {
-      let mServiceApi: m_service_api = new m_service_api();
+      mServiceApi = new m_service_api();
       mServiceApi.route = permission.route;
       mServiceApi.method = permission.method;
-      if (flag.toUpperCase() === 'INSERT') {
+      if (flag === String(process.env.INSERT)) {
         mServiceApi.created_datetime = new Date();
         mServiceApi.creator_id = permission.creator_id;
       } else {
@@ -68,12 +65,59 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
         mServiceApi.modified_datetime = new Date();
         mServiceApi.modifier_id = permission.modifier_id;
       }
-      callback(null, mPermission, mServiceApi);
     }
-  } else {
-    error = 'data is invalid';
-    callback(error);
-  }
+
+    let error:Error = null;
+    if(flag === String(process.env.INSERT)){
+      knex.transaction((trx) => {
+        knex('m_permission')
+          .transacting(trx)
+          .insert(mPermission)
+          .then((ids) => {
+            if (mServiceApi) {
+              mServiceApi.permission_id = ids[0];
+              return knex('m_service_api').insert(mServiceApi).transacting(trx);
+            }
+            mPage.permission_id = ids[0];
+            return knex('m_page').insert(mPage).transacting(trx);
+          })
+          .then(trx.commit)
+          .catch((e) => {
+            trx.rollback();
+            error = e;
+          })
+      }).then((res) => {
+          if (res) {
+            return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+          }
+      }).catch((e) => {
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, _.isEmpty(e) ? error : e));
+      });
+    }else{
+      knex.transaction((trx) => {
+        knex('m_permission')
+          .transacting(trx)
+          .where('id', '=', mPermission.id)
+          .update(mPermission)
+          .then(() => {
+            if (mServiceApi) {
+              return knex('m_service_api').where('permission_id', '=', mServiceApi.permission_id).update(mServiceApi).transacting(trx);
+            }
+            return knex('m_page').where('permission_id', '=', mPage.permission_id).update(mPage).transacting(trx);
+          })
+          .then(trx.commit)
+          .catch((e) => {
+            trx.rollback();
+            error = e;
+          })
+      }).then((res) => {
+          if (res) {
+            return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+          }
+      }).catch((e) => {
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, _.isEmpty(e) ? error : e));
+      });
+    }
 }
 
 export function Add_Update_Permission_Group(flag: string, permissionGroup: m_permission_group, callback: any) {

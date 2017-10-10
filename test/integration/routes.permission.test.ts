@@ -35,6 +35,7 @@ describe('routes : /api/permission', () => {
       new_permission.order_no = 1;
       new_permission.route = 'tests';
       new_permission.method = 'post';
+
       chai.request(server())
         .post('/api/permission/add_permission')
         .send({

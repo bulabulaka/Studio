@@ -1,7 +1,8 @@
 import * as bcrypt from 'bcryptjs';
 import {knex} from '../../db/connection';
-import {ReturnModel} from '../../shared/index';
-import {registerModel,m_user} from '../../../shared/index';
+import {ReturnModel,comparePass} from '../../shared/index';
+import {registerModel,m_user,loginModel,userModel} from '../../../shared/index';
+import jwt = require('jsonwebtoken');
 
 /*根据用户ID查找用户信息*/
 export function getUserInfoById(userId:number,callback:any){
@@ -15,8 +16,8 @@ export function getUserInfoById(userId:number,callback:any){
     });
 }
 
-/*新建用户*/
-export function createUser(_register:registerModel,callback:any){
+/*register user*/
+export function registerUser(_register:registerModel,callback:any){
    if(_register.username.length < 6){
      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Username must be longer than 6 characters'));
    }
@@ -34,10 +35,27 @@ export function createUser(_register:registerModel,callback:any){
       created_datetime: knex.raw('now()')
     })
     .then((ids) =>{
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'Regist Success',ids[0]));
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',ids[0]));
     })
     .catch((err) =>{
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',0 ,err));
+    });
+}
+
+/*login*/
+export function login(paramObj:loginModel,callback:any){
+  knex('m_user').where('username', paramObj.username).first()
+    .then((user) => {
+      if (!user) return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'),'');
+      if (!comparePass(paramObj.password, user.password)) {
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'),'');
+      } else {
+        let token = jwt.sign(user.id, process.env.JWT_SECRET);
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',user),token);
+      }
+    })
+    .catch((err) => {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',0 ,err),'');
     });
 }
 

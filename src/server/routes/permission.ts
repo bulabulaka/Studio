@@ -1,8 +1,8 @@
 import * as express from 'express';
 import * as _ from 'lodash';
-import {handleResponse, verifyToken, ReturnModel} from '../shared/index';
+import {handleResponse, ReturnModel} from '../shared/index';
 import {knex} from '../db/connection';
-import {m_permission, m_service_api, m_page, permissionModel} from '../../shared/index';
+import {permissionModel} from '../../shared/index';
 import {
   Get_Permissions,
   Add_Update_Permission,
@@ -17,7 +17,7 @@ import {
 const router = express.Router();
 
 //get all permissions
-router.get('/get_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permissions', (req: express.Request, res: express.Response, next: any) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     res.locals.errorCode = 400;
@@ -38,7 +38,7 @@ router.get('/get_permissions', verifyToken, (req: express.Request, res: express.
 });
 
 //add permission
-router.post('/add_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_permission', (req: express.Request, res: express.Response, next: any) => {
   let paramObj = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -58,7 +58,7 @@ router.post('/add_permission', verifyToken, (req: express.Request, res: express.
 });
 
 //update permission
-router.put('/update_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.put('/update_permission', (req: express.Request, res: express.Response, next: any) => {
   let paramObj = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -82,7 +82,7 @@ router.put('/update_permission', verifyToken, (req: express.Request, res: expres
 });*/
 
 
-router.post('/add_permission_group', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_permission_group', (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission_Group('insert', req.body.permission_group, (error, permissionGroup) => {
     if (error) return next(error);
     knex('m_permission_group').returning('id').insert(permissionGroup)
@@ -95,7 +95,7 @@ router.post('/add_permission_group', verifyToken, (req: express.Request, res: ex
   });
 });
 
-router.put('/update_permission_group', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.put('/update_permission_group', (req: express.Request, res: express.Response, next: any) => {
   Add_Update_Permission_Group('update', req.body.permission_group, (error, permissionGroup) => {
     if (error) return next(error);
     knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)
@@ -109,22 +109,22 @@ router.put('/update_permission_group', verifyToken, (req: express.Request, res: 
 });
 
 //获取所有的权限组 分页
-router.get('/get_permission_groups', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permission_groups',  (req: express.Request, res: express.Response, next: any) => {
   Get_Permission_Groups(req, res, next);
 });
 
 //查询权限组所拥有的权限 分页
-router.get('/get_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permission_group_permissions', (req: express.Request, res: express.Response, next: any) => {
   Get_Permission_Group_Permissions(req, res, next);
 });
 
 //查询权限组未拥有的权限
-router.get('/get_permission_group_donot_have_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permission_group_donot_have_permissions', (req: express.Request, res: express.Response, next: any) => {
   Get_Permission_Group_Donot_Have_Permissions(req, res, next);
 });
 
 //给权限组添加权限
-router.post('/add_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_permission_group_permissions', (req: express.Request, res: express.Response, next: any) => {
   Add_Permission_Group_Permissions(req, res, next);
 });
 

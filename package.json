@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build --output-path ./dist  && tsc src/server/server.ts && node src/server/server.js",
     "lint": "ng lint",
-    "test": "tsc test/**/**.ts && mocha"
+    "test": "tsc test/**/**.ts src/server/db/**/**.ts  && mocha"
   },
   "dependencies": {
     "@angular/animations": "^4.0.0",

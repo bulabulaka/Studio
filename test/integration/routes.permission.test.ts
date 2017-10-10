@@ -176,4 +176,18 @@ describe('routes : /api/permission', () => {
         })
     })
   })
+
+  describe('GET /api/permission/get_permissions', () => {
+    it('need token', (done) => {
+      chai.request(server())
+        .get('/api/permission/get_permissions')
+        .query({page:1,pageSize:10})
+        .end((err, res) => {
+          res.status.should.equal(200);
+          res.type.should.equal('application/json');
+          res.body.resultValue.RMsg.should.eql('No token exists.');
+          done();
+        });
+    });
+  });
 });

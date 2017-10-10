@@ -1,8 +1,7 @@
 import * as express from 'express';
 import * as _ from 'lodash';
 import {handleResponse, ReturnModel} from '../shared/index';
-import {knex} from '../db/connection';
-import {permissionModel} from '../../shared/index';
+import {permissionModel,permissionGroupModel} from '../../shared/index';
 import {
   Get_Permissions,
   Add_Update_Permission,
@@ -12,7 +11,6 @@ import {
   Get_Permission_Group_Donot_Have_Permissions,
   Add_Permission_Group_Permissions
 } from '../controllers/system_controllers/permission';
-import {permissionGroupModel} from '../../shared/models/view_models/permission-group.model';
 
 
 const router = express.Router();

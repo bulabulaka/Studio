@@ -4,6 +4,7 @@ import {init_config as server} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
 import {permissionModel, permissionGroupModel} from '../../src/shared/index';
+import {simulateUser} from './utils';
 
 const should = chai.should();
 
@@ -26,29 +27,30 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission', () => {
     it('should add a new permission（service api）', (done) => {
-      let new_permission = new permissionModel();
-      new_permission.auditstat = 1;
-      new_permission.name = 'test';
-      new_permission.kind = 1;
-      new_permission.description = 'tests';
-      new_permission.creator_id = 1;
-      new_permission.order_no = 1;
-      new_permission.route = 'tests';
-      new_permission.method = 'post';
-
-      chai.request(server())
-        .post('/api/permission/add_permission')
-        .send({
-          permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.eql(200);
-          res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(1);
-          done();
-        });
+      simulateUser('jeremy', 'johnson123', (token: string) => {
+        const new_permission = new permissionModel();
+        new_permission.auditstat = 1;
+        new_permission.name = 'test';
+        new_permission.kind = 1;
+        new_permission.description = 'tests';
+        new_permission.creator_id = 1; // should be assigned based on user context from server side.
+        new_permission.order_no = 1;
+        new_permission.route = 'tests';
+        new_permission.method = 'post';
+        chai.request(server())
+          .post('/api/permission/add_permission')
+          .send({
+            permission: new_permission,
+            token: token
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.status.should.eql(200);
+            res.type.should.eql('application/json');
+            res.body.resultValue.RCode.should.eql(1);
+            done();
+          });
+      });
     });
     it('should add a new permission (page)', (done) => {
       let new_permission = new permissionModel();

@@ -162,85 +162,48 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: permi
     }
 }
 
-export function Get_Permission_Groups(req: express.Request, res: express.Response, next: any) {
-  let error = '';
-  let query = req.query;
-  if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
-    error = 'query is invalid';
-    res.locals.errorCode = 400;
-    return next(error);
-  }
-  let currentPage = parseInt(query.page);
-  let pageSize = parseInt(query.pageSize);
-
+export function Get_Permission_Groups(currentPage:number,pageSize:number,callback:any) {
   knex.raw(`SET @total_count = 0; CALL get_permission_groups(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', rows[0][1], totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
     })
     .catch((err: QueryError) => {
-      return next(err);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
     });
 }
 
-export function Get_Permission_Group_Permissions(req: express.Request, res: express.Response, next: any) {
-  let error = '';
-  let query = req.query;
-  if (_.isEmpty(query) || !query.permissionGroupId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
-    error = 'query is invalid';
-    res.locals.errorCode = 400;
-    return next(error);
-  }
-  let currentPage = parseInt(query.page);
-  let pageSize = parseInt(query.pageSize);
-  let pgId = parseInt(query.permissionGroupId);
+export function Get_Permission_Group_Permissions(currentPage:number,pageSize:number,pgId:number, callback: any) {
   knex.raw(`SET @total_count = 0; CALL get_permission_group_permissions(${pgId},${currentPage},${pageSize},@total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', rows[0][1], totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
     })
     .catch((err: QueryError) => {
-      return next(err);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
     })
 }
 
-export function Get_Permission_Group_Donot_Have_Permissions(req: express.Request, res: express.Response, next: any) {
-  let error = '';
-  let query = req.query;
-  if (_.isEmpty(query) || !query.permissionGroupId) {
-    error = 'query is invalid';
-    res.locals.errorCode = 400;
-    return next(error);
-  }
-  let pgId = parseInt(query.permissionGroupId);
-  knex.raw(`CALL get_permission_group_donot_have_permissions(${pgId});`)
+export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId:number,callback: any) {
+  knex.raw(`CALL get_permission_group_donot_have_permissions(${permissionGroupId});`)
     .then((rows: RowDataPacket[]) => {
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', rows[0][0]);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][0]));
     })
     .catch((err: QueryError) => {
-      return next(err);
-    })
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));})
 }
 
-export function Add_Permission_Group_Permissions(req: express.Request, res: express.Response, next: any) {
-  let error = '';
-  let permissionIdArray = req.body.permissionIdArray;
-  let permissionGroupId = req.body.permissionGroupId;
-  let permissionIdArrayLength = req.body.permissionIdArrayLength;
-  let operatorId = req.body.operatorId;
-  if (!permissionIdArray || !permissionGroupId || !permissionIdArrayLength || !operatorId) {
-    error = `data is invalid`;
-    return next(error);
-  }
+export function Add_Permission_Group_Permissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number, callback: any) {
   knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
     .then((rows: RowDataPacket[]) => {
       let returnCode = rows[0][2][0].returnCode;
       if (returnCode === parseInt(process.env.SUCCESS_CODE)) {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',true));
       }
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'OK', false);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Fail',false));
     })
     .catch((err: QueryError) => {
-      return next(err);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     })
 }
+

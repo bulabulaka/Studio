@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../shared/index';
-import {m_user} from '../../../shared/index';
+import {userModel} from '../../../shared/index';
 import {EventBusService} from '../shared/index';
 
 @Component({
@@ -10,7 +10,7 @@ import {EventBusService} from '../shared/index';
 })
 export class WorkspaceComponent implements OnInit {
   public isCollapse = false;
-  public currentUser: m_user;
+  public currentUser: userModel;
 
   constructor(private userService: UserService, private eventBusService: EventBusService) {
 

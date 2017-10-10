@@ -3,7 +3,7 @@ import {flyIn} from '../../shared/index';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {PermissionService, UserService} from '../../shared/index';
-import {permissionModel, m_user} from '../../../../shared/index';
+import {permissionModel, userModel} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -20,7 +20,7 @@ export class PermissionTableComponent implements OnInit {
   public currentPage = 1;
   public totalCount = 0;
 
-  public currentUser: m_user;
+  public currentUser: userModel;
   permissionArray: permissionModel[] = [];
   display: boolean = false;
   permissionForm: FormGroup;

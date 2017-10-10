@@ -15,12 +15,11 @@ import {
 
 const router = express.Router();
 
-//get all permissions
+/*get all permissions*/
 router.get('/get_permissions', (req: express.Request, res: express.Response, next: any) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
-    res.locals.errorCode = 400;
-    return next('query is invalid');
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
   Get_Permissions(parseInt(query.page),parseInt(query.pageSize),(returnVal:ReturnModel<permissionModel[]>,totalCount:number) =>{
     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
@@ -36,7 +35,7 @@ router.get('/get_permissions', (req: express.Request, res: express.Response, nex
   });
 });
 
-//add permission
+/*add permission*/
 router.post('/add_permission', (req: express.Request, res: express.Response, next: any) => {
   let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
@@ -56,7 +55,7 @@ router.post('/add_permission', (req: express.Request, res: express.Response, nex
   });
 });
 
-//update permission
+/*update permission*/
 router.put('/update_permission', (req: express.Request, res: express.Response, next: any) => {
   let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
@@ -120,19 +119,65 @@ router.put('/update_permission_group', (req: express.Request, res: express.Respo
   });
 });
 
-//获取所有的权限组 分页
+/*get all permission groups paging*/
 router.get('/get_permission_groups',  (req: express.Request, res: express.Response, next: any) => {
-  Get_Permission_Groups(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Permission_Groups(parseInt(query.page),parseInt(query.pageSize),(returnVal:ReturnModel<permissionGroupModel[]>,totalCount:number) =>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
-//查询权限组所拥有的权限 分页
+/*query the permissions that this permission group has paging*/
 router.get('/get_permission_group_permissions', (req: express.Request, res: express.Response, next: any) => {
-  Get_Permission_Group_Permissions(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.permissionGroupId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Permission_Group_Permissions(parseInt(query.page), parseInt(query.pageSize), parseInt(query.permissionGroupId),
+    (returnVal:ReturnModel<permissionModel[]>,totalCount:number) =>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
-//查询权限组未拥有的权限
+/*query the permissions that this permission group does not have client paging*/
 router.get('/get_permission_group_donot_have_permissions', (req: express.Request, res: express.Response, next: any) => {
-  Get_Permission_Group_Donot_Have_Permissions(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.permissionGroupId) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Permission_Group_Donot_Have_Permissions(parseInt(query.permissionGroupId),(returnVal:ReturnModel<permissionModel[]>)=>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
 //给权限组添加权限

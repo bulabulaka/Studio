@@ -3,7 +3,7 @@ import {flyIn} from '../../shared/index';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {RoleService, UserService} from '../../shared/index';
-import {m_role, userModel, permissionGroupModel} from '../../../../shared/index';
+import {roleModel, userModel, permissionGroupModel} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 import * as _ from 'lodash';
 
@@ -21,7 +21,7 @@ export class RoleTableComponent implements OnInit {
   public showPermissionGroupsDialog: boolean = false;
   public showAddPermissionGroupsDialog: boolean = false;
   public currentUser: userModel;
-  public roleArray: m_role[] = [];
+  public roleArray: roleModel[] = [];
   public permissionGroupsArray: permissionGroupModel[] = [];//角色已拥有的权限组
   public doNotHavePermissionGroupsArray: permissionGroupModel[] = []; //角色未拥有的权限组
   public addPermissionGroupsSelectionArray: permissionGroupModel[] = [];
@@ -120,7 +120,7 @@ export class RoleTableComponent implements OnInit {
     this.hasSubmit = true;
     this.showAddRoleDialog = false;
     const roleFormVal = this.roleForm.value;
-    let role = new m_role();
+    let role = new roleModel();
     role.name = roleFormVal.name;
     role.order_no = 1;
     role.auditstat = 1;

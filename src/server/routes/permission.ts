@@ -147,13 +147,13 @@ router.get('/get_permission_group_permissions', (req: express.Request, res: expr
   if (_.isEmpty(query) || !query.permissionGroupId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
-  Get_Permission_Group_Permissions(parseInt(query.page), parseInt(query.pageSize), parseInt(query.permissionGroupId),(returnVal:ReturnModel<permissionModel[]>,totalCount:number) =>{
+  Get_Permission_Group_Permissions(parseInt(query.page), parseInt(query.pageSize), parseInt(query.permissionGroupId),
+    (returnVal:ReturnModel<permissionModel[]>,totalCount:number) =>{
     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
     }else if(returnVal.error){
       if(returnVal.errorCode){
         res.locals.errorCode = returnVal.errorCode;
-
       }
       return next(returnVal.error);
     }else{

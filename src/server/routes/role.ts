@@ -1,7 +1,8 @@
 import * as express from 'express';
-import {handleResponse} from '../shared/index';
+import {handleResponse,ReturnModel} from '../shared/index';
 import {knex} from '../db/connection';
-import {m_role} from '../../shared/index';
+import * as _ from 'lodash';
+import {m_role,roleModel} from '../../shared/index';
 import {
   Get_Roles,
   Add_Update_Role,
@@ -9,55 +10,131 @@ import {
   Get_Role_Donot_Have_Permission_Groups,
   Add_Role_Permission_Groups
 } from '../controllers/system_controllers/role';
+import {permissionGroupModel} from '../../shared/models/view_models/permission-group.model';
 
 const router = express.Router();
 
-//获取所有角色 分页
+/*get all the roles paging*/
 router.get('/get_roles', (req: express.Request, res: express.Response, next: any) => {
-  Get_Roles(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Roles(parseInt(query.page), parseInt(query.pageSize), (returnVal:ReturnModel<roleModel[]>,totalCount:number) =>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
-//添加角色
+/*add role*/
 router.post('/add_role',  (req: express.Request, res: express.Response, next: any) => {
-  Add_Update_Role('insert', req.body.role, (error, mRole?: m_role) => {
-    if (error) return next(error);
-    knex('m_role').returning('id').insert(mRole)
-      .then((ids) => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
-      })
-      .catch((e) => {
-        return next(e);
-      })
+  let paramObj:roleModel = req.body.role;
+  if(_.isEmpty(paramObj)){
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
+  }
+  Add_Update_Role(String(process.env.INSERT), paramObj, (returnVal:ReturnModel<boolean>)  => {
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
+    }
   });
 });
 
-//修改角色
+/*update role*/
 router.put('/update_role',  (req: express.Request, res: express.Response, next: any) => {
-  Add_Update_Role('update', req.body.role, (error, mRole?: m_role) => {
-    if (error) return next(error);
-    knex('m_role').where('id', '=', mRole.id).update(mRole)
-      .then(() => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
-      })
-      .catch((e) => {
-        next(e);
-      })
+  let paramObj:roleModel = req.body.role;
+  if(_.isEmpty(paramObj)){
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
+  }
+  Add_Update_Role(String(process.env.UPDATE), paramObj, (returnVal:ReturnModel<boolean>) => {
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
+    }
   });
 });
 
-//查寻角色拥有的权限组 分页
+/*query the permission group that this role has paging*/
 router.get('/get_role_permission_groups', (req: express.Request, res: express.Response, next: any) => {
-  Get_Role_Permission_Groups(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.roleId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Role_Permission_Groups(parseInt(query.page), parseInt(query.pageSize), parseInt(query.roleId), (returnVal:ReturnModel<permissionGroupModel[]>,totalCount:number) =>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
-//查询角色未拥有的权限组 前端分页
+/*query the permission group that this role does not have  client paging*/
 router.get('/get_role_donot_have_permission_groups', (req: express.Request, res: express.Response, next: any) => {
-  Get_Role_Donot_Have_Permission_Groups(req, res, next);
+  let query = req.query;
+  if (_.isEmpty(query) || !query.roleId) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Role_Donot_Have_Permission_Groups(parseInt(query.roleId), (returnVal:ReturnModel<permissionGroupModel[]>)=>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
+    }
+  });
 });
 
-//给角色添加权限组
+/*add permission group to the role  batch add*/
 router.post('/add_role_permission_groups', (req: express.Request, res: express.Response, next: any) => {
-  Add_Role_Permission_Groups(req, res, next);
+  let permissionGroupIdArray = req.body.permissionGroupIdArray;
+  let roleId = req.body.roleId;
+  let permissionGroupIdArrayLength = req.body.permissionGroupIdArrayLength;
+  let operatorId = req.body.operatorId;
+  if (!permissionGroupIdArray || !roleId || !permissionGroupIdArrayLength || !operatorId) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Add_Role_Permission_Groups(permissionGroupIdArray,roleId,permissionGroupIdArrayLength,operatorId,(returnVal:ReturnModel<boolean>) =>{
+    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
+    }else if(returnVal.error){
+      if(returnVal.errorCode){
+        res.locals.errorCode = returnVal.errorCode;
+      }
+      return next(returnVal.error);
+    }else{
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
+    }
+  });
 });
 
 export const RoleRouter = router;

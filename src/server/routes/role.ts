@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {handleResponse,ReturnModel} from '../shared/index';
+import {handleResponse,ReturnModel,handleReturn} from '../shared/index';
 import * as _ from 'lodash';
 import {roleModel} from '../../shared/index';
 import {
@@ -20,16 +20,7 @@ router.get('/get_roles', (req: express.Request, res: express.Response, next: exp
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
   Get_Roles(parseInt(query.page), parseInt(query.pageSize), (returnVal:ReturnModel<roleModel[]>) =>{
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,returnVal.totalCount);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 
@@ -40,16 +31,7 @@ router.post('/add_role',  (req: express.Request, res: express.Response, next: ex
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
   }
   Add_Update_Role(String(process.env.INSERT), paramObj, (returnVal:ReturnModel<boolean>)  => {
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 
@@ -60,16 +42,7 @@ router.put('/update_role',  (req: express.Request, res: express.Response, next: 
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
   }
   Add_Update_Role(String(process.env.UPDATE), paramObj, (returnVal:ReturnModel<boolean>) => {
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 
@@ -80,16 +53,7 @@ router.get('/get_role_permission_groups', (req: express.Request, res: express.Re
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
   Get_Role_Permission_Groups(parseInt(query.page), parseInt(query.pageSize), parseInt(query.roleId), (returnVal:ReturnModel<permissionGroupModel[]>) =>{
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,returnVal.totalCount);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 
@@ -100,16 +64,7 @@ router.get('/get_role_donot_have_permission_groups', (req: express.Request, res:
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
   Get_Role_Donot_Have_Permission_Groups(parseInt(query.roleId), (returnVal:ReturnModel<permissionGroupModel[]>)=>{
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 
@@ -123,16 +78,7 @@ router.post('/add_role_permission_groups', (req: express.Request, res: express.R
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
   Add_Role_Permission_Groups(permissionGroupIdArray,roleId,permissionGroupIdArrayLength,operatorId,(returnVal:ReturnModel<boolean>) => {
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 

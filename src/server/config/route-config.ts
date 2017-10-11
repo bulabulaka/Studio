@@ -4,7 +4,7 @@ import {AuthRouter} from '../routes/auth';
 import {UserRouter} from '../routes/user';
 import {PermissionRouter} from '../routes/permission';
 import {RoleRouter} from '../routes/role';
-import {verifyToken,ReturnModel,handleResponse} from '../shared/index';
+import {verifyToken,ReturnModel,handleResponse,handleReturn} from '../shared/index';
 import {registerModel,loginModel,userModel} from '../../shared/index';
 import {registerUser,login} from '../controllers/business_controllers/user';
 import * as path from 'path';
@@ -19,16 +19,7 @@ export function route_config_init(app:express.Application) {
   app.post('/api/register', (req: express.Request, res: express.Response, next: express.NextFunction) => {
       let _register:registerModel = req.body.register;
       registerUser(_register,(returnVal:ReturnModel<number>) =>{
-        if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-          return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-        }else if(returnVal.error){
-          if(returnVal.errorCode){
-            res.locals.errorCode = returnVal.errorCode;
-          }
-          return next(returnVal.error);
-        }else{
-          return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-        }
+        handleReturn(returnVal,res,next);
       });
   });
 
@@ -36,16 +27,7 @@ export function route_config_init(app:express.Application) {
   app.post('/api/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
       let _loginModel:loginModel = req.body;
       login(_loginModel,(returnVal:ReturnModel<userModel>) =>{
-         if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-            return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,0,returnVal.token);
-         }else if(returnVal.error){
-            if(returnVal.errorCode){
-               res.locals.errorCode = returnVal.errorCode;
-            }
-            return next(returnVal.error);
-         }else{
-           return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-         }
+        handleReturn(returnVal,res,next);
       });
   });
 

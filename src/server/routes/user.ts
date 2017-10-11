@@ -1,5 +1,5 @@
 import * as  express from 'express';
-import {handleResponse,ReturnModel} from '../shared/index'
+import {ReturnModel,handleReturn} from '../shared/index'
 import {getUserInfoById} from '../controllers/business_controllers/user';
 import {userModel} from '../../shared/index';
 
@@ -8,16 +8,7 @@ const router = express.Router();
 /*get userinfo by userId*/
 router.get('/get_userinfo', (req:express.Request, res:express.Response, next:express.NextFunction) => {
   getUserInfoById(parseInt(res.locals.userId) ,(returnVal:ReturnModel<userModel>) =>{
-     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-     }else if(returnVal.error){
-       if(returnVal.errorCode){
-         res.locals.errorCode = returnVal.errorCode;
-       }
-       return next(returnVal.error);
-     }else{
-       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-     }
+    handleReturn(returnVal,res,next);
   });
 });
 

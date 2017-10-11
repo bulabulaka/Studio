@@ -1,4 +1,5 @@
 import {ResultValue} from '../../shared/index';
+import {ReturnModel} from './models/index';
 import jwt = require('jsonwebtoken');
 import * as bcrypt from 'bcryptjs';
 import * as express from 'express';
@@ -11,6 +12,19 @@ export function handleResponse<T>(res:express.Response, resStatusCode: number, c
   resultData.TotalCount = totalCount;
   resultData.Token = token;
   res.status(resStatusCode).json({resultValue: resultData});
+}
+
+export function handleReturn<T>(returnVal:ReturnModel<T>,res:express.Response,next:express.NextFunction): void {
+  if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
+    return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,returnVal.totalCount,returnVal.token);
+  }else if(returnVal.error){
+    if(returnVal.errorCode){
+      res.locals.errorCode = returnVal.errorCode;
+    }
+    return next(returnVal.error);
+  }else{
+    return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, returnVal.Data);
+  }
 }
 
 export function verifyToken(req:express.Request, res:express.Response, next:express.NextFunction):void {

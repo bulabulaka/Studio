@@ -43,19 +43,19 @@ export function registerUser(_register:registerModel,callback:(returnVal:ReturnM
 }
 
 /*login*/
-export function login(paramObj:loginModel,callback:(returnVal:ReturnModel<userModel>,token:string) => void){
+export function login(paramObj:loginModel,callback:(returnVal:ReturnModel<userModel>) => void){
   knex('m_user').where('username', paramObj.username).first()
     .then((user) => {
-      if (!user) return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'),'');
+      if (!user) return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'));
       if (!comparePass(paramObj.password, user.password)) {
-        return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'),'');
+        return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'));
       } else {
         let token = jwt.sign(user.id, process.env.JWT_SECRET);
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',user),token);
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',user,null,0,token));
       }
     })
     .catch((err) => {
-      return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'Error',null ,err),'');
+      return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'Error',null ,err));
     });
 }
 

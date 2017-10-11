@@ -1,18 +1,17 @@
-import {permissionModel, m_permission, m_service_api, m_page, m_permission_group} from '../../../shared/index';
+import {permissionModel, m_permission, m_service_api, m_page, m_permission_group, permissionGroupModel} from '../../../shared/index';
 import {ReturnModel} from '../../shared/index';
-import * as _ from 'lodash';
-import {knex} from '../../db/connection';
 import {QueryError, RowDataPacket} from 'mysql';
-import {permissionGroupModel} from '../../../shared/models/view_models/permission-group.model';
+import {knex} from '../../db/connection';
+import * as _ from 'lodash';
 
-export function Get_Permissions(currentPage:number,pageSize:number,callback:(returnValue:ReturnModel<permissionModel[]>,totalCOunt:number) => void) {
+export function Get_Permissions(currentPage:number,pageSize:number,callback:(returnValue:ReturnModel<permissionModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     });
 }
 
@@ -160,25 +159,25 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: permi
   }
 }
 
-export function Get_Permission_Groups(currentPage:number,pageSize:number,callback:(returnVal:ReturnModel<permissionGroupModel[]>,totalCount:number) => void) {
+export function Get_Permission_Groups(currentPage:number,pageSize:number,callback:(returnVal:ReturnModel<permissionGroupModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permission_groups(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     });
 }
 
-export function Get_Permission_Group_Permissions(currentPage:number,pageSize:number,pgId:number, callback: (returnVal:ReturnModel<permissionModel[]>,totalCount:number) => void) {
+export function Get_Permission_Group_Permissions(currentPage:number,pageSize:number,pgId:number, callback: (returnVal:ReturnModel<permissionModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permission_group_permissions(${pgId},${currentPage},${pageSize},@total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     })
 }
 

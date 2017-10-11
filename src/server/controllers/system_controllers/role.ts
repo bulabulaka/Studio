@@ -3,14 +3,14 @@ import {ReturnModel} from '../../shared/index';
 import {knex} from '../../db/connection';
 import {QueryError, RowDataPacket} from 'mysql';
 
-export function Get_Roles(currentPage:number,pageSize:number,callback: (returnVal:ReturnModel<roleModel[]>,totalCount:number) => void) {
+export function Get_Roles(currentPage:number,pageSize:number,callback: (returnVal:ReturnModel<roleModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_roles(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     });
 }
 
@@ -55,14 +55,14 @@ export function Add_Update_Role(flag: string, role: roleModel, callback: (return
   }
 }
 
-export function Get_Role_Permission_Groups(currentPage:number, pageSize:number,roleId:number, callback: (returnVal:ReturnModel<permissionGroupModel[]>,totalCount:number) => void) {
+export function Get_Role_Permission_Groups(currentPage:number, pageSize:number,roleId:number, callback: (returnVal:ReturnModel<permissionGroupModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_role_permission_groups(${roleId},${currentPage},${pageSize},@total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1]),totalCount);
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err),0);
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
     })
 }
 

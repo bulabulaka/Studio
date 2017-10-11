@@ -35,9 +35,9 @@ export function route_config_init(app:express.Application) {
   /*login*/
   app.post('/api/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
       let _loginModel:loginModel = req.body;
-      login(_loginModel,(returnVal:ReturnModel<userModel>,token:string) =>{
+      login(_loginModel,(returnVal:ReturnModel<userModel>) =>{
          if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-            return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,0,token);
+            return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,0,returnVal.token);
          }else if(returnVal.error){
             if(returnVal.errorCode){
                res.locals.errorCode = returnVal.errorCode;

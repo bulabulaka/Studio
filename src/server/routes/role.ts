@@ -19,9 +19,9 @@ router.get('/get_roles', (req: express.Request, res: express.Response, next: exp
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
-  Get_Roles(parseInt(query.page), parseInt(query.pageSize), (returnVal:ReturnModel<roleModel[]>,totalCount:number) =>{
+  Get_Roles(parseInt(query.page), parseInt(query.pageSize), (returnVal:ReturnModel<roleModel[]>) =>{
     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,returnVal.totalCount);
     }else if(returnVal.error){
       if(returnVal.errorCode){
         res.locals.errorCode = returnVal.errorCode;
@@ -79,9 +79,9 @@ router.get('/get_role_permission_groups', (req: express.Request, res: express.Re
   if (_.isEmpty(query) || !query.roleId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
-  Get_Role_Permission_Groups(parseInt(query.page), parseInt(query.pageSize), parseInt(query.roleId), (returnVal:ReturnModel<permissionGroupModel[]>,totalCount:number) =>{
+  Get_Role_Permission_Groups(parseInt(query.page), parseInt(query.pageSize), parseInt(query.roleId), (returnVal:ReturnModel<permissionGroupModel[]>) =>{
     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
+      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,returnVal.totalCount);
     }else if(returnVal.error){
       if(returnVal.errorCode){
         res.locals.errorCode = returnVal.errorCode;
@@ -122,7 +122,7 @@ router.post('/add_role_permission_groups', (req: express.Request, res: express.R
   if (!permissionGroupIdArray || !roleId || !permissionGroupIdArrayLength || !operatorId) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
-  Add_Role_Permission_Groups(permissionGroupIdArray,roleId,permissionGroupIdArrayLength,operatorId,(returnVal:ReturnModel<boolean>) =>{
+  Add_Role_Permission_Groups(permissionGroupIdArray,roleId,permissionGroupIdArrayLength,operatorId,(returnVal:ReturnModel<boolean>) => {
     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
     }else if(returnVal.error){

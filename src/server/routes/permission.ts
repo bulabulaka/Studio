@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as _ from 'lodash';
 import {handleResponse, ReturnModel} from '../shared/index';
-import {knex} from '../db/connection';
 import {permissionModel} from '../../shared/index';
 import {
   Get_Permissions,
@@ -18,7 +17,7 @@ import {permissionGroupModel} from '../../shared/models/view_models/permission-g
 const router = express.Router();
 
 /*get all permissions*/
-router.get('/get_permissions', (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -38,7 +37,7 @@ router.get('/get_permissions', (req: express.Request, res: express.Response, nex
 });
 
 /*add permission*/
-router.post('/add_permission', (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_permission', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -58,7 +57,7 @@ router.post('/add_permission', (req: express.Request, res: express.Response, nex
 });
 
 /*update permission*/
-router.put('/update_permission', (req: express.Request, res: express.Response, next: any) => {
+router.put('/update_permission', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -77,12 +76,8 @@ router.put('/update_permission', (req: express.Request, res: express.Response, n
   });
 });
 
-/*router.delete('/delete_permission', verifyToken, (req:, res: express.Response, next: any) => {
-
-});*/
-
 /*add permission group*/
-router.post('/add_permission_group', (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_permission_group', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let paramObj:permissionGroupModel = req.body.permission_group;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -102,7 +97,7 @@ router.post('/add_permission_group', (req: express.Request, res: express.Respons
 });
 
 /*update permission group*/
-router.put('/update_permission_group', (req: express.Request, res: express.Response, next: any) => {
+router.put('/update_permission_group', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let paramObj:permissionGroupModel = req.body.permission_group;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -122,7 +117,7 @@ router.put('/update_permission_group', (req: express.Request, res: express.Respo
 });
 
 /*get all permission groups paging*/
-router.get('/get_permission_groups',  (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permission_groups',  (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -142,7 +137,7 @@ router.get('/get_permission_groups',  (req: express.Request, res: express.Respon
 });
 
 /*query the permissions that this permission group has paging*/
-router.get('/get_permission_group_permissions', (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permission_group_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.permissionGroupId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -163,7 +158,7 @@ router.get('/get_permission_group_permissions', (req: express.Request, res: expr
 });
 
 /*query the permissions that this permission group does not have client paging*/
-router.get('/get_permission_group_donot_have_permissions', (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_permission_group_donot_have_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.permissionGroupId) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -184,7 +179,7 @@ router.get('/get_permission_group_donot_have_permissions', (req: express.Request
 
 
 /*add permissions to the permission group  batch add*/
-router.post('/add_permission_group_permissions', (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_permission_group_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let permissionIdArray = req.body.permissionIdArray;
   let permissionGroupId = req.body.permissionGroupId;
   let permissionIdArrayLength = req.body.permissionIdArrayLength;

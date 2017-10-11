@@ -1,12 +1,11 @@
 import {permissionModel, m_permission, m_service_api, m_page, m_permission_group} from '../../../shared/index';
-import {handleResponse,ReturnModel} from '../../shared/index';
-import * as express from 'express';
+import {ReturnModel} from '../../shared/index';
 import * as _ from 'lodash';
 import {knex} from '../../db/connection';
 import {QueryError, RowDataPacket} from 'mysql';
 import {permissionGroupModel} from '../../../shared/models/view_models/permission-group.model';
 
-export function Get_Permissions(currentPage:number,pageSize:number,callback:any) {
+export function Get_Permissions(currentPage:number,pageSize:number,callback:(returnValue:ReturnModel<permissionModel[]>,totalCOunt:number) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
@@ -17,7 +16,7 @@ export function Get_Permissions(currentPage:number,pageSize:number,callback:any)
     });
 }
 
-export function Add_Update_Permission(flag: string, permission: permissionModel, callback: any) {
+export function Add_Update_Permission(flag: string, permission: permissionModel, callback: (returnVal:ReturnModel<boolean>) => void) {
   let mPermission: m_permission = new m_permission();
   let mPage: m_page;
   let mServiceApi: m_service_api;
@@ -36,10 +35,10 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
       mPermission.modified_datetime = new Date();
       mPermission.modifier_id = permission.modifier_id;
     } else {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
     }
   } else {
-    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
+    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
   }
 
   if (mPermission.kind === 0) {
@@ -92,7 +91,7 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
         return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
       }
     }).catch((e) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, _.isEmpty(e) ? error : e));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, _.isEmpty(e) ? error : e));
     });
   }else{
     knex.transaction((trx) => {
@@ -116,12 +115,12 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
         return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
       }
     }).catch((e) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, _.isEmpty(e) ? error : e));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, _.isEmpty(e) ? error : e));
     });
   }
 }
 
-export function Add_Update_Permission_Group(flag: string, permissionGroup: permissionGroupModel, callback: any) {
+export function Add_Update_Permission_Group(flag: string, permissionGroup: permissionGroupModel, callback: (returnVal:ReturnModel<boolean>) => void) {
   let mPermissionGroup = new m_permission_group();
   mPermissionGroup.name = permissionGroup.name;
   mPermissionGroup.description = permissionGroup.description;
@@ -136,10 +135,10 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: permi
       mPermissionGroup.modified_datetime = new Date();
       mPermissionGroup.modifier_id = permissionGroup.modifier_id;
     } else {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
     }
   } else {
-    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid'));
+    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
   }
 
   if(flag === String(process.env.INSERT)){
@@ -148,7 +147,7 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: permi
         return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
       })
       .catch((e) => {
-        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, e));
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, e));
       });
   }else{
     knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)
@@ -156,12 +155,12 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: permi
         return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
       })
       .catch((e) => {
-        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null, e));
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, e));
       })
   }
 }
 
-export function Get_Permission_Groups(currentPage:number,pageSize:number,callback:any) {
+export function Get_Permission_Groups(currentPage:number,pageSize:number,callback:(returnVal:ReturnModel<permissionGroupModel[]>,totalCount:number) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permission_groups(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
@@ -172,7 +171,7 @@ export function Get_Permission_Groups(currentPage:number,pageSize:number,callbac
     });
 }
 
-export function Get_Permission_Group_Permissions(currentPage:number,pageSize:number,pgId:number, callback: any) {
+export function Get_Permission_Group_Permissions(currentPage:number,pageSize:number,pgId:number, callback: (returnVal:ReturnModel<permissionModel[]>,totalCount:number) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permission_group_permissions(${pgId},${currentPage},${pageSize},@total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       let totalCount = rows[0][3][0].totalCount || 0;
@@ -183,7 +182,7 @@ export function Get_Permission_Group_Permissions(currentPage:number,pageSize:num
     })
 }
 
-export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId:number,callback: any) {
+export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId:number,callback: (returnVal:ReturnModel<permissionModel[]>) => void ) {
   knex.raw(`CALL get_permission_group_donot_have_permissions(${permissionGroupId});`)
     .then((rows: RowDataPacket[]) => {
       return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][0]));
@@ -193,7 +192,7 @@ export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId:nu
     })
 }
 
-export function Add_Permission_Group_Permissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number, callback: any) {
+export function Add_Permission_Group_Permissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number, callback: (returnVal:ReturnModel<boolean>) => void) {
   knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
     .then((rows: RowDataPacket[]) => {
       let returnCode = rows[0][2][0].returnCode;

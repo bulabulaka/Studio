@@ -5,8 +5,8 @@ import {userModel} from '../../shared/index';
 
 const router = express.Router();
 
-/*根据用户ID查找用户信息*/
-router.get('/get_userinfo', (req:express.Request, res:express.Response, next:any) => {
+/*get userinfo by userId*/
+router.get('/get_userinfo', (req:express.Request, res:express.Response, next:express.NextFunction) => {
   getUserInfoById(parseInt(res.locals.userId) ,(returnVal:ReturnModel<userModel>) =>{
      if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);

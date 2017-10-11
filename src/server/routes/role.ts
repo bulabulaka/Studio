@@ -1,8 +1,7 @@
 import * as express from 'express';
 import {handleResponse,ReturnModel} from '../shared/index';
-import {knex} from '../db/connection';
 import * as _ from 'lodash';
-import {m_role,roleModel} from '../../shared/index';
+import {roleModel} from '../../shared/index';
 import {
   Get_Roles,
   Add_Update_Role,
@@ -15,7 +14,7 @@ import {permissionGroupModel} from '../../shared/models/view_models/permission-g
 const router = express.Router();
 
 /*get all the roles paging*/
-router.get('/get_roles', (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_roles', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -35,7 +34,7 @@ router.get('/get_roles', (req: express.Request, res: express.Response, next: any
 });
 
 /*add role*/
-router.post('/add_role',  (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_role',  (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let paramObj:roleModel = req.body.role;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -55,7 +54,7 @@ router.post('/add_role',  (req: express.Request, res: express.Response, next: an
 });
 
 /*update role*/
-router.put('/update_role',  (req: express.Request, res: express.Response, next: any) => {
+router.put('/update_role',  (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let paramObj:roleModel = req.body.role;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
@@ -75,7 +74,7 @@ router.put('/update_role',  (req: express.Request, res: express.Response, next: 
 });
 
 /*query the permission group that this role has paging*/
-router.get('/get_role_permission_groups', (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_role_permission_groups', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.roleId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -95,7 +94,7 @@ router.get('/get_role_permission_groups', (req: express.Request, res: express.Re
 });
 
 /*query the permission group that this role does not have  client paging*/
-router.get('/get_role_donot_have_permission_groups', (req: express.Request, res: express.Response, next: any) => {
+router.get('/get_role_donot_have_permission_groups', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.roleId) {
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
@@ -115,7 +114,7 @@ router.get('/get_role_donot_have_permission_groups', (req: express.Request, res:
 });
 
 /*add permission group to the role  batch add*/
-router.post('/add_role_permission_groups', (req: express.Request, res: express.Response, next: any) => {
+router.post('/add_role_permission_groups', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let permissionGroupIdArray = req.body.permissionGroupIdArray;
   let roleId = req.body.roleId;
   let permissionGroupIdArrayLength = req.body.permissionGroupIdArrayLength;

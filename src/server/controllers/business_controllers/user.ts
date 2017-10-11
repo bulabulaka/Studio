@@ -4,11 +4,11 @@ import {ReturnModel,comparePass} from '../../shared/index';
 import {registerModel,m_user,loginModel,userModel} from '../../../shared/index';
 import jwt = require('jsonwebtoken');
 
-/*根据用户ID查找用户信息*/
-export function getUserInfoById(userId:number,callback:any){
+/*get userinfo by userId*/
+export function getUserInfoById(userId:number,callback:(returnVal:ReturnModel<userModel>) => void){
    knex('m_user').where('id', userId).first()
     .then((user) => {
-       if (!user) return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'));
+       if (!user) return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'));
        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',user));
     })
     .catch((err) => {
@@ -17,12 +17,12 @@ export function getUserInfoById(userId:number,callback:any){
 }
 
 /*register user*/
-export function registerUser(_register:registerModel,callback:any){
+export function registerUser(_register:registerModel,callback:(returnVal:ReturnModel<number>) => void){
    if(_register.username.length < 6){
-     return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Username must be longer than 6 characters'));
+     return callback(new ReturnModel<number>(parseInt(process.env.FAIL_CODE),'Username must be longer than 6 characters'));
    }
    if(_register.password.length < 6){
-     return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Password must be longer than 6 characters'));
+     return callback(new ReturnModel<number>(parseInt(process.env.FAIL_CODE),'Password must be longer than 6 characters'));
    }
   const salt = bcrypt.genSaltSync();
   const password = bcrypt.hashSync(_register.password, salt);
@@ -43,19 +43,19 @@ export function registerUser(_register:registerModel,callback:any){
 }
 
 /*login*/
-export function login(paramObj:loginModel,callback:any){
+export function login(paramObj:loginModel,callback:(returnVal:ReturnModel<userModel>,token:string) => void){
   knex('m_user').where('username', paramObj.username).first()
     .then((user) => {
-      if (!user) return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'),'');
+      if (!user) return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'),'');
       if (!comparePass(paramObj.password, user.password)) {
-        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'User not found'),'');
+        return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'User not found'),'');
       } else {
         let token = jwt.sign(user.id, process.env.JWT_SECRET);
         return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',user),token);
       }
     })
     .catch((err) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',0 ,err),'');
+      return callback(new ReturnModel<userModel>(parseInt(process.env.FAIL_CODE),'Error',null ,err),'');
     });
 }
 

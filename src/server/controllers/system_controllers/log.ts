@@ -1,8 +1,9 @@
 import * as express from 'express';
 import {m_operate_log, m_log_detail} from '../../../shared/index';
 import * as _ from 'lodash';
+import * as Knex from 'knex';
 
-export function LogOperate(knex: any, req: express.Request, res: express.Response, next: any) {
+export function LogOperate(knex: Knex, req: express.Request, res: express.Response, next: express.NextFunction) {
   let ip = req.ip;
   let accessToken = req.headers['x-access-token'] || req.body.token || req.query.token;
   let userAgent = req.headers['user-agent'];

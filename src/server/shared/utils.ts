@@ -1,8 +1,9 @@
 import {ResultValue} from '../../shared/index';
 import jwt = require('jsonwebtoken');
 import * as bcrypt from 'bcryptjs';
+import * as express from 'express';
 
-export function handleResponse<T>(res, resStatusCode: number, code: number, msg: string, data: T, totalCount?: number, token?: string) {
+export function handleResponse<T>(res:express.Response, resStatusCode: number, code: number, msg: string, data: T, totalCount?: number, token?: string):void {
   let resultData = new ResultValue<T>();
   resultData.RCode = code;
   resultData.RMsg = msg;
@@ -12,17 +13,28 @@ export function handleResponse<T>(res, resStatusCode: number, code: number, msg:
   res.status(resStatusCode).json({resultValue: resultData});
 }
 
-export function verifyToken(req, res, next) {
+export function verifyToken(req:express.Request, res:express.Response, next:express.NextFunction):void {
   let token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) return next(err);
       res.locals.userId = decoded;
-      next();
+      return next();
     })
   } else {
-    handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'No token exists.', null);
+    return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), 'No token exists.', null);
   }
+}
+
+export function normalizePort(val:string):number {
+  const port:number = parseInt(val, 10);
+  if (isNaN(port)) {
+    return -1;
+  }
+  if (port >= 0) {
+    return port;
+  }
+  return -1;
 }
 
 export function comparePass(userPassword, databasePassword) {

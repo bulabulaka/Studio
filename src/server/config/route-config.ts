@@ -12,7 +12,7 @@ import * as path from 'path';
 export function route_config_init(app:express.Application) {
 
   app.get('', (req: express.Request, res:express.Response) => {
-    res.sendFile(path.join(process.env.DIST_PATH, 'dist/main.html'));
+    res.sendFile(path.join(path.resolve(process.env.DIST_PATH), 'main.html'));
   });
 
   /*register user*/

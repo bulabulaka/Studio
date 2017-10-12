@@ -1,4 +1,5 @@
 import {init_config} from "./app";
+import {normalizePort} from './shared/index';
 import  * as http from "http";
 
 const app = init_config();
@@ -8,17 +9,6 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-function normalizePort(val) {
-  const port = parseInt(val, 10);
-  if (isNaN(port)) {
-    return val;
-  }
-  if (port >= 0) {
-    return port;
-  }
-  return false;
-}
 
 function onError(error) {
   if (error.syscall !== 'listen') {

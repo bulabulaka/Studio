@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import {init_config as server} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
-import {permissionModel, m_permission_group} from '../../src/shared/index';
+import {permissionModel, permissionGroupModel} from '../../src/shared/index';
 import {simulateUser} from './utils';
 
 const should = chai.should();
@@ -50,7 +50,7 @@ describe('routes : /api/permission', () => {
             res.body.resultValue.RCode.should.eql(1);
             done();
           });
-        });
+      });
     });
     it('should add a new permission (page)', (done) => {
       let new_permission = new permissionModel();
@@ -129,13 +129,12 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission_group', () => {
     it('should add a new permission group', (done) => {
-      let permissionGroup = new m_permission_group();
+      let permissionGroup = new permissionGroupModel();
       permissionGroup.name = 'test';
       permissionGroup.auditstat = 1;
       permissionGroup.description = 'test';
       permissionGroup.order_no = 1;
       permissionGroup.creator_id = 1;
-      permissionGroup.created_datetime = new Date();
       chai.request(server())
         .post('/api/permission/add_permission_group')
         .send({
@@ -155,14 +154,13 @@ describe('routes : /api/permission', () => {
 
   describe('PUT /api/permission/update_permission_group', () => {
     it('should update a permission group', (done) => {
-      let permissionGroup = new m_permission_group();
+      let permissionGroup = new permissionGroupModel();
       permissionGroup.id = 1;
       permissionGroup.name = 'test_update';
       permissionGroup.auditstat = 1;
       permissionGroup.description = 'tests';
       permissionGroup.order_no = 1;
       permissionGroup.modifier_id = 1;
-      permissionGroup.modified_datetime = new Date();
       chai.request(server())
         .put('/api/permission/update_permission_group')
         .send({
@@ -178,4 +176,18 @@ describe('routes : /api/permission', () => {
         })
     })
   })
+
+  describe('GET /api/permission/get_permissions', () => {
+    it('need token', (done) => {
+      chai.request(server())
+        .get('/api/permission/get_permissions')
+        .query({page:1,pageSize:10})
+        .end((err, res) => {
+          res.status.should.equal(200);
+          res.type.should.equal('application/json');
+          res.body.resultValue.RMsg.should.eql('No token exists.');
+          done();
+        });
+    });
+  });
 });

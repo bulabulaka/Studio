@@ -1,8 +1,7 @@
 import * as express from 'express';
 import * as _ from 'lodash';
-import {handleResponse, verifyToken, ReturnModel} from '../shared/index';
-import {knex} from '../db/connection';
-import {m_permission, m_service_api, m_page, permissionModel} from '../../shared/index';
+import {handleResponse, ReturnModel,handleReturn} from '../shared/index';
+import {permissionModel} from '../../shared/index';
 import {
   Get_Permissions,
   Add_Update_Permission,
@@ -12,120 +11,113 @@ import {
   Get_Permission_Group_Donot_Have_Permissions,
   Add_Permission_Group_Permissions
 } from '../controllers/system_controllers/permission';
+import {permissionGroupModel} from '../../shared/models/view_models/permission-group.model';
 
 
 const router = express.Router();
 
-//get all permissions
-router.get('/get_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
+/*get all permissions*/
+router.get('/get_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   let query = req.query;
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
-    res.locals.errorCode = 400;
-    return next('query is invalid');
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
   }
-  Get_Permissions(parseInt(query.page),parseInt(query.pageSize),(returnVal:ReturnModel<permissionModel[]>,totalCount:number) =>{
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data,totalCount);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, null);
-    }
+  Get_Permissions(parseInt(query.page),parseInt(query.pageSize),(returnVal:ReturnModel<permissionModel[]>) =>{
+    handleReturn(returnVal,res,next);
   });
 });
 
-//add permission
-router.post('/add_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  let paramObj = req.body.permission;
+/*add permission*/
+router.post('/add_permission', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
   }
   Add_Update_Permission(String(process.env.INSERT), paramObj, (returnVal:ReturnModel<boolean>) => {
-    if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-    }else if(returnVal.error){
-      if(returnVal.errorCode){
-        res.locals.errorCode = returnVal.errorCode;
-      }
-      return next(returnVal.error);
-    }else{
-      return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
-    }
+    handleReturn(returnVal,res,next);
   });
 });
 
-//update permission
-router.put('/update_permission', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  let paramObj = req.body.permission;
+/*update permission*/
+router.put('/update_permission', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let paramObj:permissionModel = req.body.permission;
   if(_.isEmpty(paramObj)){
     return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
   }
   Add_Update_Permission(String(process.env.UPDATE), paramObj, (returnVal:ReturnModel<boolean>) => {
-     if(returnVal.RCode === parseInt(process.env.SUCCESS_CODE)){
-       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), returnVal.RMsg, returnVal.Data);
-     }else if(returnVal.error){
-       if(returnVal.errorCode){
-         res.locals.errorCode = returnVal.errorCode;
-       }
-       return next(returnVal.error);
-     }else{
-       return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE), returnVal.RMsg, false);
-     }
+    handleReturn(returnVal,res,next);
   });
 });
 
-/*router.delete('/delete_permission', verifyToken, (req:, res: express.Response, next: any) => {
-
-});*/
-
-
-router.post('/add_permission_group', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Add_Update_Permission_Group('insert', req.body.permission_group, (error, permissionGroup) => {
-    if (error) return next(error);
-    knex('m_permission_group').returning('id').insert(permissionGroup)
-      .then((ids) => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', true);
-      })
-      .catch((e) => {
-        return next(e);
-      })
+/*add permission group*/
+router.post('/add_permission_group', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let paramObj:permissionGroupModel = req.body.permission_group;
+  if(_.isEmpty(paramObj)){
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
+  }
+  Add_Update_Permission_Group(String(process.env.INSERT), paramObj, (returnVal:ReturnModel<boolean>) => {
+    handleReturn(returnVal,res,next);
   });
 });
 
-router.put('/update_permission_group', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Add_Update_Permission_Group('update', req.body.permission_group, (error, permissionGroup) => {
-    if (error) return next(error);
-    knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)
-      .then(() => {
-        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.SUCCESS_CODE), 'OK', null);
-      })
-      .catch((e) => {
-        next(e);
-      })
+/*update permission group*/
+router.put('/update_permission_group', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let paramObj:permissionGroupModel = req.body.permission_group;
+  if(_.isEmpty(paramObj)){
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',false);
+  }
+  Add_Update_Permission_Group(String(process.env.UPDATE), paramObj, (returnVal:ReturnModel<boolean>) => {
+    handleReturn(returnVal,res,next);
   });
 });
 
-//获取所有的权限组 分页
-router.get('/get_permission_groups', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Get_Permission_Groups(req, res, next);
+/*get all permission groups paging*/
+router.get('/get_permission_groups',  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let query = req.query;
+  if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Permission_Groups(parseInt(query.page),parseInt(query.pageSize),(returnVal:ReturnModel<permissionGroupModel[]>) =>{
+    handleReturn(returnVal,res,next);
+  });
 });
 
-//查询权限组所拥有的权限 分页
-router.get('/get_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Get_Permission_Group_Permissions(req, res, next);
+/*query the permissions that this permission group has paging*/
+router.get('/get_permission_group_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let query = req.query;
+  if (_.isEmpty(query) || !query.permissionGroupId || !query.page || !query.pageSize || parseInt(query.page) < 1 || parseInt(query.pageSize) < 1) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Permission_Group_Permissions(parseInt(query.page), parseInt(query.pageSize), parseInt(query.permissionGroupId),
+    (returnVal:ReturnModel<permissionModel[]>) =>{
+      handleReturn(returnVal,res,next);
+  });
 });
 
-//查询权限组未拥有的权限
-router.get('/get_permission_group_donot_have_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Get_Permission_Group_Donot_Have_Permissions(req, res, next);
+/*query the permissions that this permission group does not have client paging*/
+router.get('/get_permission_group_donot_have_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let query = req.query;
+  if (_.isEmpty(query) || !query.permissionGroupId) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Get_Permission_Group_Donot_Have_Permissions(parseInt(query.permissionGroupId),(returnVal:ReturnModel<permissionModel[]>) => {
+    handleReturn(returnVal,res,next);
+  });
 });
 
-//给权限组添加权限
-router.post('/add_permission_group_permissions', verifyToken, (req: express.Request, res: express.Response, next: any) => {
-  Add_Permission_Group_Permissions(req, res, next);
+
+/*add permissions to the permission group  batch add*/
+router.post('/add_permission_group_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let permissionIdArray = req.body.permissionIdArray;
+  let permissionGroupId = req.body.permissionGroupId;
+  let permissionIdArrayLength = req.body.permissionIdArrayLength;
+  let operatorId = req.body.operatorId;
+  if (!permissionIdArray || !permissionGroupId || !permissionIdArrayLength || !operatorId) {
+    return handleResponse(res,parseInt(process.env.HTTP_STATUS_OK), parseInt(process.env.FAIL_CODE),'param is invalid',null);
+  }
+  Add_Permission_Group_Permissions(permissionGroupId,permissionIdArray,permissionIdArrayLength,operatorId,(returnVal:ReturnModel<boolean>) =>{
+    handleReturn(returnVal,res,next);
+  });
 });
 
 

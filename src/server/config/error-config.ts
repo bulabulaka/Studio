@@ -1,4 +1,6 @@
-export function error_config_init(app: any) {
+import * as express from 'express';
+
+export function error_config_init(app: express.Application) {
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
     let err = new Error('Not Found');
@@ -17,8 +19,8 @@ export function error_config_init(app: any) {
     });
   }
 
-  // production error handler (no stacktraces leaked to user)
-  app.use(function (err: Error, req, res, next) {
+  // production error handler (no stacktrace leaked to user)
+  app.use(function (err: Error, req:express.Request, res:express.Response, next:express.NextFunction) {
     res.locals.err = err;
     res.status(res.locals.errorCode || 500).send({
       message: err.message,

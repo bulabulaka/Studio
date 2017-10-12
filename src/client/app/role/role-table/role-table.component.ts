@@ -3,7 +3,7 @@ import {flyIn} from '../../shared/index';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {RoleService, UserService} from '../../shared/index';
-import {m_role, m_user, m_permission_group} from '../../../../shared/index';
+import {roleModel, userModel, permissionGroupModel} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 import * as _ from 'lodash';
 
@@ -20,11 +20,11 @@ export class RoleTableComponent implements OnInit {
   public showAddRoleDialog: boolean = false;
   public showPermissionGroupsDialog: boolean = false;
   public showAddPermissionGroupsDialog: boolean = false;
-  public currentUser: m_user;
-  public roleArray: m_role[] = [];
-  public permissionGroupsArray: m_permission_group[] = [];//角色已拥有的权限组
-  public doNotHavePermissionGroupsArray: m_permission_group[] = []; //角色未拥有的权限组
-  public addPermissionGroupsSelectionArray: m_permission_group[] = [];
+  public currentUser: userModel;
+  public roleArray: roleModel[] = [];
+  public permissionGroupsArray: permissionGroupModel[] = [];//角色已拥有的权限组
+  public doNotHavePermissionGroupsArray: permissionGroupModel[] = []; //角色未拥有的权限组
+  public addPermissionGroupsSelectionArray: permissionGroupModel[] = [];
   public permissionGroupsCurrentPage = 1;
   public roleCurrentPage = 1;
   public itemsPerPage = 10;//分页大小
@@ -120,7 +120,7 @@ export class RoleTableComponent implements OnInit {
     this.hasSubmit = true;
     this.showAddRoleDialog = false;
     const roleFormVal = this.roleForm.value;
-    let role = new m_role();
+    let role = new roleModel();
     role.name = roleFormVal.name;
     role.order_no = 1;
     role.auditstat = 1;

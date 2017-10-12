@@ -1,17 +1,18 @@
 // *** main dependencies *** //
 import * as path from 'path';
 import * as bodyParser from 'body-parser';
-import flash = require('connect-flash');
 import * as morgan from 'morgan';
 import * as nunjucks from 'nunjucks';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
+import * as Knex from 'knex';
+import flash = require('connect-flash');
 import {LogOperate} from '../controllers/system_controllers/log';
 
 // *** load environment variables *** //
 dotenv.config();
 
-export function main_config_init(knex: any, app: any, express: any) {
+export function main_config_init(knex: Knex, app: express.Application) {
 
   // *** view folders *** //
   const viewFolders = [path.join(__dirname, '..', 'views')];
@@ -21,19 +22,17 @@ export function main_config_init(knex: any, app: any, express: any) {
     autoescape: true
   });
   app.set('view engine', 'html');
-
   // *** app middleware *** //
   if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));
   }
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: false}));
-  // uncomment if using express-session
+  /*uncomment if using express-session*/
   app.use(flash());
   app.use(express.static(path.join(process.env.DIST_PATH, 'dist')));
-
-  //logging information middleware
-  app.use((req: express.Request, res: express.Response, next: any) => {
+  /*logging information middleware*/
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     LogOperate(knex, req, res, next);
   });
 }

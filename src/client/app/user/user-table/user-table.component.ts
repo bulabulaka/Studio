@@ -3,7 +3,7 @@ import {flyIn} from '../../shared/index';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 import {RoleService, UserService} from '../../shared/index';
-import {roleModel, userModel, permissionGroupModel} from '../../../../shared/index';
+import {RoleModel, UserModel, PermissionGroupModel} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 import * as _ from 'lodash';
 
@@ -23,14 +23,14 @@ export class UserTableComponent implements OnInit {
   public showAddUserRolesDialog:boolean = false;
   public showPermissionGroupsDialog: boolean = false;
   public showAddPermissionGroupsDialog: boolean = false;
-  public currentUser: userModel;
-  public userArray: userModel[] = [];
-  public roleArray: roleModel[] = []; //用户已拥有角色组
-  public doNotHaveRoleArray: roleModel[] = [];//用户未拥有角色组
-  public addUserRolesSelectionArray: roleModel[] = [];
-  public permissionGroupsArray: permissionGroupModel[] = [];//用户已拥有的权限组
-  public doNotHavePermissionGroupsArray: permissionGroupModel[] = []; //用户未拥有的权限组
-  public addPermissionGroupsSelectionArray: permissionGroupModel[] = [];
+  public currentUser: UserModel;
+  public userArray: UserModel[] = [];
+  public roleArray: RoleModel[] = []; //用户已拥有角色组
+  public doNotHaveRoleArray: RoleModel[] = [];//用户未拥有角色组
+  public addUserRolesSelectionArray: RoleModel[] = [];
+  public permissionGroupsArray: PermissionGroupModel[] = [];//用户已拥有的权限组
+  public doNotHavePermissionGroupsArray: PermissionGroupModel[] = []; //用户未拥有的权限组
+  public addPermissionGroupsSelectionArray: PermissionGroupModel[] = [];
   public permissionGroupsCurrentPage = 1;
   public roleCurrentPage = 1;
   public rolesTotalCount = 0;
@@ -126,7 +126,7 @@ export class UserTableComponent implements OnInit {
     this.hasSubmit = true;
     this.showAddRoleDialog = false;
     const roleFormVal = this.roleForm.value;
-    let role = new roleModel();
+    let role = new RoleModel();
     role.name = roleFormVal.name;
     role.order_no = 1;
     role.auditstat = 1;

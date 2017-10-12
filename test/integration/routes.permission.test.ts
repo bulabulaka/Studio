@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import {init_config as server} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
-import {permissionModel, permissionGroupModel} from '../../src/shared/index';
+import {PermissionModel, PermissionGroupModel} from '../../src/shared/index';
 import {simulateUser} from './utils';
 
 const should = chai.should();
@@ -28,7 +28,7 @@ describe('routes : /api/permission', () => {
   describe('POST /api/permission/add_permission', () => {
     it('should add a new permission（service api）', (done) => {
       simulateUser('jeremy', 'johnson123', (token: string) => {
-        const new_permission = new permissionModel();
+        const new_permission = new PermissionModel();
         new_permission.auditstat = 1;
         new_permission.name = 'test';
         new_permission.kind = 1;
@@ -53,7 +53,7 @@ describe('routes : /api/permission', () => {
       });
     });
     it('should add a new permission (page)', (done) => {
-      let new_permission = new permissionModel();
+      const new_permission = new PermissionModel();
       new_permission.auditstat = 1;
       new_permission.name = 'test';
       new_permission.kind = 0;
@@ -76,7 +76,7 @@ describe('routes : /api/permission', () => {
         });
     });
     it('when an error occur,it should rollback', (done) => {
-      let new_permission = new permissionModel();
+      const new_permission = new PermissionModel();
       new_permission.auditstat = 1;
       new_permission.name = 'test';
       new_permission.kind = 1;
@@ -101,7 +101,7 @@ describe('routes : /api/permission', () => {
 
   describe('PUT /api/permission/update_permission', () => {
     it('should update a permission (service api)', (done) => {
-      let new_permission = new permissionModel();
+      const new_permission = new PermissionModel();
       new_permission.id = 2;
       new_permission.auditstat = 1;
       new_permission.name = 'test';
@@ -129,7 +129,7 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission_group', () => {
     it('should add a new permission group', (done) => {
-      let permissionGroup = new permissionGroupModel();
+      const permissionGroup = new PermissionGroupModel();
       permissionGroup.name = 'test';
       permissionGroup.auditstat = 1;
       permissionGroup.description = 'test';
@@ -154,7 +154,7 @@ describe('routes : /api/permission', () => {
 
   describe('PUT /api/permission/update_permission_group', () => {
     it('should update a permission group', (done) => {
-      let permissionGroup = new permissionGroupModel();
+      const permissionGroup = new PermissionGroupModel();
       permissionGroup.id = 1;
       permissionGroup.name = 'test_update';
       permissionGroup.auditstat = 1;
@@ -175,13 +175,13 @@ describe('routes : /api/permission', () => {
           done();
         })
     })
-  })
+  });
 
   describe('GET /api/permission/get_permissions', () => {
     it('need token', (done) => {
       chai.request(server())
         .get('/api/permission/get_permissions')
-        .query({page:1,pageSize:10})
+        .query({page: 1, pageSize: 10})
         .end((err, res) => {
           res.status.should.equal(200);
           res.type.should.equal('application/json');

@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/form
 import {Router} from '@angular/router';
 import {flyIn} from '../../shared/index';
 import {PermissionService, UserService} from '../../shared/index';
-import {permissionModel, userModel, permissionGroupModel} from '../../../../shared/index';
+import {PermissionModel, UserModel, PermissionGroupModel} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
 import * as _ from 'lodash';
 
@@ -20,11 +20,11 @@ export class PermissionGroupComponent implements OnInit {
   public displayDialog: boolean = false;
   public showPermissionsDialog: boolean = false;
   public showAddPermissionsDialog: boolean = false;
-  public currentUser: userModel;
-  public permissionGroupArray: permissionGroupModel[] = [];
-  public permissionArray: permissionModel[] = [];//权限组已拥有的权限
-  public doNotHavePermissionArray: permissionModel[] = []; //权限组为拥有的权限
-  public addPermissionsSelectionArray: permissionModel[] = [];
+  public currentUser: UserModel;
+  public permissionGroupArray: PermissionGroupModel[] = [];
+  public permissionArray: PermissionModel[] = [];//权限组已拥有的权限
+  public doNotHavePermissionArray: PermissionModel[] = []; //权限组为拥有的权限
+  public addPermissionsSelectionArray: PermissionModel[] = [];
   public permissionGroupsCurrentPage = 1;
   public currentPage = 1;
   public itemsPerPage = 10;//分页大小
@@ -131,7 +131,7 @@ export class PermissionGroupComponent implements OnInit {
     this.hasSubmit = true;
     this.displayDialog = false;
     const permissionGroupFormVal = this.permissionGroupForm.value;
-    let permissionGroup = new permissionGroupModel();
+    let permissionGroup = new PermissionGroupModel();
     permissionGroup.name = permissionGroupFormVal.name;
     permissionGroup.order_no = 1;
     permissionGroup.auditstat = 1;
@@ -179,7 +179,7 @@ export class PermissionGroupComponent implements OnInit {
   //权限组分页
   permissionGroupsPaginate(event) {
     if (event && event.page >= 0) {
-      this.permissionService.getPermissionGroups(0,(event.page + 1), this.itemsPerPage).subscribe(
+      this.permissionService.getPermissionGroups(0, (event.page + 1), this.itemsPerPage).subscribe(
         (response) => {
           if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
             this.permissionGroupArray = response.resultValue.Data;

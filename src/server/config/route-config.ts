@@ -5,19 +5,19 @@ import {UserRouter} from '../routes/user';
 import {PermissionRouter} from '../routes/permission';
 import {RoleRouter} from '../routes/role';
 import {verifyToken, ReturnModel, handleResponse, handleReturn} from '../shared/index';
-import {registerModel, loginModel, userModel} from '../../shared/index';
+import {RegisterModel, LoginModel, UserModel} from '../../shared/index';
 import {registerUser, login} from '../controllers/system_controllers/user';
 import * as path from 'path';
 
 export function route_config_init(app: express.Application) {
 
-  app.get('', (req: express.Request, res:express.Response) => {
-    res.sendFile(path.join(path.resolve(process.env.DIST_PATH), 'main.html'));
+  app.get('', (req: express.Request, res: express.Response) => {
+    res.sendFile(path.join(process.env.DIST_PATH, 'dist/main.html'));
   });
 
   /*register user*/
   app.post('/api/register', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const _register: registerModel = req.body.register;
+    const _register: RegisterModel = req.body.register;
     registerUser(_register, (returnVal: ReturnModel<number>) => {
       handleReturn(returnVal, res, next);
     });
@@ -25,8 +25,8 @@ export function route_config_init(app: express.Application) {
 
   /*login*/
   app.post('/api/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const _loginModel: loginModel = req.body;
-    login(_loginModel, (returnVal: ReturnModel<userModel>) => {
+    const _loginModel: LoginModel = req.body;
+    login(_loginModel, (returnVal: ReturnModel<UserModel>) => {
       handleReturn(returnVal, res, next);
     });
   });

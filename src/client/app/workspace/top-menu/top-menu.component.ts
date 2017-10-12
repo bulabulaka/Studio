@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {userModel} from '../../../../shared/index'
+import {UserModel} from '../../../../shared/index'
 import {EventBusService} from '../../shared/index';
 
 @Component({
@@ -8,7 +8,7 @@ import {EventBusService} from '../../shared/index';
   styleUrls: ['./top-menu.component.css']
 })
 export class TopMenuComponent implements OnInit {
-  @Input() currentUser: userModel;
+  @Input() currentUser: UserModel;
   toggleBtnStatus = false;
   public showTopMenu = false;
 

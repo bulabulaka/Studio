@@ -1,7 +1,7 @@
 import * as express from 'express';
 import {handleResponse, ReturnModel, handleReturn} from '../shared/index';
 import * as _ from 'lodash';
-import {roleModel} from '../../shared/index';
+import {RoleModel, PermissionGroupModel} from '../../shared/index';
 import {
   Get_Roles,
   Add_Update_Role,
@@ -9,7 +9,6 @@ import {
   Get_Role_Donot_Have_Permission_Groups,
   Add_Role_Permission_Groups
 } from '../controllers/system_controllers/role';
-import {permissionGroupModel} from '../../shared/models/view_models/permission-group.model';
 
 const router = express.Router();
 
@@ -19,14 +18,14 @@ router.get('/get_roles', (req: express.Request, res: express.Response, next: exp
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page, 10) < 1 || parseInt(query.pageSize, 10) < 1) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Roles(parseInt(query.page, 10), parseInt(query.pageSize, 10), (returnVal: ReturnModel<roleModel[]>) => {
+  Get_Roles(parseInt(query.page, 10), parseInt(query.pageSize, 10), (returnVal: ReturnModel<RoleModel[]>) => {
     handleReturn(returnVal, res, next);
   });
 });
 
 /*add role*/
 router.post('/add_role', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const paramObj: roleModel = req.body.role;
+  const paramObj: RoleModel = req.body.role;
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
@@ -37,7 +36,7 @@ router.post('/add_role', (req: express.Request, res: express.Response, next: exp
 
 /*update role*/
 router.put('/update_role', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const paramObj: roleModel = req.body.role;
+  const paramObj: RoleModel = req.body.role;
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
@@ -54,7 +53,7 @@ router.get('/get_role_permission_groups', (req: express.Request, res: express.Re
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
   Get_Role_Permission_Groups(parseInt(query.page, 10), parseInt(query.pageSize, 10), parseInt(query.roleId, 10),
-    (returnVal: ReturnModel<permissionGroupModel[]>) => {
+    (returnVal: ReturnModel<PermissionGroupModel[]>) => {
       handleReturn(returnVal, res, next);
     });
 });
@@ -65,7 +64,7 @@ router.get('/get_role_donot_have_permission_groups', (req: express.Request, res:
   if (_.isEmpty(query) || !query.roleId) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Role_Donot_Have_Permission_Groups(parseInt(query.roleId, 10), (returnVal: ReturnModel<permissionGroupModel[]>) => {
+  Get_Role_Donot_Have_Permission_Groups(parseInt(query.roleId, 10), (returnVal: ReturnModel<PermissionGroupModel[]>) => {
     handleReturn(returnVal, res, next);
   });
 });

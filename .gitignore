@@ -4,4 +4,7 @@ dist/
 .idea/
 **.js
 npm-debug.log
+.DS_Store
+.env
+
 

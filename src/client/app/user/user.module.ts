@@ -3,6 +3,7 @@ import {SharedModule} from '../shared/shared.module';
 import {UserComponent} from './user.component';
 import {RouterModule} from '@angular/router';
 import {UserTableComponent} from './user-table/user-table.component';
+import {DialogModule, ButtonModule, PaginatorModule, DataTableModule} from 'primeng/primeng';
 
 const userRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -18,7 +19,11 @@ const userRouting: ModuleWithProviders = RouterModule.forChild([
 @NgModule({
   imports: [
     SharedModule,
-    userRouting
+    userRouting,
+    DialogModule,
+    ButtonModule,
+    PaginatorModule,
+    DataTableModule
   ],
   declarations: [UserComponent, UserTableComponent]
 })

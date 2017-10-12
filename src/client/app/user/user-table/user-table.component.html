@@ -1,3 +1,138 @@
-<p>
-  user-table works!
-</p>
+<!--<div [@flyIn]="'active'">
+  <form class="form-vertical" role="form">
+    <div class="row">
+      <div class="col-sm-10">
+        <div class="input-group">
+          <input class="form-control" type="text" placeholder="角色名称">
+          <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i> 搜索</button>
+                    </span>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="input-group pull-right">
+          <button type="button" (click)="addRoleDialog()" pButton icon="fa-external-link-square"
+                  label="创建角色">
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>角色名</th>
+          <th>角色描述</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let role of roleArray; let i = index">
+          <td>{{(roleCurrentPage - 1) * itemsPerPage + i+1}}</td>
+          <td>{{role.name}}</td>
+          <td>{{role.description}}</td>
+          <td>
+            <button pButton type="button" label="删除" icon="fa-times" class="ui-button-danger"></button>
+            <button pButton type="button" label="修改权限组"
+                    (click)="rolePermissionGroupsDialog(role.id)"
+                    icon="fa-pencil-square-o"></button>
+            <button pButton type="button" label="添加权限组" icon="fa-plus"
+                    (click)="addRolePermissionGroupsDialog(role.id)"></button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <p-paginator [rows]="itemsPerPage" [totalRecords]="rolesTotalCount"
+                   (onPageChange)="rolesPaginate($event)"></p-paginator>
+    </div>
+  </div>
+</div>
+
+
+<p-dialog [(visible)]="showAddRoleDialog" modal="modal" [responsive]="true" width="600">
+  <p-header>创建角色</p-header>
+  <form [formGroup]="roleForm" (ngSubmit)="addRoleSubmit()" class="form-horizontal">
+    <div class="form-group" [ngClass]="{ 'has-error': formErrors.name}">
+      <label class="col-sm-2 control-label">角色名称：</label>
+      <div class="col-sm-10">
+        <input formControlName="name" type="text" class="form-control" placeholder="请输入角色名...">
+        <div *ngIf="formErrors.name" class="text-danger">
+          <span>{{formErrors.name}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" [ngClass]="{'has-error':formErrors.description}">
+      <label class="col-sm-2 control-label">角色描述：</label>
+      <div class="col-sm-10">
+        <textarea formControlName="description" class="form-control" cols="40" rows="10"
+                  placeholder="请输入角色的描述"></textarea>
+        <div *ngIf="formErrors.description" class="text-danger">
+          <span>{{formErrors.description}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" pButton icon="fa-check" [disabled]="!roleForm.valid || hasSubmit"
+                label="确定"></button>
+        <button type="button" pButton icon="fa-close" (click)="showAddRoleDialog=false" label="取消"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog [(visible)]="showPermissionGroupsDialog" modal="modal" [responsive]="true" width="600">
+  <p-header>角色所拥有的权限组</p-header>
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>权限组名称</th>
+          <th>描述</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let permission_group of permissionGroupsArray; let i = index">
+          <td>{{(permissionGroupsCurrentPage - 1) * itemsPerPage + i+1}}</td>
+          <td>{{permission_group.name}}</td>
+          <td>{{permission_group.description}}</td>
+          <td>
+            <button pButton type="button" label="删除" class="ui-button-danger" icon="fa-times"></button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <p-paginator [rows]="itemsPerPage" [totalRecords]="permissionGroupsTotalCount"
+                   (onPageChange)="permissionGroupsPaginate($event)"></p-paginator>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog [(visible)]="showAddPermissionGroupsDialog" modal="modal"
+          [responsive]="true" width="600">
+  <p-header>添加权限</p-header>
+  <div class="row">
+    <div class="col-sm-12">
+      <p-dataTable [value]="doNotHavePermissionGroupsArray" [(selection)]="addPermissionGroupsSelectionArray"
+                   [paginator]="true"
+                   [rows]="10" [pageLinks]="5" [headerCheckboxToggleAllPages]="true"
+                   dataKey="created_datetime">
+        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+        <p-column field="name" header="权限组名称"></p-column>
+        <p-column field="description" header="描述"></p-column>
+      </p-dataTable>
+    </div>
+  </div>
+  <p-footer>
+    <button type="button" (click)="addPermissionGroupsSubmit(role_id)" pButton icon="fa-check"
+            [disabled]="addPermissionGroupsSelectionArray.length === 0 || hasSubmit"
+            label="确定"></button>
+    <button type="button" pButton icon="fa-close" (click)="showAddPermissionGroupsDialog=false" label="取消"></button>
+  </p-footer>
+</p-dialog>-->

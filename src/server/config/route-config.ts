@@ -6,7 +6,7 @@ import {PermissionRouter} from '../routes/permission';
 import {RoleRouter} from '../routes/role';
 import {verifyToken,ReturnModel,handleResponse,handleReturn} from '../shared/index';
 import {registerModel,loginModel,userModel} from '../../shared/index';
-import {registerUser,login} from '../controllers/business_controllers/user';
+import {registerUser,login} from '../controllers/system_controllers/user';
 import * as path from 'path';
 
 export function route_config_init(app:express.Application) {

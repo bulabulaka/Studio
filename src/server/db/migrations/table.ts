@@ -4,7 +4,7 @@ exports.up = (knex, Promise) => {
       table.increments('id').unique();
       table.string('username', 50).notNullable();
       table.string('password', 100).notNullable();
-      table.tinyint('auditstat').notNullable();
+      table.tinyint('auditstat').notNullable(); // -1:delete 0:invalid 1:valid
       table.dateTime('expiry_date');
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));
@@ -91,7 +91,7 @@ exports.up = (knex, Promise) => {
       table.increments('id').unique();
       table.integer('user_id').notNullable().unsigned().references('id').inTable('m_user');
       table.integer('permission_group_id').notNullable().unsigned().references('id').inTable('m_permission_group');
-      table.tinyint('flag').notNullable().comment('add or minus permission group');
+      table.tinyint('flag').notNullable().comment('add or minus permission group');  // 1:add 2:minus
       table.tinyint('auditstat').notNullable();
       table.integer('creator_id').notNullable();
       table.dateTime('created_datetime').notNullable().defaultTo(knex.raw('now()'));

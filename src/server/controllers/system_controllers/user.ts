@@ -3,6 +3,7 @@ import {knex} from '../../db/connection';
 import {ReturnModel,comparePass} from '../../shared/index';
 import {registerModel,m_user,loginModel,userModel} from '../../../shared/index';
 import jwt = require('jsonwebtoken');
+import {QueryError, RowDataPacket} from 'mysql';
 
 /*get userinfo by userId*/
 export function getUserInfoById(userId:number,callback:(returnVal:ReturnModel<userModel>) => void){
@@ -59,4 +60,15 @@ export function login(paramObj:loginModel,callback:(returnVal:ReturnModel<userMo
     });
 }
 
+/*get all users*/
+export function getUsers(currentPage:number,pageSize:number,callback:(returnValue:ReturnModel<userModel[]>) => void) {
+  knex.raw(`SET @total_count = 0; CALL get_users(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
+    .then((rows: RowDataPacket[]) => {
+      let totalCount = rows[0][3][0].totalCount || 0;
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
+    })
+    .catch((err: QueryError) => {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
+    });
+}
 

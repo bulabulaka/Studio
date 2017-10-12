@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {Http,URLSearchParams} from '@angular/http';
 import {Observable, BehaviorSubject, ReplaySubject} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -7,7 +7,6 @@ import {ApiService} from './api.service';
 import {NgCookieService} from './cookie.service';
 import {m_user, ResultValue} from '../../../../shared/index';
 import {environment} from '../../../environments/environment';
-
 
 @Injectable()
 export class UserService {
@@ -38,6 +37,15 @@ export class UserService {
         }
         return data;
       })
+  }
+
+  /*get Users*/
+  getUsers(page: number, pageSize: number): Observable<{ resultValue: ResultValue<userModel[]> }> {
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('page', `${page}`);
+    params.set('pageSize', `${pageSize}`);
+    return this.apiService.get('/user/get_users', params)
+      .map(data => data);
   }
 
   getToken() {

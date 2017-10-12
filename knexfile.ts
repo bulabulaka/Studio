@@ -13,6 +13,9 @@ const development: Config = {
   },
   migrations: {
     directory: __dirname + '/src/server/db/migrations'
+  },
+  seeds: {
+    directory: __dirname + '/src/server/db/seeds'
   }
 };
 const test: Config = {
@@ -27,6 +30,9 @@ const test: Config = {
   },
   migrations: {
     directory: __dirname + '/src/server/db/migrations'
+  },
+  seeds: {
+    directory: __dirname + '/src/server/db/seeds'
   }
 };
 

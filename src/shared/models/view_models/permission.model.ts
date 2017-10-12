@@ -1,6 +1,6 @@
 import {BaseEntity} from '../entity.model';
 
-export class permissionModel extends BaseEntity {
+export class PermissionModel extends BaseEntity {
   name: string;
   auditstat: number;
   description: string;

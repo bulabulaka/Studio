@@ -1,6 +1,6 @@
-import {init_config} from "./app";
+import {init_config} from './app';
 import {normalizePort} from './shared/index';
-import  * as http from "http";
+import * as http from 'http';
 
 const app = init_config();
 const port = normalizePort(process.env.PORT || '3000');

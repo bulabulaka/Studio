@@ -1,25 +1,32 @@
-import {permissionModel, m_permission, m_service_api, m_page, m_permission_group, permissionGroupModel} from '../../../shared/index';
+import {
+  PermissionModel,
+  m_permission,
+  m_service_api,
+  m_page,
+  m_permission_group,
+  PermissionGroupModel
+} from '../../../shared/index';
 import {ReturnModel} from '../../shared/index';
 import {QueryError, RowDataPacket} from 'mysql';
 import {knex} from '../../db/connection';
 import * as _ from 'lodash';
 
-export function Get_Permissions(currentPage:number,pageSize:number,callback:(returnValue:ReturnModel<permissionModel[]>) => void) {
+export function Get_Permissions(currentPage: number, pageSize: number, callback: (returnValue: ReturnModel<PermissionModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
-      let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
+      const totalCount = rows[0][3][0].totalCount || 0;
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0][1], null, 0, null, totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     });
 }
 
-export function Add_Update_Permission(flag: string, permission: permissionModel, callback: (returnVal:ReturnModel<boolean>) => void) {
-  let mPermission: m_permission = new m_permission();
+export function Add_Update_Permission(flag: string, permission: PermissionModel, callback: (returnVal: ReturnModel<boolean>) => void) {
+  const mPermission: m_permission = new m_permission();
   let mPage: m_page;
   let mServiceApi: m_service_api;
-  //initial permission
+  // initial permission
   mPermission.name = permission.name;
   mPermission.description = permission.description;
   mPermission.auditstat = permission.auditstat;
@@ -34,10 +41,10 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
       mPermission.modified_datetime = new Date();
       mPermission.modifier_id = permission.modifier_id;
     } else {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false));
     }
   } else {
-    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
+    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false));
   }
 
   if (mPermission.kind === 0) {
@@ -66,8 +73,8 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
     }
   }
 
-  let error:Error = null;
-  if(flag === String(process.env.INSERT)){
+  let error: Error = null;
+  if (flag === String(process.env.INSERT)) {
     knex.transaction((trx) => {
       knex('m_permission')
         .transacting(trx)
@@ -87,12 +94,12 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
         })
     }).then((res) => {
       if (res) {
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
       }
     }).catch((e) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, _.isEmpty(e) ? error : e));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', false, _.isEmpty(e) ? error : e));
     });
-  }else{
+  } else {
     knex.transaction((trx) => {
       knex('m_permission')
         .transacting(trx)
@@ -111,16 +118,17 @@ export function Add_Update_Permission(flag: string, permission: permissionModel,
         })
     }).then((res) => {
       if (res) {
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
       }
     }).catch((e) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, _.isEmpty(e) ? error : e));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', false, _.isEmpty(e) ? error : e));
     });
   }
 }
 
-export function Add_Update_Permission_Group(flag: string, permissionGroup: permissionGroupModel, callback: (returnVal:ReturnModel<boolean>) => void) {
-  let mPermissionGroup = new m_permission_group();
+export function Add_Update_Permission_Group(flag: string, permissionGroup: PermissionGroupModel,
+                                            callback: (returnVal: ReturnModel<boolean>) => void) {
+  const mPermissionGroup = new m_permission_group();
   mPermissionGroup.name = permissionGroup.name;
   mPermissionGroup.description = permissionGroup.description;
   mPermissionGroup.order_no = permissionGroup.order_no;
@@ -134,74 +142,81 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: permi
       mPermissionGroup.modified_datetime = new Date();
       mPermissionGroup.modifier_id = permissionGroup.modifier_id;
     } else {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false));
     }
   } else {
-    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'param is invalid',false));
+    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false));
   }
 
-  if(flag === String(process.env.INSERT)){
+  if (flag === String(process.env.INSERT)) {
     knex('m_permission_group').returning('id').insert(permissionGroup)
-      .then((ids) => {
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+      .then(() => {
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
       })
       .catch((e) => {
-        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, e));
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', false, e));
       });
-  }else{
+  } else {
     knex('m_permission_group').where('id', '=', permissionGroup.id).update(permissionGroup)
       .then(() => {
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE), 'OK', true));
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
       })
       .catch((e) => {
-        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',false, e));
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', false, e));
       })
   }
 }
 
-export function Get_Permission_Groups(currentPage:number,pageSize:number,callback:(returnVal:ReturnModel<permissionGroupModel[]>) => void) {
-  knex.raw(`SET @total_count = 0; CALL get_permission_groups(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
+export function Get_Permission_Groups(flag: number, currentPage: number, pageSize: number,
+                                      callback: (returnVal: ReturnModel<PermissionGroupModel[]>) => void) {
+  knex.raw(`SET @total_count = 0; CALL get_permission_groups(${flag} ,${currentPage}, ${pageSize},
+   @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
-      let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
+      const totalCount = rows[0][3][0].totalCount || 0;
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0][1], null, 0, null, totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     });
 }
 
-export function Get_Permission_Group_Permissions(currentPage:number,pageSize:number,pgId:number, callback: (returnVal:ReturnModel<permissionModel[]>) => void) {
-  knex.raw(`SET @total_count = 0; CALL get_permission_group_permissions(${pgId},${currentPage},${pageSize},@total_count);SELECT @total_count AS totalCount;`)
+export function Get_Permission_Group_Permissions(currentPage: number, pageSize: number, pgId: number,
+                                                 callback: (returnVal: ReturnModel<PermissionModel[]>) => void) {
+  knex.raw(`SET @total_count = 0; CALL get_permission_group_permissions(${pgId},${currentPage},${pageSize}
+  ,@total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
-      let totalCount = rows[0][3][0].totalCount || 0;
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][1],null,0,null,totalCount));
+      const totalCount = rows[0][3][0].totalCount || 0;
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0][1], null, 0, null, totalCount));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     })
 }
 
-export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId:number,callback: (returnVal:ReturnModel<permissionModel[]>) => void ) {
+export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId: number,
+                                                            callback: (returnVal: ReturnModel<PermissionModel[]>) => void) {
   knex.raw(`CALL get_permission_group_donot_have_permissions(${permissionGroupId});`)
     .then((rows: RowDataPacket[]) => {
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',rows[0][0]));
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0][0]));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     })
 }
 
-export function Add_Permission_Group_Permissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number, callback: (returnVal:ReturnModel<boolean>) => void) {
-  knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
+export function Add_Permission_Group_Permissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number,
+                                                 operatorId: number, callback: (returnVal: ReturnModel<boolean>) => void) {
+  knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',
+  ${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
     .then((rows: RowDataPacket[]) => {
-      let returnCode = rows[0][2][0].returnCode;
-      if (returnCode === parseInt(process.env.SUCCESS_CODE)) {
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE),'OK',true));
+      const returnCode = rows[0][2][0].returnCode;
+      if (returnCode === parseInt(process.env.SUCCESS_CODE, 10)) {
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
       }
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Fail',false));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Fail', false));
     })
     .catch((err: QueryError) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE),'Error',null,err));
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     })
 }
 

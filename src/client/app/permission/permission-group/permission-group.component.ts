@@ -64,7 +64,7 @@ export class PermissionGroupComponent implements OnInit {
         this.currentUser = response;
       }
     );
-    this.permissionService.getPermissionGroups(this.permissionGroupsCurrentPage, this.itemsPerPage).subscribe(
+    this.permissionService.getPermissionGroups(0, this.permissionGroupsCurrentPage, this.itemsPerPage).subscribe(
       (response) => {
         this.permissionGroupArray = response.resultValue.Data;
         this.permissionGroupsTotalCount = response.resultValue.TotalCount;
@@ -72,12 +72,12 @@ export class PermissionGroupComponent implements OnInit {
     );
   }
 
-  //添加权限组弹出框
+  // 添加权限组弹出框
   addPermissionGroupDialog() {
     this.displayDialog = true;
   }
 
-  //权限组已有权限弹出框
+  // 权限组已有权限弹出框
   permissionGroupPermissionsDialog(pg_id: number) {
     this.pg_id = pg_id;
     this.permissionService.getPermissionGroupPermissions(pg_id, 1, this.itemsPerPage)
@@ -90,7 +90,7 @@ export class PermissionGroupComponent implements OnInit {
       });
   }
 
-  //权限组添加权限弹出框
+  // 权限组添加权限弹出框
   addPermissionGroupPermissionsDialog(pg_id: number) {
     this.pg_id = pg_id;
     this.addPermissionsSelectionArray = [];
@@ -179,7 +179,7 @@ export class PermissionGroupComponent implements OnInit {
   //权限组分页
   permissionGroupsPaginate(event) {
     if (event && event.page >= 0) {
-      this.permissionService.getPermissionGroups((event.page + 1), this.itemsPerPage).subscribe(
+      this.permissionService.getPermissionGroups(0,(event.page + 1), this.itemsPerPage).subscribe(
         (response) => {
           if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
             this.permissionGroupArray = response.resultValue.Data;

@@ -28,10 +28,12 @@ export class PermissionService {
       .map(data => data);
   }
 
-  getPermissionGroups(page: number, pageSize: number): Observable<{ resultValue: ResultValue<permissionGroupModel[]> }> {
-    let params: URLSearchParams = new URLSearchParams();
+  /*flag: 0:获取所有的包括禁用的 1:获取有效的*/
+  getPermissionGroups(flag: number, page: number, pageSize: number): Observable<{ resultValue: ResultValue<permissionGroupModel[]> }> {
+    const params: URLSearchParams = new URLSearchParams();
     params.set('page', `${page}`);
     params.set('pageSize', `${pageSize}`);
+    params.set('flag', `${flag}`);
     return this.apiService.get('/permission/get_permission_groups', params)
       .map(data => data);
   }
@@ -45,7 +47,7 @@ export class PermissionService {
       .map(data => data);
   }
 
-  //获取权限组为拥有的所有权限 前端分页
+  // 获取权限组为拥有的所有权限 前端分页
   getPermissionGroupDoNotHavePermissions(permissionGroupId: number): Observable<{ resultValue: ResultValue<permissionModel[]> }> {
     let params: URLSearchParams = new URLSearchParams();
     params.set('permissionGroupId', `${permissionGroupId}`);
@@ -53,7 +55,7 @@ export class PermissionService {
       .map(data => data);
   }
 
-  //给权限组添加权限
+  // 给权限组添加权限
   addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number): Observable<{ resultValue: ResultValue<boolean> }> {
     return this.apiService.post('/permission/add_permission_group_permissions', {
       permissionIdArray: permissionIdArray,

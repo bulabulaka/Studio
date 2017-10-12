@@ -1,4 +1,4 @@
-export class registerModel{
-  username:string;
-  password:string;
+export class RegisterModel {
+  username: string;
+  password: string;
 }

@@ -7,7 +7,7 @@ import {knex} from './db/connection';
 
 export function init_config() {
   // *** express instance *** //
-  const app : express.Application = express();
+  const app: express.Application = express();
   // *** config *** //
   main_config_init(knex, app);
   route_config_init(app);

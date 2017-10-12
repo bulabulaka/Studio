@@ -1,6 +1,6 @@
 import {BaseEntity} from '../entity.model';
 
-export class roleModel extends BaseEntity {
+export class RoleModel extends BaseEntity {
   name: string;
   description: string;
   order_no: number;

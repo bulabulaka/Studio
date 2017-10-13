@@ -17,23 +17,28 @@ import * as _ from 'lodash';
 export class UserTableComponent implements OnInit {
   public showUserRolesDialog = false;
   public showAddUserRolesDialog = false;
-  public showPermissionGroupsDialog = false;
-  public showAddPermissionGroupsDialog = false;
+  public showAdditionalPermissionGroupsDialog = false;
+  public showReducedPermissionGroupDialog = false;
+  public showProcessingPermissionGroupsDialog = false;
   public currentUser: UserModel;
   public usersArray: UserModel[] = [];
   public rolesArray: RoleModel[] = []; // 用户已拥有角色组
   public doNotHaveRoleArray: RoleModel[] = []; // 用户未拥有角色组
   public addUserRolesSelectionArray: RoleModel[] = [];
-  public permissionGroupsArray: PermissionGroupModel[] = []; // 用户已拥有的权限组
-  public doNotHavePermissionGroupsArray: PermissionGroupModel[] = []; // 用户未拥有的权限组
-  public addPermissionGroupsSelectionArray: PermissionGroupModel[] = [];
+  public userAdditionalPermissionGroupsArray: PermissionGroupModel[] = []; // 用户已拥有的权限组
+  public userReducedPermissionGroupsArray: PermissionGroupModel[] = []; // 用户减少的权限组
+  public processingPermissionGroupArray: PermissionGroupModel[] = []; // 未处理的权限组
+  public processingPermissionGroupsSelectionArray: PermissionGroupModel[] = [];
   public userCurrentPage = 1;
   public userRolesCurrentPage = 1;
-  public permissionGroupsCurrentPage = 1;
-  public roleCurrentPage = 1;
+  public userAdditionalPermissionGroupsCurrentPage = 1;
+  public userReducedPermissionGroupsCurrentPage = 1;
+  public processingPermissionGroupsCurrentPage = 1;
   public rolesTotalCount = 0;
   public usersTotalCount = 0;
-  public permissionGroupsTotalCount = 0;
+  public userAdditionalPermissionGroupsTotalCount = 0;
+  public userReducedPermissionGroupsTotalCount = 0;
+  public processingPermissionGroupsTotalCount = 0;
   public itemsPerPage = 10; // 分页大小
   public hasSubmit: boolean;
   public userId: number; // 列表中被选中的用户
@@ -83,21 +88,74 @@ export class UserTableComponent implements OnInit {
       })
   }
 
-  // 给用户批量添加角色
-  addUserRolesSubmit(userId: number) {
-    this.hasSubmit = true;
-    let roleIdArray = '';
-    _(this.addUserRolesSelectionArray).forEach((n) => {
-      roleIdArray += n.id + ',';
-    });
-    this.userService.addUserRoles(userId, roleIdArray, this.addUserRolesSelectionArray.length, this.currentUser.id)
+  // 用户附加权限组弹出框
+  userAdditionalPermissionGroupsDialog(userId: number) {
+    this.userId = userId;
+    this.userAdditionalPermissionGroupsCurrentPage = 1;
+    this.userService.getUserAddOrMinusPermissionGroup(1, this.userId, 1, this.itemsPerPage)
       .subscribe((response) => {
-        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data === true) {
-
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.userAdditionalPermissionGroupsArray = response.resultValue.Data;
+          this.userAdditionalPermissionGroupsTotalCount = response.resultValue.TotalCount;
+          this.showAdditionalPermissionGroupsDialog = true;
         }
-        this.showAddUserRolesDialog = false;
-        this.hasSubmit = false;
       });
+  }
+
+  // 用户减少的权限组弹出框
+  userReducedPermissionGroupsDialog(userId: number) {
+    this.userId = userId;
+    this.userAdditionalPermissionGroupsCurrentPage = 1;
+    this.userService.getUserAddOrMinusPermissionGroup(2, this.userId, 1, this.itemsPerPage)
+      .subscribe((response) => {
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.userReducedPermissionGroupsArray = response.resultValue.Data;
+          this.userReducedPermissionGroupsTotalCount = response.resultValue.TotalCount;
+          this.showReducedPermissionGroupDialog = true;
+        }
+      });
+  }
+
+  // 用户未处理的权限组弹出框
+  processingPermissionGroupsDialog(userId: number) {
+    this.userId = userId;
+    this.processingPermissionGroupsSelectionArray = [];
+    this.userService.getUserHaveNotProcessingPermissionGroups(this.userId)
+      .subscribe((response) => {
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.processingPermissionGroupArray = response.resultValue.Data;
+          this.showProcessingPermissionGroupsDialog = true;
+        }
+      })
+  }
+
+  // 用户减少的权限组分页
+  userReducedPermissionGroupsPaginate(event) {
+    if (event && event.page >= 0) {
+      this.userService.getUserAddOrMinusPermissionGroup(2, this.userId, event.page + 1, this.itemsPerPage)
+        .subscribe((response) => {
+          if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+            this.userReducedPermissionGroupsArray = response.resultValue.Data;
+            this.userReducedPermissionGroupsTotalCount = response.resultValue.TotalCount;
+            this.userReducedPermissionGroupsCurrentPage = event.page + 1;
+          }
+        });
+    }
+  }
+
+
+  // 用户附加权限组分页
+  userAdditionalPermissionGroupsPaginate(event) {
+    if (event && event.page >= 0) {
+      this.userService.getUserAddOrMinusPermissionGroup(1, this.userId, event.page + 1, this.itemsPerPage)
+        .subscribe((response) => {
+          if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+            this.userAdditionalPermissionGroupsArray = response.resultValue.Data;
+            this.userAdditionalPermissionGroupsTotalCount = response.resultValue.TotalCount;
+            this.userAdditionalPermissionGroupsCurrentPage = event.page + 1;
+          }
+        });
+    }
   }
 
   // 用户所拥有的角色组分页
@@ -127,5 +185,40 @@ export class UserTableComponent implements OnInit {
         }
       )
     }
+  }
+
+  // 给用户批量添加角色
+  addUserRolesSubmit(userId: number) {
+    this.hasSubmit = true;
+    let roleIdArray = '';
+    _(this.addUserRolesSelectionArray).forEach((n) => {
+      roleIdArray += n.id + ',';
+    });
+    this.userService.addUserRoles(userId, roleIdArray, this.addUserRolesSelectionArray.length, this.currentUser.id)
+      .subscribe((response) => {
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data === true) {
+
+        }
+        this.showAddUserRolesDialog = false;
+        this.hasSubmit = false;
+      });
+  }
+
+  // 给用户批量处理权限组（添加或减少）
+  processingPermissionGroupsSubmit(userId: number, flag: number) {
+    this.hasSubmit = true;
+    let permissionGroupIdArray = '';
+    _(this.processingPermissionGroupsSelectionArray).forEach((n) => {
+      permissionGroupIdArray += n.id + ',';
+    });
+    this.userService.processingPermissionGroups(permissionGroupIdArray, userId, this.processingPermissionGroupsSelectionArray.length,
+      this.currentUser.id, flag)
+      .subscribe((response) => {
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data === true) {
+
+        }
+        this.showProcessingPermissionGroupsDialog = false;
+        this.hasSubmit = false;
+      });
   }
 }

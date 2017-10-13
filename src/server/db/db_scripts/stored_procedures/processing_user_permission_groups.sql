@@ -1,4 +1,4 @@
-CREATE PROCEDURE `processing_user_permission_groups` (IN flag INT, IN user_id INT,IN permission_group_id_array VARCHAR(255),IN permission_group_id_array_length INT,IN operator_id INT,INOUT return_code INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `processing_user_permission_groups`(IN flag INT, IN user_id INT,IN permission_group_id_array VARCHAR(255),IN permission_group_id_array_length INT,IN operator_id INT,INOUT return_code INT)
 BEGIN
 DECLARE _index INT;
 DECLARE _permission_group_id_str varchar(255);
@@ -17,7 +17,7 @@ BEGIN
 --  GET DIAGNOSTICS CONDITION 1
 --  @p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
 --  SELECT @p1 AS RETURNED_SQLSTATE, @p2 AS MESSAGE_TEXT;
- ROLLBACK;
+  ROLLBACK;
 END; 
 
 START TRANSACTION;

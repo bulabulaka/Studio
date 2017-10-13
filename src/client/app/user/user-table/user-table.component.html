@@ -34,6 +34,12 @@
                     icon="fa-pencil-square-o"></button>
             <button pButton type="button" label="添加用户角色" icon="fa-plus"
                     (click)="userDonotHaveRolesDialog(user.id)"></button>
+            <button pButton type="button" label="附加的权限组"
+                    (click)="userAdditionalPermissionGroupsDialog(user.id)"></button>
+            <button pButton type="button" label="移除的权限组"
+                    (click)="userReducedPermissionGroupsDialog(user.id)"></button>
+            <button pButton type="button" label="处理权限组"
+                    (click)="processingPermissionGroupsDialog(user.id)"></button>
           </td>
         </tr>
         </tbody>
@@ -75,6 +81,66 @@
   </div>
 </p-dialog>
 
+<p-dialog [(visible)]="showReducedPermissionGroupDialog" modal="modal" [responsive]="true" width="600">
+  <p-header>用户减少的权限列表</p-header>
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>权限名</th>
+          <th>描述</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let pg of userReducedPermissionGroupsArray; let i = index">
+          <td>{{(userReducedPermissionGroupsCurrentPage - 1) * itemsPerPage + i+1}}</td>
+          <td>{{pg.name}}</td>
+          <td>{{pg.description}}</td>
+          <td>
+            <button pButton type="button" label="删除" class="ui-button-danger" icon="fa-times"></button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <p-paginator [rows]="itemsPerPage" [totalRecords]="userReducedPermissionGroupsArray"
+                   (onPageChange)="userReducedPermissionGroupsPaginate($event)"></p-paginator>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog [(visible)]="showAdditionalPermissionGroupsDialog" modal="modal" [responsive]="true" width="600">
+  <p-header>用户附加权限列表</p-header>
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>权限名</th>
+          <th>描述</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let pg of userAdditionalPermissionGroupsArray; let i = index">
+          <td>{{(userAdditionalPermissionGroupsCurrentPage - 1) * itemsPerPage + i+1}}</td>
+          <td>{{pg.name}}</td>
+          <td>{{pg.description}}</td>
+          <td>
+            <button pButton type="button" label="删除" class="ui-button-danger" icon="fa-times"></button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <p-paginator [rows]="itemsPerPage" [totalRecords]="userAdditionalPermissionGroupsTotalCount"
+                   (onPageChange)="userAdditionalPermissionGroupsPaginate($event)"></p-paginator>
+    </div>
+  </div>
+</p-dialog>
+
 <p-dialog [(visible)]="showAddUserRolesDialog" modal="modal"
           [responsive]="true" width="600">
   <p-header>添加用户角色</p-header>
@@ -95,5 +161,32 @@
             [disabled]="addUserRolesSelectionArray.length === 0 || hasSubmit"
             label="确定"></button>
     <button type="button" pButton icon="fa-close" (click)="showAddUserRolesDialog=false" label="取消"></button>
+  </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="showProcessingPermissionGroupsDialog" modal="modal"
+          [responsive]="true" width="600">
+  <p-header>处理权限组</p-header>
+  <div class="row">
+    <div class="col-sm-12">
+      <p-dataTable [value]="processingPermissionGroupArray" [(selection)]="processingPermissionGroupsSelectionArray"
+                   [paginator]="true"
+                   [rows]="10" [pageLinks]="5" [headerCheckboxToggleAllPages]="true"
+                   dataKey="created_datetime">
+        <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+        <p-column field="name" header="角色名称"></p-column>
+        <p-column field="description" header="描述"></p-column>
+      </p-dataTable>
+    </div>
+  </div>
+  <p-footer>
+    <button type="button" (click)="processingPermissionGroupsSubmit(userId,1)" pButton icon="fa-check"
+            [disabled]="processingPermissionGroupsSelectionArray.length === 0 || hasSubmit"
+            label="添加"></button>
+    <button type="button" (click)="processingPermissionGroupsSubmit(userId,2)" pButton icon="fa-check"
+            [disabled]="processingPermissionGroupsSelectionArray.length === 0 || hasSubmit"
+            label="减少"></button>
+    <button type="button" pButton icon="fa-close" (click)="showProcessingPermissionGroupsDialog=false"
+            label="取消"></button>
   </p-footer>
 </p-dialog>

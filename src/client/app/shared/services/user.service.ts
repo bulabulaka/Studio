@@ -104,7 +104,8 @@ export class UserService {
       permissionGroupIdArray: permissionGroupIdArray,
       userId: userId,
       permissionGroupIdArrayLength: permissionGroupIdArrayLength,
-      operatorId: operatorId
+      operatorId: operatorId,
+      flag: flag
     }).map(data => data);
   }
 

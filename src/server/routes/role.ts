@@ -78,8 +78,8 @@ router.post('/add_role_permission_groups', (req: express.Request, res: express.R
   if (!permissionGroupIdArray || !roleId || !permissionGroupIdArrayLength || !operatorId) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  addRolePermissionGroups(permissionGroupIdArray, roleId, permissionGroupIdArrayLength, operatorId,
-    (returnVal: ReturnModel<boolean>) => {
+  addRolePermissionGroups(permissionGroupIdArray, parseInt(roleId, 10), parseInt(permissionGroupIdArrayLength, 10),
+    parseInt(operatorId, 10), (returnVal: ReturnModel<boolean>) => {
       handleReturn(returnVal, res, next);
     });
 });

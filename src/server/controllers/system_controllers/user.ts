@@ -76,7 +76,6 @@ export function getUsers(currentPage: number, pageSize: number, callback: (retur
     });
 }
 
-
 /*get user roles*/
 export function getUserRoles(userId: number, currentPage: number, pageSize: number, callback: (returnValue: ReturnModel<RoleModel[]>)
   => void) {
@@ -89,6 +88,23 @@ export function getUserRoles(userId: number, currentPage: number, pageSize: numb
     .catch((err: QueryError) => {
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     });
+}
+
+/*get user don't have roles */
+export function getUserDonotHaveRoles(userId: number,
+                                      callback: (returnVal: ReturnModel<RoleModel[]>) => void) {
+  knex.raw(`SELECT id,name,description,auditstat,created_datetime
+            FROM m_role
+            WHERE auditstat = 1 
+            AND id NOT IN (SELECT B.id FROM m_user_role AS A 
+                           INNER JOIN m_role AS B ON B.id = A.role_id AND B.auditstat = 1
+			                  	 WHERE A.user_id = ${userId} AND A.auditstat = 1);`)
+    .then((rows) => {
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0]));
+    })
+    .catch((err: QueryError) => {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
+    })
 }
 
 /*add user roles*/
@@ -108,8 +124,7 @@ export function addUserRoles(userId: number, roleIdArray: string, roleIdArrayLen
     })
 }
 
-
-/*get user add or minus permission group*/
+/*get user add or minus permission groups*/
 export function getUserAddOrMinusPermissionGroup(flag: number, userId: number, currentPage: number, pageSize: number,
                                                  callback: (returnValue: ReturnModel<PermissionGroupModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_user_add_or_minus_permission_groups(${flag}, ${userId}, ${currentPage}, ${pageSize},
@@ -121,6 +136,41 @@ export function getUserAddOrMinusPermissionGroup(flag: number, userId: number, c
     .catch((err: QueryError) => {
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     });
+}
+
+
+/*get user haven't processing permission groups client paging*/
+export function getUserHaveNotProcessingPermissionGroups(userId: number,
+                                                         callback: (returnVal: ReturnModel<PermissionGroupModel[]>) => void) {
+  knex.raw(`SELECT id,name,description,auditstat,created_datetime
+            FROM m_permission_group
+            WHERE auditstat = 1 
+            AND id NOT IN (SELECT B.id FROM m_user_permission_group AS A 
+                           INNER JOIN m_permission_group AS B ON B.id = A.permission_group_id AND B.auditstat = 1
+			                  	 WHERE A.user_id = ${userId} AND A.auditstat = 1);`)
+    .then((rows) => {
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0]));
+    })
+    .catch((err: QueryError) => {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
+    })
+}
+
+/*processing permission groups*/
+export function processingPermissionGroups(userId: number, permissionGroupIdArray: string, permissionGroupIdArrayLength: number,
+                                           operatorId: number, flag: number, callback: (returnVal: ReturnModel<boolean>) => void) {
+  knex.raw(`SET @return_code = 0;CALL processing_user_permission_groups(${flag}, ${userId},'${permissionGroupIdArray}',
+  ${permissionGroupIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
+    .then((rows: RowDataPacket[]) => {
+      const returnCode = rows[0][2][0].returnCode;
+      if (returnCode === parseInt(process.env.SUCCESS_CODE, 10)) {
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
+      }
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Fail', false));
+    })
+    .catch((err: QueryError) => {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
+    })
 }
 
 

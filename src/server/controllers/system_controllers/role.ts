@@ -66,6 +66,7 @@ export function getRolePermissionGroups(currentPage: number, pageSize: number, r
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     })
 }
+
 export function getRoleDonotHavePermissionGroups(roleId: number, callback: (returnVal: ReturnModel<PermissionGroupModel[]>) => void) {
   knex.raw(`SELECT id,name,description,auditstat,created_datetime
             FROM m_permission_group

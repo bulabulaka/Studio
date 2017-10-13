@@ -7,12 +7,12 @@ import * as dotenv from 'dotenv';
 import * as express from 'express';
 import * as Knex from 'knex';
 import flash = require('connect-flash');
-import {LogOperate} from '../controllers/system_controllers/log';
+import {logOperate} from '../controllers/system_controllers/log';
 
 // *** load environment variables *** //
 dotenv.config();
 
-export function main_config_init(knex: Knex, app: express.Application) {
+export function mainConfigInit(knex: Knex, app: express.Application) {
 
   // *** view folders *** //
   const viewFolders = [path.join(__dirname, '..', 'views')];
@@ -33,7 +33,7 @@ export function main_config_init(knex: Knex, app: express.Application) {
   app.use(express.static(path.resolve(process.env.DIST_PATH)));
   /*logging information middleware*/
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    LogOperate(knex, req, res, next);
+    logOperate(knex, req, res, next);
   });
 }
 

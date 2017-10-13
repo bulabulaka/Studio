@@ -1,6 +1,6 @@
 process.env.NODE_ENV = 'test';
 import * as chai from 'chai';
-import {init_config as server} from '../../src/server/app';
+import {initConfig} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
 import {RegisterModel} from '../../src/shared/index';
@@ -27,7 +27,7 @@ describe('routes : /api', () => {
 
   describe('POST /api/login', () => {
     it('should login a user', (done) => {
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/login')
         .send({
           username: 'jeremy',
@@ -42,7 +42,7 @@ describe('routes : /api', () => {
         });
     });
     it('should not login an unregistered user', (done) => {
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/login')
         .send({
           username: 'michael',
@@ -58,26 +58,12 @@ describe('routes : /api', () => {
     });
   });
 
-  describe('GET /api/logout', () => {
-    it('should throw an error if a user is not logged in', (done) => {
-      chai.request(server())
-        .get('/api/logout')
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.eql(200);
-          res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(0);
-          done();
-        });
-    });
-  });
-
   describe('POST /api/register', () => {
     it('should register a new user', (done) => {
       const _register = new RegisterModel();
       _register.username = 'michael';
       _register.password = 'herman';
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/register')
         .send({
           register: _register
@@ -95,7 +81,7 @@ describe('routes : /api', () => {
       const _register = new RegisterModel();
       _register.username = 'six';
       _register.password = 'herman';
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/register')
         .send({
           register: _register
@@ -112,7 +98,7 @@ describe('routes : /api', () => {
       const _register = new RegisterModel();
       _register.username = 'herman';
       _register.password = 'six';
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/register')
         .send({
           register: _register
@@ -129,7 +115,7 @@ describe('routes : /api', () => {
 
   describe('GET /api/404', () => {
     it('need token', (done) => {
-      chai.request(server())
+      chai.request(initConfig())
         .get('/api/404')
         .end((err, res) => {
           res.status.should.equal(200);

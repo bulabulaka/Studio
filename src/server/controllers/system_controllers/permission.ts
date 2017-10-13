@@ -11,7 +11,7 @@ import {QueryError, RowDataPacket} from 'mysql';
 import {knex} from '../../db/connection';
 import * as _ from 'lodash';
 
-export function Get_Permissions(currentPage: number, pageSize: number, callback: (returnValue: ReturnModel<PermissionModel[]>) => void) {
+export function getPermissions(currentPage: number, pageSize: number, callback: (returnValue: ReturnModel<PermissionModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permissions(${currentPage}, ${pageSize}, @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
       const totalCount = rows[0][3][0].totalCount || 0;
@@ -22,7 +22,7 @@ export function Get_Permissions(currentPage: number, pageSize: number, callback:
     });
 }
 
-export function Add_Update_Permission(flag: string, permission: PermissionModel, callback: (returnVal: ReturnModel<boolean>) => void) {
+export function addUpdatePermission(flag: string, permission: PermissionModel, callback: (returnVal: ReturnModel<boolean>) => void) {
   const mPermission: m_permission = new m_permission();
   let mPage: m_page;
   let mServiceApi: m_service_api;
@@ -126,8 +126,8 @@ export function Add_Update_Permission(flag: string, permission: PermissionModel,
   }
 }
 
-export function Add_Update_Permission_Group(flag: string, permissionGroup: PermissionGroupModel,
-                                            callback: (returnVal: ReturnModel<boolean>) => void) {
+export function addUpdatePermissionGroup(flag: string, permissionGroup: PermissionGroupModel,
+                                         callback: (returnVal: ReturnModel<boolean>) => void) {
   const mPermissionGroup = new m_permission_group();
   mPermissionGroup.name = permissionGroup.name;
   mPermissionGroup.description = permissionGroup.description;
@@ -167,8 +167,8 @@ export function Add_Update_Permission_Group(flag: string, permissionGroup: Permi
   }
 }
 
-export function Get_Permission_Groups(flag: number, currentPage: number, pageSize: number,
-                                      callback: (returnVal: ReturnModel<PermissionGroupModel[]>) => void) {
+export function getPermissionGroups(flag: number, currentPage: number, pageSize: number,
+                                    callback: (returnVal: ReturnModel<PermissionGroupModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permission_groups(${flag} ,${currentPage}, ${pageSize},
    @total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
@@ -180,8 +180,8 @@ export function Get_Permission_Groups(flag: number, currentPage: number, pageSiz
     });
 }
 
-export function Get_Permission_Group_Permissions(currentPage: number, pageSize: number, pgId: number,
-                                                 callback: (returnVal: ReturnModel<PermissionModel[]>) => void) {
+export function getPermissionGroupPermissions(currentPage: number, pageSize: number, pgId: number,
+                                              callback: (returnVal: ReturnModel<PermissionModel[]>) => void) {
   knex.raw(`SET @total_count = 0; CALL get_permission_group_permissions(${pgId},${currentPage},${pageSize}
   ,@total_count);SELECT @total_count AS totalCount;`)
     .then((rows: RowDataPacket[]) => {
@@ -193,8 +193,8 @@ export function Get_Permission_Group_Permissions(currentPage: number, pageSize: 
     })
 }
 
-export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId: number,
-                                                            callback: (returnVal: ReturnModel<PermissionModel[]>) => void) {
+export function getPermissionGroupDonotHavePermissions(permissionGroupId: number,
+                                                       callback: (returnVal: ReturnModel<PermissionModel[]>) => void) {
   knex.raw(`CALL get_permission_group_donot_have_permissions(${permissionGroupId});`)
     .then((rows: RowDataPacket[]) => {
       return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', rows[0][0]));
@@ -204,8 +204,8 @@ export function Get_Permission_Group_Donot_Have_Permissions(permissionGroupId: n
     })
 }
 
-export function Add_Permission_Group_Permissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number,
-                                                 operatorId: number, callback: (returnVal: ReturnModel<boolean>) => void) {
+export function addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number,
+                                              operatorId: number, callback: (returnVal: ReturnModel<boolean>) => void) {
   knex.raw(`SET @return_code = 0;CALL add_permission_group_permissions(${permissionGroupId},'${permissionIdArray}',
   ${permissionIdArrayLength},${operatorId},@return_code);SELECT @return_code AS returnCode;`)
     .then((rows: RowDataPacket[]) => {

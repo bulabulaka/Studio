@@ -1,13 +1,12 @@
 process.env.NODE_ENV = 'test';
 import * as chai from 'chai';
-import {init_config as server} from '../../src/server/app';
+import {initConfig} from '../../src/server/app';
 import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
 import {PermissionModel, PermissionGroupModel} from '../../src/shared/index';
 import {simulateUser} from './utils';
 
 const should = chai.should();
-
 chai.use(chaiHttp);
 describe('routes : /api/permission', () => {
 
@@ -37,7 +36,7 @@ describe('routes : /api/permission', () => {
         new_permission.order_no = 1;
         new_permission.route = 'tests';
         new_permission.method = 'post';
-        chai.request(server())
+        chai.request(initConfig())
           .post('/api/permission/add_permission')
           .send({
             permission: new_permission,
@@ -61,7 +60,7 @@ describe('routes : /api/permission', () => {
       new_permission.creator_id = 1;
       new_permission.order_no = 1;
       new_permission.route = 'tests';
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/permission/add_permission')
         .send({
           permission: new_permission,
@@ -84,7 +83,7 @@ describe('routes : /api/permission', () => {
       new_permission.creator_id = 1;
       new_permission.order_no = 1;
       new_permission.route = 'tests';
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/permission/add_permission')
         .send({
           permission: new_permission,
@@ -111,7 +110,7 @@ describe('routes : /api/permission', () => {
       new_permission.order_no = 1;
       new_permission.route = 'tests';
       new_permission.method = 'post';
-      chai.request(server())
+      chai.request(initConfig())
         .put('/api/permission/update_permission')
         .send({
           permission: new_permission,
@@ -135,7 +134,7 @@ describe('routes : /api/permission', () => {
       permissionGroup.description = 'test';
       permissionGroup.order_no = 1;
       permissionGroup.creator_id = 1;
-      chai.request(server())
+      chai.request(initConfig())
         .post('/api/permission/add_permission_group')
         .send({
           permission_group: permissionGroup,
@@ -161,7 +160,7 @@ describe('routes : /api/permission', () => {
       permissionGroup.description = 'tests';
       permissionGroup.order_no = 1;
       permissionGroup.modifier_id = 1;
-      chai.request(server())
+      chai.request(initConfig())
         .put('/api/permission/update_permission_group')
         .send({
           permission_group: permissionGroup,
@@ -179,7 +178,7 @@ describe('routes : /api/permission', () => {
 
   describe('GET /api/permission/get_permissions', () => {
     it('need token', (done) => {
-      chai.request(server())
+      chai.request(initConfig())
         .get('/api/permission/get_permissions')
         .query({page: 1, pageSize: 10})
         .end((err, res) => {

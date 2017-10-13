@@ -1,15 +1,15 @@
 /*routes config*/
 import * as express from 'express';
-import {AuthRouter} from '../routes/auth';
-import {UserRouter} from '../routes/user';
-import {PermissionRouter} from '../routes/permission';
-import {RoleRouter} from '../routes/role';
-import {verifyToken, ReturnModel, handleResponse, handleReturn} from '../shared/index';
+import {authRouter} from '../routes/auth';
+import {userRouter} from '../routes/user';
+import {permissionRouter} from '../routes/permission';
+import {roleRouter} from '../routes/role';
+import {verifyToken, handleResponse, handleReturn, ReturnModel} from '../shared/index';
 import {RegisterModel, LoginModel, UserModel} from '../../shared/index';
 import {registerUser, login} from '../controllers/system_controllers/user';
 import * as path from 'path';
 
-export function route_config_init(app: express.Application) {
+export function routeConfigInit(app: express.Application) {
 
   app.get('', (req: express.Request, res: express.Response) => {
     res.sendFile(path.join(path.resolve(process.env.DIST_PATH), 'main.html'));
@@ -31,20 +31,14 @@ export function route_config_init(app: express.Application) {
     });
   });
 
-  /*logout*/
-  app.get('/api/logout', verifyToken, (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.SUCCESS_CODE, 10), 'success', null);
-  });
-
   /*checkout token isValid*/
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     verifyToken(req, res, next);
   });
-  app.use('/api/user', UserRouter);
-  app.use('/api/auth', AuthRouter);
-  app.use('/api/permission', PermissionRouter);
-  app.use('/api/role', RoleRouter);
-
+  app.use('/api/user', userRouter);
+  app.use('/api/auth', authRouter);
+  app.use('/api/permission', permissionRouter);
+  app.use('/api/role', roleRouter);
 }
 
 

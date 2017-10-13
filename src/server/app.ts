@@ -1,17 +1,17 @@
 // *** dependencies *** //
 import * as express from 'express';
-import {main_config_init} from './config/main-config';
-import {route_config_init} from './config/route-config';
-import {error_config_init} from './config/error-config';
+import {mainConfigInit} from './config/main-config';
+import {routeConfigInit} from './config/route-config';
+import {errorConfigInit} from './config/error-config';
 import {knex} from './db/connection';
 
-export function init_config() {
+export function initConfig() {
   // *** express instance *** //
   const app: express.Application = express();
   // *** config *** //
-  main_config_init(knex, app);
-  route_config_init(app);
-  error_config_init(app);
+  mainConfigInit(knex, app);
+  routeConfigInit(app);
+  errorConfigInit(app);
   return app;
 }
 

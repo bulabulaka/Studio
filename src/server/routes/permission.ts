@@ -1,17 +1,16 @@
 import * as express from 'express';
 import * as _ from 'lodash';
-import {handleResponse, ReturnModel, handleReturn} from '../shared/index';
+import {handleResponse, handleReturn, ReturnModel} from '../shared/index';
 import {PermissionModel, PermissionGroupModel} from '../../shared/index';
 import {
-  Get_Permissions,
-  Add_Update_Permission,
-  Add_Update_Permission_Group,
-  Get_Permission_Groups,
-  Get_Permission_Group_Permissions,
-  Get_Permission_Group_Donot_Have_Permissions,
-  Add_Permission_Group_Permissions
+  getPermissions,
+  addUpdatePermission,
+  addUpdatePermissionGroup,
+  getPermissionGroups,
+  getPermissionGroupPermissions,
+  getPermissionGroupDonotHavePermissions,
+  addPermissionGroupPermissions
 } from '../controllers/system_controllers/permission';
-
 
 const router = express.Router();
 
@@ -21,7 +20,7 @@ router.get('/get_permissions', (req: express.Request, res: express.Response, nex
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page, 10) < 1 || parseInt(query.pageSize, 10) < 1) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Permissions(parseInt(query.page, 10), parseInt(query.pageSize, 10), (returnVal: ReturnModel<PermissionModel[]>) => {
+  getPermissions(parseInt(query.page, 10), parseInt(query.pageSize, 10), (returnVal: ReturnModel<PermissionModel[]>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -32,7 +31,7 @@ router.post('/add_permission', (req: express.Request, res: express.Response, nex
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
-  Add_Update_Permission(String(process.env.INSERT), paramObj, (returnVal: ReturnModel<boolean>) => {
+  addUpdatePermission(String(process.env.INSERT), paramObj, (returnVal: ReturnModel<boolean>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -43,7 +42,7 @@ router.put('/update_permission', (req: express.Request, res: express.Response, n
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
-  Add_Update_Permission(String(process.env.UPDATE), paramObj, (returnVal: ReturnModel<boolean>) => {
+  addUpdatePermission(String(process.env.UPDATE), paramObj, (returnVal: ReturnModel<boolean>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -54,7 +53,7 @@ router.post('/add_permission_group', (req: express.Request, res: express.Respons
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
-  Add_Update_Permission_Group(String(process.env.INSERT), paramObj, (returnVal: ReturnModel<boolean>) => {
+  addUpdatePermissionGroup(String(process.env.INSERT), paramObj, (returnVal: ReturnModel<boolean>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -65,7 +64,7 @@ router.put('/update_permission_group', (req: express.Request, res: express.Respo
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
-  Add_Update_Permission_Group(String(process.env.UPDATE), paramObj, (returnVal: ReturnModel<boolean>) => {
+  addUpdatePermissionGroup(String(process.env.UPDATE), paramObj, (returnVal: ReturnModel<boolean>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -77,7 +76,7 @@ router.get('/get_permission_groups', (req: express.Request, res: express.Respons
     !query.flag || (parseInt(query.flag, 10) !== 0 && parseInt(query.flag, 10) !== 1)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Permission_Groups(parseInt(query.flag, 10), parseInt(query.page, 10), parseInt(query.pageSize, 10),
+  getPermissionGroups(parseInt(query.flag, 10), parseInt(query.page, 10), parseInt(query.pageSize, 10),
     (returnVal: ReturnModel<PermissionGroupModel[]>) => {
       handleReturn(returnVal, res, next);
     });
@@ -90,7 +89,7 @@ router.get('/get_permission_group_permissions', (req: express.Request, res: expr
     parseInt(query.pageSize, 10) < 1) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Permission_Group_Permissions(parseInt(query.page, 10), parseInt(query.pageSize, 10), parseInt(query.permissionGroupId, 10),
+  getPermissionGroupPermissions(parseInt(query.page, 10), parseInt(query.pageSize, 10), parseInt(query.permissionGroupId, 10),
     (returnVal: ReturnModel<PermissionModel[]>) => {
       handleReturn(returnVal, res, next);
     });
@@ -102,11 +101,10 @@ router.get('/get_permission_group_donot_have_permissions', (req: express.Request
   if (_.isEmpty(query) || !query.permissionGroupId) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Permission_Group_Donot_Have_Permissions(parseInt(query.permissionGroupId, 10), (returnVal: ReturnModel<PermissionModel[]>) => {
+  getPermissionGroupDonotHavePermissions(parseInt(query.permissionGroupId, 10), (returnVal: ReturnModel<PermissionModel[]>) => {
     handleReturn(returnVal, res, next);
   });
 });
-
 
 /*add permissions to the permission group  batch add*/
 router.post('/add_permission_group_permissions', (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -117,11 +115,10 @@ router.post('/add_permission_group_permissions', (req: express.Request, res: exp
   if (!permissionIdArray || !permissionGroupId || !permissionIdArrayLength || !operatorId) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Add_Permission_Group_Permissions(permissionGroupId, permissionIdArray, permissionIdArrayLength, operatorId,
+  addPermissionGroupPermissions(permissionGroupId, permissionIdArray, permissionIdArrayLength, operatorId,
     (returnVal: ReturnModel<boolean>) => {
       handleReturn(returnVal, res, next);
     });
 });
 
-
-export const PermissionRouter = router;
+export const permissionRouter = router;

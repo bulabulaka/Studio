@@ -3,7 +3,7 @@ import {m_operate_log, m_log_detail} from '../../../shared/index';
 import * as _ from 'lodash';
 import * as Knex from 'knex';
 
-export function LogOperate(knex: Knex, req: express.Request, res: express.Response, next: express.NextFunction) {
+export function logOperate(knex: Knex, req: express.Request, res: express.Response, next: express.NextFunction) {
   const ip = req.ip;
   const accessToken = req.headers['x-access-token'] || req.body.token || req.query.token;
   const userAgent = req.headers['user-agent'];

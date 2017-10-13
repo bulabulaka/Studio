@@ -1,14 +1,13 @@
 process.env.NODE_ENV = 'test';
 import * as chai from 'chai';
-import {init_config as server} from '../../src/server/app';
+import {initConfig} from '../../src/server/app';
 import chaiHttp = require('chai-http');
-import {knex} from '../../src/server/db/connection';
+
 const should = chai.should();
 chai.use(chaiHttp);
 
-
-export function simulateUser(userName: string, password: string, callback: (token: string) => void ) {
-  chai.request(server())
+export function simulateUser(userName: string, password: string, callback: (token: string) => void) {
+  chai.request(initConfig())
     .post('/api/login')
     .send({
       username: userName,

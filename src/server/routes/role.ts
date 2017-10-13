@@ -1,13 +1,13 @@
 import * as express from 'express';
-import {handleResponse, ReturnModel, handleReturn} from '../shared/index';
 import * as _ from 'lodash';
+import {handleResponse, handleReturn, ReturnModel} from '../shared/index';
 import {RoleModel, PermissionGroupModel} from '../../shared/index';
 import {
-  Get_Roles,
-  Add_Update_Role,
-  Get_Role_Permission_Groups,
-  Get_Role_Donot_Have_Permission_Groups,
-  Add_Role_Permission_Groups
+  getRoles,
+  addUpdateRole,
+  getRolePermissionGroups,
+  getRoleDonotHavePermissionGroups,
+  addRolePermissionGroups
 } from '../controllers/system_controllers/role';
 
 const router = express.Router();
@@ -18,7 +18,7 @@ router.get('/get_roles', (req: express.Request, res: express.Response, next: exp
   if (_.isEmpty(query) || !query.page || !query.pageSize || parseInt(query.page, 10) < 1 || parseInt(query.pageSize, 10) < 1) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Roles(parseInt(query.page, 10), parseInt(query.pageSize, 10), (returnVal: ReturnModel<RoleModel[]>) => {
+  getRoles(parseInt(query.page, 10), parseInt(query.pageSize, 10), (returnVal: ReturnModel<RoleModel[]>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -29,7 +29,7 @@ router.post('/add_role', (req: express.Request, res: express.Response, next: exp
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
-  Add_Update_Role(String(process.env.INSERT), paramObj, (returnVal: ReturnModel<boolean>) => {
+  addUpdateRole(String(process.env.INSERT), paramObj, (returnVal: ReturnModel<boolean>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -40,7 +40,7 @@ router.put('/update_role', (req: express.Request, res: express.Response, next: e
   if (_.isEmpty(paramObj)) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false);
   }
-  Add_Update_Role(String(process.env.UPDATE), paramObj, (returnVal: ReturnModel<boolean>) => {
+  addUpdateRole(String(process.env.UPDATE), paramObj, (returnVal: ReturnModel<boolean>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -52,7 +52,7 @@ router.get('/get_role_permission_groups', (req: express.Request, res: express.Re
     parseInt(query.pageSize, 10) < 1) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Role_Permission_Groups(parseInt(query.page, 10), parseInt(query.pageSize, 10), parseInt(query.roleId, 10),
+  getRolePermissionGroups(parseInt(query.page, 10), parseInt(query.pageSize, 10), parseInt(query.roleId, 10),
     (returnVal: ReturnModel<PermissionGroupModel[]>) => {
       handleReturn(returnVal, res, next);
     });
@@ -64,7 +64,7 @@ router.get('/get_role_donot_have_permission_groups', (req: express.Request, res:
   if (_.isEmpty(query) || !query.roleId) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Get_Role_Donot_Have_Permission_Groups(parseInt(query.roleId, 10), (returnVal: ReturnModel<PermissionGroupModel[]>) => {
+  getRoleDonotHavePermissionGroups(parseInt(query.roleId, 10), (returnVal: ReturnModel<PermissionGroupModel[]>) => {
     handleReturn(returnVal, res, next);
   });
 });
@@ -78,10 +78,10 @@ router.post('/add_role_permission_groups', (req: express.Request, res: express.R
   if (!permissionGroupIdArray || !roleId || !permissionGroupIdArrayLength || !operatorId) {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'param is invalid', null);
   }
-  Add_Role_Permission_Groups(permissionGroupIdArray, roleId, permissionGroupIdArrayLength, operatorId,
+  addRolePermissionGroups(permissionGroupIdArray, roleId, permissionGroupIdArrayLength, operatorId,
     (returnVal: ReturnModel<boolean>) => {
       handleReturn(returnVal, res, next);
     });
 });
 
-export const RoleRouter = router;
+export const roleRouter = router;

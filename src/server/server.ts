@@ -1,8 +1,8 @@
-import {init_config} from './app';
+import {initConfig} from './app';
 import {normalizePort} from './shared/index';
 import * as http from 'http';
 
-const app = init_config();
+const app = initConfig();
 const port = normalizePort(process.env.PORT || '3000');
 const server = http.createServer(app);
 

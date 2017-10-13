@@ -1,4 +1,4 @@
-CREATE PROCEDURE `add_user_roles` (IN user_id INT,IN role_id_array VARCHAR(255),IN role_id_array_length INT,IN operator_id INT,INOUT return_code INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_user_roles`(IN user_id INT,IN role_id_array VARCHAR(255),IN role_id_array_length INT,IN operator_id INT,INOUT return_code INT)
 BEGIN
 DECLARE _index INT;
 DECLARE _role_id_str varchar(255);
@@ -31,7 +31,7 @@ START TRANSACTION;
     SELECT studio.strSplit(role_id_array,',', _index) INTO _role_id_str;
     SET _role_id = CAST(_role_id_str AS SIGNED);
     INSERT INTO `studio`.`m_user_role` (`user_id`,`role_id`,`auditstat`,`creator_id`,`created_datetime`)
-    VALUES (_role_id,user_id,1,operator_id,NOW());
+    VALUES (user_id, _role_id,1,operator_id,NOW());
   END LOOP INS;
   SET return_code = 1;
 COMMIT;

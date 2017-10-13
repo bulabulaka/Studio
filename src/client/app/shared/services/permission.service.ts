@@ -56,7 +56,8 @@ export class PermissionService {
   }
 
   // 给权限组添加权限
-  addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number, operatorId: number): Observable<{ resultValue: ResultValue<boolean> }> {
+  addPermissionGroupPermissions(permissionGroupId: number, permissionIdArray: string, permissionIdArrayLength: number,
+                                operatorId: number): Observable<{ resultValue: ResultValue<boolean> }> {
     return this.apiService.post('/permission/add_permission_group_permissions', {
       permissionIdArray: permissionIdArray,
       permissionGroupId: permissionGroupId,

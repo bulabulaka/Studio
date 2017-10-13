@@ -17,20 +17,20 @@ import * as _ from 'lodash';
 })
 export class RoleTableComponent implements OnInit {
 
-  public showAddRoleDialog: boolean = false;
-  public showPermissionGroupsDialog: boolean = false;
-  public showAddPermissionGroupsDialog: boolean = false;
+  public showAddRoleDialog = false;
+  public showPermissionGroupsDialog = false;
+  public showAddPermissionGroupsDialog = false;
   public currentUser: UserModel;
   public roleArray: RoleModel[] = [];
-  public permissionGroupsArray: PermissionGroupModel[] = [];//角色已拥有的权限组
-  public doNotHavePermissionGroupsArray: PermissionGroupModel[] = []; //角色未拥有的权限组
+  public permissionGroupsArray: PermissionGroupModel[] = []; // 角色已拥有的权限组
+  public doNotHavePermissionGroupsArray: PermissionGroupModel[] = []; // 角色未拥有的权限组
   public addPermissionGroupsSelectionArray: PermissionGroupModel[] = [];
   public permissionGroupsCurrentPage = 1;
   public roleCurrentPage = 1;
-  public itemsPerPage = 10;//分页大小
+  public itemsPerPage = 10; // 分页大小
   public rolesTotalCount = 0;
   public permissionGroupsTotalCount = 0;
-  private role_id: number;//current role id;
+  public role_id: number; // current role id;
   public roleForm: FormGroup;
   public hasSubmit: boolean;
 
@@ -39,7 +39,7 @@ export class RoleTableComponent implements OnInit {
     'description': ''
   };
 
-  //Error info
+  // Error info
   validationMessages = {
     'name': {
       'required': '角色名不能为空'
@@ -47,7 +47,8 @@ export class RoleTableComponent implements OnInit {
     'description': {}
   };
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private roleSerivce: RoleService, private userService: UserService) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private roleSerivce: RoleService,
+              private userService: UserService) {
     this.roleForm = this.formBuilder.group({
       'name': ['',
         [Validators.required]
@@ -63,8 +64,7 @@ export class RoleTableComponent implements OnInit {
       return;
     }
     const form = this.roleForm;
-
-    for (const field in this.formErrors) {
+    for (const field of Object.keys(this.formErrors)) {
       this.formErrors[field] = '';
       const control = form.get(field);
 
@@ -95,12 +95,12 @@ export class RoleTableComponent implements OnInit {
     );
   }
 
-  //添加角色弹出框
+  // 添加角色弹出框
   addRoleDialog() {
     this.showAddRoleDialog = true;
   }
 
-  //角色分页
+  // 角色分页
   rolesPaginate(event) {
     if (event && event.page >= 0) {
       this.roleSerivce.getRoles((event.page + 1), this.itemsPerPage).subscribe(
@@ -115,12 +115,12 @@ export class RoleTableComponent implements OnInit {
     }
   }
 
-  //添加新角色
+  // 添加新角色
   addRoleSubmit() {
     this.hasSubmit = true;
     this.showAddRoleDialog = false;
     const roleFormVal = this.roleForm.value;
-    let role = new RoleModel();
+    const role = new RoleModel();
     role.name = roleFormVal.name;
     role.order_no = 1;
     role.auditstat = 1;
@@ -129,12 +129,12 @@ export class RoleTableComponent implements OnInit {
     this.roleSerivce.addRole(role).subscribe((response) => {
       this.hasSubmit = false;
       if (response.resultValue.RCode === environment.success_code) {
-        //跳转到第一页
+        // 跳转到第一页
       }
     });
   }
 
-  //角色已有权限组弹出框
+  // 角色已有权限组弹出框
   rolePermissionGroupsDialog(role_id: number) {
     this.role_id = role_id;
     this.permissionGroupsCurrentPage = 1;
@@ -148,7 +148,7 @@ export class RoleTableComponent implements OnInit {
       });
   }
 
-  //角色添加权限组
+  // 角色添加权限组
   addRolePermissionGroupsDialog(role_id: number) {
     this.role_id = role_id;
     this.addPermissionGroupsSelectionArray = [];
@@ -161,14 +161,15 @@ export class RoleTableComponent implements OnInit {
       })
   }
 
-  //给角色添加新权限组
+  // 给角色添加新权限组
   addPermissionGroupsSubmit(role_id: number) {
     this.hasSubmit = true;
-    let permissionGroupIdArray: string = '';
+    let permissionGroupIdArray = '';
     _(this.addPermissionGroupsSelectionArray).forEach((n) => {
       permissionGroupIdArray += n.id + ',';
     });
-    this.roleSerivce.addRolePermissionGroups(role_id, permissionGroupIdArray, this.addPermissionGroupsSelectionArray.length, this.currentUser.id)
+    this.roleSerivce.addRolePermissionGroups(role_id, permissionGroupIdArray, this.addPermissionGroupsSelectionArray.length,
+      this.currentUser.id)
       .subscribe((response) => {
         if (response.resultValue.RCode === environment.success_code && response.resultValue.Data === true) {
 
@@ -178,7 +179,7 @@ export class RoleTableComponent implements OnInit {
       });
   }
 
-  //角色所拥有的权限组分页
+  // 角色所拥有的权限组分页
   permissionGroupsPaginate(event) {
     if (event && event.page >= 0) {
       this.roleSerivce.getRolePermissionGroups(this.role_id, event.page + 1, this.itemsPerPage)

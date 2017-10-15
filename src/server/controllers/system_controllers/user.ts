@@ -1,12 +1,13 @@
 import * as bcrypt from 'bcryptjs';
 import {knex} from '../../db/connection';
 import {comparePass, ReturnModel} from '../../shared/index';
-import {RegisterModel, m_user, LoginModel, UserModel, RoleModel, PermissionGroupModel} from '../../../shared/index';
+import {RegisterModel, m_user, LoginModel, UserModel, RoleModel, PermissionGroupModel, PermissionModel} from '../../../shared/index';
 import jwt = require('jsonwebtoken');
 import {QueryError, RowDataPacket} from 'mysql';
 
 /*get userinfo by userId*/
-export function getUserInfoById(userId: number, callback: (returnVal: ReturnModel<UserModel>) => void) {
+
+/*export function getUserInfoById(userId: number, callback: (returnVal: ReturnModel<UserModel>) => void) {
   knex('m_user').where('id', userId).first()
     .then((user) => {
       if (!user) {
@@ -17,6 +18,17 @@ export function getUserInfoById(userId: number, callback: (returnVal: ReturnMode
     .catch((err) => {
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     });
+}*/
+
+export function getUserInfoById(userId: number, callback: (returnVal: ReturnModel<UserModel>) => void) {
+  knex.raw(`CALL get_user_info(${userId})`)
+    .then((result) => {
+      const userInfo: UserModel = result[0][0][0];
+      const permissions: PermissionModel[] = result[0][1];
+      console.log(userInfo);
+      console.log(permissions);
+    });
+  return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', null));
 }
 
 /*register user*/

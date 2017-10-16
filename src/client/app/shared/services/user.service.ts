@@ -11,22 +11,19 @@ import {environment} from '../../../environments/environment';
 @Injectable()
 export class UserService {
   private currentUserSubject = new BehaviorSubject<UserModel>(new UserModel());
-  public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged();
+  public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged<UserModel>();
 
   private hasAccessTokenSubject = new ReplaySubject<boolean>(1);
   public hasAccessToken = this.hasAccessTokenSubject.asObservable();
+
+
 
   constructor(private apiService: ApiService, private http: Http, private cookieService: NgCookieService) {
   }
 
   login(username: string, password: string): Observable<{ resultValue: ResultValue<UserModel> }> {
     return this.apiService.post('/login', {username: username, password: password})
-      .map(data => {
-        if (data.resultValue.RCode === environment.success_code && data.resultValue.Data && data.resultValue.Token) {
-          this.currentUserSubject.next(data.resultValue.Data);
-        }
-        return data;
-      })
+      .map(data => data)
   }
 
   getCurrentUserInfo(): Observable<{ resultValue: ResultValue<UserModel> }> {

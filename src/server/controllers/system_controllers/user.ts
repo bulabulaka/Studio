@@ -16,8 +16,7 @@ export function getUserInfoById(userId: number, callback: (returnVal: ReturnMode
       }
       const userInfo: UserModel = result[0][0][0];
       const userPermissionGroupPermissions: PermissionModel[] = result[0][1];
-      const userRolePermissions: PermissionModel[] = result[0][2];
-      userInfo.permissionList = userRolePermissions;
+      userInfo.permissionList = result[0][2];
       /*merge permissions*/
       if (!_.isEmpty(userPermissionGroupPermissions)) {
         const addPermissions = _.filter<PermissionModel>(userPermissionGroupPermissions, (p) => {
@@ -53,8 +52,8 @@ export function getUserInfoById(userId: number, callback: (returnVal: ReturnMode
             });
           }
         }
-        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', userInfo));
       }
+      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', userInfo));
     })
     .catch((err) => {
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
@@ -213,6 +212,30 @@ export function processingPermissionGroups(userId: number, permissionGroupIdArra
     .catch((err: QueryError) => {
       return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     })
+}
+
+/*check user permission*/
+export function verifyPermission(userId: number, router: string, method: string, callback: (returnVal: ReturnModel<boolean>) => void) {
+  getUserInfoById(userId, (returnVal: ReturnModel<UserModel>) => {
+    if (returnVal.RCode === parseInt(process.env.SUCCESS_CODE, 10)) {
+      const userInfo: UserModel = returnVal.Data;
+      if (!_.isEmpty(userInfo)) {
+        if (_.find(userInfo.permissionList, (p) => {
+            return _.toUpper(p.route) === _.toUpper(router) && _.toUpper(p.method) === _.toUpper(method);
+          })) {
+          return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', true));
+        } else {
+          return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Permission Deny', false));
+        }
+      } else {
+        return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Permission Deny', false));
+      }
+    } else if (returnVal.error) {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', false, returnVal.error));
+    } else {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Fail', false));
+    }
+  });
 }
 
 

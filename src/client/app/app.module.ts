@@ -25,8 +25,7 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   },
   {
     path: 'workspace',
-    loadChildren: './workspace/workspace.module#WorkspaceModule',
-    canActivate: [AuthGuardService]
+    loadChildren: './workspace/workspace.module#WorkspaceModule'
   },
   {
     path: '**',

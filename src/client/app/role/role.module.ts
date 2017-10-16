@@ -4,6 +4,7 @@ import {RouterModule} from '@angular/router';
 import {RoleComponent} from './role.component';
 import {RoleTableComponent} from './role-table/role-table.component';
 import {DialogModule, ButtonModule, PaginatorModule, DataTableModule} from 'primeng/primeng';
+import {AuthGuardService} from '../shared/index';
 
 const roleRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -11,7 +12,7 @@ const roleRouting: ModuleWithProviders = RouterModule.forChild([
     component: RoleComponent,
     children: [
       {path: '', redirectTo: 'role_table', pathMatch: 'full'},
-      {path: 'role_table', component: RoleTableComponent},
+      {path: 'role_table', component: RoleTableComponent, canActivate: [AuthGuardService]},
     ]
   }
 ]);

@@ -74,9 +74,14 @@ export class LoginComponent implements OnInit {
       .subscribe(response => {
         this.hasSubmit = false;
         if (response.resultValue.RCode === environment.success_code && response.resultValue.Data && response.resultValue.Token) {
-          let token = response.resultValue.Token;
+          const token = response.resultValue.Token;
           this.userService.saveToken(token);
-          this.router.navigateByUrl('workspace');
+          this.userService.getCurrentUserInfo().subscribe((response) => {
+              if (response.resultValue.RCode === environment.success_code) {
+                this.router.navigateByUrl('workspace');
+              }
+            }
+          );
         }
       })
   }

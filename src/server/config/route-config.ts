@@ -6,7 +6,7 @@ import {permissionRouter} from '../routes/permission';
 import {roleRouter} from '../routes/role';
 import {verifyToken, handleResponse, handleReturn, ReturnModel} from '../shared/index';
 import {RegisterModel, LoginModel, UserModel} from '../../shared/index';
-import {registerUser, login} from '../controllers/system_controllers/user';
+import {registerUser, login, verifyPermission} from '../controllers/system_controllers/user';
 import * as path from 'path';
 
 export function routeConfigInit(app: express.Application) {
@@ -34,6 +34,26 @@ export function routeConfigInit(app: express.Application) {
   /*checkout token isValid*/
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     verifyToken(req, res, next);
+  });
+  /*checkout user permission*/
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const _path = req.path;
+    const _method = req.method;
+    console.log(_path);
+    console.log(_method);
+    verifyPermission(res.locals.userId, _path, _method, (returnVal: ReturnModel<boolean>) => {
+      if (returnVal.RCode === parseInt(process.env.SUCCESS_CODE, 10)) {
+        return next();
+      } else if (returnVal.error) {
+        if (returnVal.errorCode) {
+          res.locals.errorCode = returnVal.errorCode;
+        }
+        return next(returnVal.error);
+      } else {
+        return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10),
+          returnVal.RMsg, returnVal.Data);
+      }
+    });
   });
   app.use('/api/user', userRouter);
   app.use('/api/auth', authRouter);

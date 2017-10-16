@@ -5,6 +5,7 @@ import {SharedModule} from '../shared/shared.module';
 import {RouterModule} from '@angular/router';
 import {DialogModule, ButtonModule, PaginatorModule, DataTableModule} from 'primeng/primeng';
 import {PermissionGroupComponent} from './permission-group/permission-group.component';
+import {AuthGuardService} from '../shared/index';
 
 const permissionRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -12,8 +13,8 @@ const permissionRouting: ModuleWithProviders = RouterModule.forChild([
     component: PermissionComponent,
     children: [
       {path: '', redirectTo: 'permission_table', pathMatch: 'full'},
-      {path: 'permission_table', component: PermissionTableComponent},
-      {path: 'permission_group', component: PermissionGroupComponent}
+      {path: 'permission_table', component: PermissionTableComponent, canActivate: [AuthGuardService]},
+      {path: 'permission_group', component: PermissionGroupComponent, canActivate: [AuthGuardService]}
     ]
   }
 ]);

@@ -4,6 +4,7 @@ import {UserComponent} from './user.component';
 import {RouterModule} from '@angular/router';
 import {UserTableComponent} from './user-table/user-table.component';
 import {DialogModule, ButtonModule, PaginatorModule, DataTableModule} from 'primeng/primeng';
+import {AuthGuardService} from '../shared/index';
 
 const userRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -11,7 +12,7 @@ const userRouting: ModuleWithProviders = RouterModule.forChild([
     component: UserComponent,
     children: [
       {path: '', redirectTo: 'user_table', pathMatch: 'full'},
-      {path: 'user_table', component: UserTableComponent},
+      {path: 'user_table', component: UserTableComponent, canActivate: [AuthGuardService]},
     ]
   }
 ]);

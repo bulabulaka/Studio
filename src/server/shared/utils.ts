@@ -30,6 +30,7 @@ export function handleReturn<T>(returnVal: ReturnModel<T>, res: express.Response
   }
 }
 
+/*check token is valid*/
 export function verifyToken(req: express.Request, res: express.Response, next: express.NextFunction): void {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {

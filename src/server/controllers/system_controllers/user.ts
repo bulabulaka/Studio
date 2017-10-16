@@ -4,31 +4,61 @@ import {comparePass, ReturnModel} from '../../shared/index';
 import {RegisterModel, m_user, LoginModel, UserModel, RoleModel, PermissionGroupModel, PermissionModel} from '../../../shared/index';
 import jwt = require('jsonwebtoken');
 import {QueryError, RowDataPacket} from 'mysql';
+import * as _ from 'lodash';
 
 /*get userinfo by userId*/
-
-/*export function getUserInfoById(userId: number, callback: (returnVal: ReturnModel<UserModel>) => void) {
-  knex('m_user').where('id', userId).first()
-    .then((user) => {
-      if (!user) {
-        return callback(new ReturnModel<UserModel>(parseInt(process.env.FAIL_CODE, 10), 'User not found'));
-      }
-      return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', user));
-    })
-    .catch((err) => {
-      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
-    });
-}*/
 
 export function getUserInfoById(userId: number, callback: (returnVal: ReturnModel<UserModel>) => void) {
   knex.raw(`CALL get_user_info(${userId})`)
     .then((result) => {
+      if (!result) {
+        return callback(new ReturnModel<UserModel>(parseInt(process.env.FAIL_CODE, 10), 'User not found'));
+      }
       const userInfo: UserModel = result[0][0][0];
-      const permissions: PermissionModel[] = result[0][1];
-      console.log(userInfo);
-      console.log(permissions);
+      const userPermissionGroupPermissions: PermissionModel[] = result[0][1];
+      const userRolePermissions: PermissionModel[] = result[0][2];
+      userInfo.permissionList = userRolePermissions;
+      /*merge permissions*/
+      if (!_.isEmpty(userPermissionGroupPermissions)) {
+        const addPermissions = _.filter<PermissionModel>(userPermissionGroupPermissions, (p) => {
+          return p.flag === 1;
+        });
+        const reducedPermissions = _.filter<PermissionModel>(userPermissionGroupPermissions, (p) => {
+          return p.flag === 2;
+        });
+
+        if (!_.isEmpty(addPermissions)) {
+          if (!_.isEmpty(userInfo.permissionList)) {
+            _.forEach(addPermissions, (p) => {
+              if (!_.find(userInfo.permissionList, (up) => {
+                  return up.id === p.id;
+                })) {
+                userInfo.permissionList.push(p);
+              }
+            });
+          } else {
+            userInfo.permissionList = addPermissions;
+          }
+        }
+        if (!_.isEmpty(reducedPermissions)) {
+          if (!_.isEmpty(userInfo.permissionList)) {
+            _.forEach(reducedPermissions, (p) => {
+              if (_.find(userInfo.permissionList, (rp) => {
+                  return rp.id === p.id;
+                })) {
+                userInfo.permissionList = _.remove(userInfo.permissionList, (up) => {
+                  return up.id !== p.id;
+                });
+              }
+            });
+          }
+        }
+        return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', userInfo));
+      }
+    })
+    .catch((err) => {
+      return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'Error', null, err));
     });
-  return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', null));
 }
 
 /*register user*/

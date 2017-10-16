@@ -66,8 +66,10 @@ export class PermissionGroupComponent implements OnInit {
     );
     this.permissionService.getPermissionGroups(0, this.permissionGroupsCurrentPage, this.itemsPerPage).subscribe(
       (response) => {
-        this.permissionGroupArray = response.resultValue.Data;
-        this.permissionGroupsTotalCount = response.resultValue.TotalCount;
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.permissionGroupArray = response.resultValue.Data;
+          this.permissionGroupsTotalCount = response.resultValue.TotalCount;
+        }
       }
     );
   }

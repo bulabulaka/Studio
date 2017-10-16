@@ -55,8 +55,10 @@ export class UserTableComponent implements OnInit {
     );
     this.userService.getUsers(this.userCurrentPage, this.itemsPerPage).subscribe(
       (response) => {
-        this.usersArray = response.resultValue.Data;
-        this.usersTotalCount = response.resultValue.TotalCount;
+        if (response.resultValue.RCode === environment.success_code) {
+          this.usersArray = response.resultValue.Data;
+          this.usersTotalCount = response.resultValue.TotalCount;
+        }
       }
     );
   }

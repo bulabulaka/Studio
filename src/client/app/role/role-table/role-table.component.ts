@@ -89,8 +89,10 @@ export class RoleTableComponent implements OnInit {
     );
     this.roleSerivce.getRoles(this.roleCurrentPage, this.itemsPerPage).subscribe(
       (response) => {
-        this.roleArray = response.resultValue.Data;
-        this.rolesTotalCount = response.resultValue.TotalCount;
+        if (response.resultValue.RCode === environment.success_code && response.resultValue.Data) {
+          this.roleArray = response.resultValue.Data;
+          this.rolesTotalCount = response.resultValue.TotalCount;
+        }
       }
     );
   }

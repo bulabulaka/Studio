@@ -16,7 +16,7 @@ describe('routes : /api', () => {
         return knex.migrate.latest();
       })
       .then(() => {
-        return knex.seed.run({directory: 'src/server/db/seeds'});
+        return knex.seed.run({directory: 'src/server/db/seed/seeds_test/seeds'});
       });
   });
 

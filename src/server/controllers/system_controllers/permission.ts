@@ -47,7 +47,7 @@ export function addUpdatePermission(flag: string, permission: PermissionModel, c
     return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false));
   }
 
-  if (mPermission.kind === 0) {
+  if (mPermission.kind === parseInt(process.env.PAGE, 10)) {
     mPage = new m_page();
     mPage.route = permission.route;
     mPage.auditstat = 0;
@@ -59,7 +59,7 @@ export function addUpdatePermission(flag: string, permission: PermissionModel, c
       mPage.modifier_id = permission.modifier_id;
       mPage.modified_datetime = new Date();
     }
-  } else {
+  } else if (mPermission.kind === parseInt(process.env.SERVICE_API, 10)) {
     mServiceApi = new m_service_api();
     mServiceApi.route = permission.route;
     mServiceApi.method = permission.method;
@@ -71,6 +71,8 @@ export function addUpdatePermission(flag: string, permission: PermissionModel, c
       mServiceApi.modified_datetime = new Date();
       mServiceApi.modifier_id = permission.modifier_id;
     }
+  } else {
+    return callback(new ReturnModel(parseInt(process.env.FAIL_CODE, 10), 'param is invalid', false));
   }
 
   let error: Error = null;

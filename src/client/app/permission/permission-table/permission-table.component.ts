@@ -19,11 +19,14 @@ export class PermissionTableComponent implements OnInit {
   public itemsPerPage = 10;
   public currentPage = 1;
   public totalCount = 0;
-
+  public readonly page = environment.page;
+  public readonly service_api = environment.service_api;
   public currentUser: UserModel;
   permissionArray: PermissionModel[] = [];
-  display: boolean = false;
+  addPagePermissionShow = false;
+  display = false;
   permissionForm: FormGroup;
+  pagePermissionForm: FormGroup;
   hasSubmit: boolean;
   formErrors = {
     'name': '',
@@ -31,7 +34,12 @@ export class PermissionTableComponent implements OnInit {
     'route': ''
   };
 
-  //Error info
+  pagePermissionFormErrors = {
+    'name': '',
+    'route': ''
+  };
+
+  // Error info
   validationMessages = {
     'name': {
       'required': '权限名不能为空'
@@ -44,7 +52,8 @@ export class PermissionTableComponent implements OnInit {
     }
   };
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private permissionService: PermissionService, private userService: UserService) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private permissionService: PermissionService,
+              private userService: UserService) {
     this.permissionForm = this.formBuilder.group({
       'name': ['',
         [Validators.required]
@@ -52,7 +61,14 @@ export class PermissionTableComponent implements OnInit {
       'method': ['', Validators.required],
       'route': ['', Validators.required]
     });
+    this.pagePermissionForm = this.formBuilder.group({
+      'name': ['',
+        [Validators.required]
+      ],
+      'route': ['', Validators.required]
+    });
     this.permissionForm.valueChanges.subscribe(data => this.onValueChanged(data));
+    this.pagePermissionForm.valueChanges.subscribe(data => this.onPageFormValueChanged(data));
     this.hasSubmit = false;
   }
 
@@ -79,15 +95,46 @@ export class PermissionTableComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  onPageFormValueChanged(data?: any) {
+    if (!this.pagePermissionForm) {
+      return;
+    }
+    const form = this.pagePermissionForm;
+
+    for (const field in this.pagePermissionFormErrors) {
+      this.pagePermissionFormErrors[field] = '';
+      const control = form.get(field);
+
+      if (control && control.dirty && !control.valid) {
+        const messages = this.validationMessages[field];
+        for (const key in control.errors) {
+          if (!this.pagePermissionFormErrors[field]) {
+            this.pagePermissionFormErrors[field] += messages[key] + ' ';
+          } else {
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  onSubmit(kind: number) {
     this.hasSubmit = true;
-    this.display = false;
-    const permissionFormVal = this.permissionForm.value;
-    let _permission = new PermissionModel();
-    _permission.method = permissionFormVal.method;
-    _permission.route = permissionFormVal.route;
-    _permission.name = permissionFormVal.name;
-    _permission.kind = 1;
+    const _permission = new PermissionModel();
+    if (kind === this.service_api) {
+      this.display = false;
+      const permissionFormVal = this.permissionForm.value;
+      _permission.method = permissionFormVal.method;
+      _permission.route = permissionFormVal.route;
+      _permission.name = permissionFormVal.name;
+    } else {
+      this.addPagePermissionShow = false;
+      const pagePermissionFormVal = this.pagePermissionForm.value;
+      _permission.route = pagePermissionFormVal.route;
+      _permission.name = pagePermissionFormVal.name;
+      _permission.method = 'get';
+    }
+    _permission.kind = kind;
     _permission.order_no = 1;
     _permission.auditstat = 1;
     _permission.description = '';
@@ -95,13 +142,17 @@ export class PermissionTableComponent implements OnInit {
     this.permissionService.addPermission(_permission).subscribe((response) => {
       this.hasSubmit = false;
       if (response.resultValue.RCode === environment.success_code) {
-        //跳转到第一页
+        // 跳转到第一页
       }
     });
   }
 
   showDialog() {
     this.display = true;
+  }
+
+  showAddPagePermission() {
+    this.addPagePermissionShow = true;
   }
 
   ngOnInit() {
@@ -120,7 +171,7 @@ export class PermissionTableComponent implements OnInit {
     )
   }
 
-  //分页
+  // 分页
   paginate(event) {
     if (event && event.page >= 0) {
       this.permissionService.getPermission((event.page + 1), this.itemsPerPage).subscribe(
@@ -135,10 +186,6 @@ export class PermissionTableComponent implements OnInit {
     }
   }
 
-  newPermission() {
-
-  }
-
   blockUser(id: number) {
 
   }
@@ -151,8 +198,5 @@ export class PermissionTableComponent implements OnInit {
 
   }
 
-  pageChanged($event) {
-
-  }
 
 }

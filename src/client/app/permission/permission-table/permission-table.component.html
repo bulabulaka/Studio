@@ -12,7 +12,10 @@
       <div class="col-sm-2">
         <div class="input-group pull-right">
           <button type="button" (click)="showDialog()" pButton icon="fa-external-link-square"
-                  label="创建权限">
+                  label="创建Api权限">
+          </button>
+          <button type="button" (click)="showAddPagePermission()" pButton icon="fa-external-link-square"
+                  label="创建页面权限">
           </button>
         </div>
       </div>
@@ -53,8 +56,8 @@
 </div>
 
 <p-dialog [(visible)]="display" modal="modal" [responsive]="true" width="600">
-  <p-header>创建权限</p-header>
-  <form [formGroup]="permissionForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+  <p-header>创建Api权限</p-header>
+  <form [formGroup]="permissionForm" (ngSubmit)="onSubmit(service_api)" class="form-horizontal">
     <div class="form-group" [ngClass]="{ 'has-error': formErrors.name}">
       <label class="col-sm-2 control-label">权限名：</label>
       <div class="col-sm-10">
@@ -88,6 +91,37 @@
         <button type="submit" pButton icon="fa-check" [disabled]="!permissionForm.valid || hasSubmit"
                 label="确定"></button>
         <button type="button" pButton icon="fa-close" (click)="display=false" label="取消"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog [(visible)]="addPagePermissionShow" modal="modal" [responsive]="true" width="600">
+  <p-header>创建Page权限</p-header>
+  <form [formGroup]="pagePermissionForm" (ngSubmit)="onSubmit(page)" class="form-horizontal">
+    <div class="form-group" [ngClass]="{ 'has-error': pagePermissionFormErrors.name}">
+      <label class="col-sm-2 control-label">权限名：</label>
+      <div class="col-sm-10">
+        <input formControlName="name" type="text" class="form-control" placeholder="请输入权限名...">
+        <div *ngIf="pagePermissionFormErrors.name" class="text-danger">
+          <span>{{pagePermissionFormErrors.name}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" [ngClass]="{'has-error':pagePermissionFormErrors.route}">
+      <label class="col-sm-2 control-label">路由：</label>
+      <div class="col-sm-10">
+        <input formControlName="route" type="text" class="form-control" placeholder="请输入路由...">
+        <div *ngIf="pagePermissionFormErrors.route" class="text-danger">
+          <span>{{pagePermissionFormErrors.route}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" pButton icon="fa-check" [disabled]="!pagePermissionForm.valid || hasSubmit"
+                label="确定"></button>
+        <button type="button" pButton icon="fa-close" (click)="addPagePermissionShow=false" label="取消"></button>
       </div>
     </div>
   </form>

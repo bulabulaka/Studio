@@ -43,7 +43,8 @@ export function routeConfigInit(app: express.Application) {
     console.log(_method);
     verifyPermission(res.locals.userId, _path, _method, (returnVal: ReturnModel<boolean>) => {
       if (returnVal.RCode === parseInt(process.env.SUCCESS_CODE, 10)) {
-        return next();
+        next();
+        return null;
       } else if (returnVal.error) {
         if (returnVal.errorCode) {
           res.locals.errorCode = returnVal.errorCode;

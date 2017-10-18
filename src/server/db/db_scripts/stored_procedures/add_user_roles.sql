@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_user_roles`(IN user_id INT,IN role_id_array VARCHAR(255),IN role_id_array_length INT,IN operator_id INT,INOUT return_code INT)
+CREATE PROCEDURE `add_user_roles`(IN user_id INT,IN role_id_array VARCHAR(255),IN role_id_array_length INT,IN operator_id INT,INOUT return_code INT)
 BEGIN
 DECLARE _index INT;
 DECLARE _role_id_str varchar(255);
@@ -18,7 +18,7 @@ BEGIN
 --  @p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
 --  SELECT @p1 AS RETURNED_SQLSTATE, @p2 AS MESSAGE_TEXT;
  ROLLBACK;
-END; 
+END;
 
 START TRANSACTION;
   SET _index = 0;
@@ -28,9 +28,9 @@ START TRANSACTION;
     IF _index > role_id_array_length THEN
       LEAVE INS;
     END IF;
-    SELECT studio.strSplit(role_id_array,',', _index) INTO _role_id_str;
+    SELECT strSplit(role_id_array,',', _index) INTO _role_id_str;
     SET _role_id = CAST(_role_id_str AS SIGNED);
-    INSERT INTO `studio`.`m_user_role` (`user_id`,`role_id`,`auditstat`,`creator_id`,`created_datetime`)
+    INSERT INTO `m_user_role` (`user_id`,`role_id`,`auditstat`,`creator_id`,`created_datetime`)
     VALUES (user_id, _role_id,1,operator_id,NOW());
   END LOOP INS;
   SET return_code = 1;

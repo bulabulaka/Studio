@@ -52,7 +52,7 @@
 </div>
 
 
-<p-dialog [(visible)]="showAddRoleDialog" modal="modal" [responsive]="true" width="600">
+<p-dialog [(visible)]="showAddRoleDialog" modal="modal" [responsive]="true" width="800">
   <p-header>创建角色</p-header>
   <form [formGroup]="roleForm" (ngSubmit)="addRoleSubmit()" class="form-horizontal">
     <div class="form-group" [ngClass]="{ 'has-error': formErrors.name}">
@@ -84,7 +84,7 @@
   </form>
 </p-dialog>
 
-<p-dialog [(visible)]="showPermissionGroupsDialog" modal="modal" [responsive]="true" width="600">
+<p-dialog [(visible)]="showPermissionGroupsDialog" modal="modal" [responsive]="true" width="800">
   <p-header>角色所拥有的权限组</p-header>
   <div class="row">
     <div class="col-sm-12">
@@ -120,9 +120,8 @@
   <div class="row">
     <div class="col-sm-12">
       <p-dataTable [value]="doNotHavePermissionGroupsArray" [(selection)]="addPermissionGroupsSelectionArray"
-                   [paginator]="true"
-                   [rows]="10" [pageLinks]="5" [headerCheckboxToggleAllPages]="true"
-                   dataKey="created_datetime">
+                   [paginator]="true" [rows]="10" [pageLinks]="5" [headerCheckboxToggleAllPages]="true"
+                   dataKey="id">
         <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
         <p-column field="name" header="权限组名称"></p-column>
         <p-column field="description" header="描述"></p-column>

@@ -149,7 +149,7 @@
       <p-dataTable [value]="doNotHaveRoleArray" [(selection)]="addUserRolesSelectionArray"
                    [paginator]="true"
                    [rows]="10" [pageLinks]="5" [headerCheckboxToggleAllPages]="true"
-                   dataKey="created_datetime">
+                   dataKey="id">
         <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
         <p-column field="name" header="角色名称"></p-column>
         <p-column field="description" header="描述"></p-column>
@@ -172,7 +172,7 @@
       <p-dataTable [value]="processingPermissionGroupArray" [(selection)]="processingPermissionGroupsSelectionArray"
                    [paginator]="true"
                    [rows]="10" [pageLinks]="5" [headerCheckboxToggleAllPages]="true"
-                   dataKey="created_datetime">
+                   dataKey="id">
         <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
         <p-column field="name" header="角色名称"></p-column>
         <p-column field="description" header="描述"></p-column>

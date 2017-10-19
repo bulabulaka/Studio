@@ -8,7 +8,7 @@
     "dotenv": "registry:dt/dotenv#2.0.0+20170113195346",
     "express": "registry:dt/express#4.0.0+20170118060322",
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20170324160323",
-    "knex": "registry:dt/knex#0.0.0+20170322192047",
+    "knex": "github:DefinitelyTyped/DefinitelyTyped/types/knex/index.d.ts#05ac46f9a9307d43e082b7cec4b32f40df3a3b58",
     "lodash": "registry:dt/lodash#4.14.0+20170324155812",
     "mime": "registry:dt/mime#0.0.0+20160428043022",
     "morgan": "registry:dt/morgan#1.7.0+20160726064905",

@@ -1,6 +1,7 @@
 import {Config} from 'knex';
 
-const databaseName = 'studio';
+/*const databaseName = 'studio';*/
+const databaseName = 'wjl_studio';
 const development: Config = {
   client: 'mysql',
   connection: {
@@ -13,12 +14,16 @@ const development: Config = {
   },
   migrations: {
     directory: __dirname + '/src/server/db/migrations'
+  },
+  seeds: {
+    directory: __dirname + '/src/server/db/seed/seeds'
   }
 };
 const test: Config = {
   client: 'mysql',
   connection: {
-    database: databaseName + '_test',
+    /*database: databaseName + '_test',*/
+    database: 'studio_test',
     port: 3306,
     user: 'root',
     password: 'WJL52wld',
@@ -27,6 +32,9 @@ const test: Config = {
   },
   migrations: {
     directory: __dirname + '/src/server/db/migrations'
+  },
+  seeds: {
+    directory: __dirname + '/src/server/db/seed/seeds_test/seeds'
   }
 };
 

@@ -26,7 +26,7 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission', () => {
     it('should add a new permission（service api）', (done) => {
-      simulateUser('jeremy', 'johnson123', (token: string) => {
+      simulateUser('admin', 'johnson123', (token: string) => {
         const new_permission = new PermissionModel();
         new_permission.auditstat = 1;
         new_permission.name = 'test';

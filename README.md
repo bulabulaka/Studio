@@ -15,6 +15,7 @@ run client:
 run Studio: npm run build
 
 Init Database
+tsc src/server/db/migrations/**.ts
 knex migrate:latest
 tsc src/server/db/seed/seeds/**.ts
-knex --cwd ./src/server/db/seed  seed:run
+knex seed:run

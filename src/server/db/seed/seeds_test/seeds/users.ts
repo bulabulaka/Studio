@@ -1,10 +1,10 @@
-import * as bcrypt from 'bcryptjs'
+import {genSaltSync, hashSync} from 'bcryptjs'
 
 export const seed = (knex, Promise) => {
   return knex('m_user').del()
     .then(() => {
-      const salt = bcrypt.genSaltSync();
-      const hash = bcrypt.hashSync('johnson123', salt);
+      const salt = genSaltSync();
+      const hash = hashSync('johnson123', salt);
       return Promise.join(
         knex('m_user').insert({
           username: 'jeremy',
@@ -16,8 +16,8 @@ export const seed = (knex, Promise) => {
       );
     })
     .then(() => {
-      const salt = bcrypt.genSaltSync();
-      const hash = bcrypt.hashSync('bryant123', salt);
+      const salt = genSaltSync();
+      const hash = hashSync('bryant123', salt);
       return Promise.join(
         knex('m_user').insert({
           username: 'kelly',

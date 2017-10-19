@@ -1,8 +1,49 @@
 export const seed = (knex, Promise) => {
-  return Promise.join(
-    knex.raw(`DROP FUNCTION IF EXISTS strSplit;`)
-      .then(() => {
-        return knex.raw(`CREATE FUNCTION \`strSplit\`(x varchar(255), delim varchar(12), pos int) 
+  return knex.raw(`DROP PROCEDURE IF EXISTS processing_user_permission_groups;`)
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS add_user_roles;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS add_role_permission_groups;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS add_permission_group_permissions;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP FUNCTION IF EXISTS strSplit;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_users;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_permission_group_donot_have_permissions;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_permission_group_permissions;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_permission_groups;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_permissions;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_role_permission_groups;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_roles;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_user_add_or_minus_permission_groups;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_user_roles;`);
+    })
+    .then(() => {
+      return knex.raw(`DROP PROCEDURE IF EXISTS get_user_info;`);
+    })
+    .then(() => {
+      return knex.raw(`CREATE FUNCTION \`strSplit\`(x varchar(255), delim varchar(12), pos int) 
                   RETURNS varchar(255) CHARSET latin1 DETERMINISTIC
                   BEGIN
                      RETURN replace(substring(substring_index(x, delim, pos), 
@@ -10,10 +51,9 @@ export const seed = (knex, Promise) => {
 	
                      -- end the stored function code block
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS add_permission_group_permissions;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`add_permission_group_permissions\`(IN permission_group_id INT,
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`add_permission_group_permissions\`(IN permission_group_id INT,
         IN permission_id_array VARCHAR(255),IN permission_id_array_length INT,IN operator_id INT,INOUT return_code INT)
                   BEGIN
                      DECLARE _index INT;
@@ -42,19 +82,18 @@ export const seed = (knex, Promise) => {
                          IF _index > permission_id_array_length THEN
                             LEAVE INS;
                          END IF;
-                         SELECT studio.strSplit(permission_id_array,',', _index) INTO _permission_id_str;
+                         SELECT strSplit(permission_id_array,',', _index) INTO _permission_id_str;
                          SET _permission_id = CAST(_permission_id_str AS SIGNED);
-                         INSERT INTO \`studio\`.\`m_permission_group_permission\` (\`permission_id\`,\`permission_group_id\`,
+                         INSERT INTO \`m_permission_group_permission\` (\`permission_id\`,\`permission_group_id\`,
                          \`auditstat\`,\`creator_id\`,\`created_datetime\`)
                          VALUES (_permission_id,permission_group_id,1,operator_id,NOW());
                       END LOOP INS;
                       SET return_code = 1;
                   COMMIT;
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS add_role_permission_groups;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`add_role_permission_groups\`(IN role_id INT,IN permission_group_id_array VARCHAR(255),
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`add_role_permission_groups\`(IN role_id INT,IN permission_group_id_array VARCHAR(255),
                                                  IN permission_group_id_array_length INT,IN operator_id INT,INOUT return_code INT)
                   BEGIN
                     DECLARE _index INT;
@@ -83,19 +122,18 @@ export const seed = (knex, Promise) => {
                          IF _index > permission_group_id_array_length THEN
                            LEAVE INS;
                          END IF;
-                         SELECT studio.strSplit(permission_group_id_array,',', _index) INTO _permission_group_id_str;
+                         SELECT strSplit(permission_group_id_array,',', _index) INTO _permission_group_id_str;
                          SET _permission_group_id = CAST(_permission_group_id_str AS SIGNED);
-                         INSERT INTO \`studio\`.\`m_role_permission_group\`(\`role_id\`,\`permission_group_id\`,
+                         INSERT INTO \`m_role_permission_group\`(\`role_id\`,\`permission_group_id\`,
                          \`auditstat\`,\`creator_id\`,\`created_datetime\`)
                           VALUES (role_id,_permission_group_id,1,operator_id,NOW());
                        END LOOP INS;
                        SET return_code = 1;
                     COMMIT;
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS add_user_roles;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`add_user_roles\`(IN user_id INT,IN role_id_array VARCHAR(255),
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`add_user_roles\`(IN user_id INT,IN role_id_array VARCHAR(255),
                                      IN role_id_array_length INT,IN operator_id INT,INOUT return_code INT)
                   BEGIN
                       DECLARE _index INT;
@@ -126,19 +164,18 @@ export const seed = (knex, Promise) => {
                             IF _index > role_id_array_length THEN
                                  LEAVE INS;
                             END IF;
-                            SELECT studio.strSplit(role_id_array,',', _index) INTO _role_id_str;
+                            SELECT strSplit(role_id_array,',', _index) INTO _role_id_str;
                             SET _role_id = CAST(_role_id_str AS SIGNED);
-                            INSERT INTO \`studio\`.\`m_user_role\` (\`user_id\`,\`role_id\`,\`auditstat\`,
+                            INSERT INTO \`m_user_role\` (\`user_id\`,\`role_id\`,\`auditstat\`,
                             \`creator_id\`,\`created_datetime\`)
                             VALUES (user_id, _role_id,1,operator_id,NOW());
                           END LOOP INS;
                           SET return_code = 1;
                       COMMIT;
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_permission_group_donot_have_permissions;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_permission_group_donot_have_permissions\`(IN pg_id INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_permission_group_donot_have_permissions\`(IN pg_id INT)
                   BEGIN  
                     WITH cte AS 
                     (SELECT id,name,auditstat,kind,created_datetime FROM m_permission 
@@ -154,10 +191,9 @@ export const seed = (knex, Promise) => {
                     INNER JOIN m_page AS B ON B.permission_id = A.id WHERE A.kind = 0) AS C  
                     ORDER BY C.created_datetime;
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_permission_group_permissions;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_permission_group_permissions\`(IN pg_id INT,IN current_page INT,
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_permission_group_permissions\`(IN pg_id INT,IN current_page INT,
                                                                   IN page_size INT,INOUT total_count INT)
                   BEGIN  
                     DECLARE offset INT; 
@@ -176,10 +212,9 @@ export const seed = (knex, Promise) => {
                     ORDER BY C.created_datetime     
                     LIMIT offset, page_size; SET total_count = FOUND_ROWS(); 
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_permission_groups;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_permission_groups\`(IN flag INT,IN current_page INT,IN page_size INT,INOUT total_count INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_permission_groups\`(IN flag INT,IN current_page INT,IN page_size INT,INOUT total_count INT)
                   BEGIN
                      DECLARE offset INT;
                      SET offset = (current_page - 1) * page_size;
@@ -200,10 +235,9 @@ export const seed = (knex, Promise) => {
                        SET total_count = FOUND_ROWS();
                      END IF;
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_permissions;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_permissions\`(IN current_page INT,IN page_size INT,INOUT total_count INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_permissions\`(IN current_page INT,IN page_size INT,INOUT total_count INT)
                   BEGIN
                     DECLARE offset INT;
                     SET offset = (current_page - 1) * page_size;
@@ -219,10 +253,9 @@ export const seed = (knex, Promise) => {
                     LIMIT offset, page_size;
                     SET total_count = FOUND_ROWS();
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_role_permission_groups;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_role_permission_groups\`(IN role_id INT,IN current_page INT,IN page_size INT,
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_role_permission_groups\`(IN role_id INT,IN current_page INT,IN page_size INT,
                                                                                                        INOUT total_count INT)
                   BEGIN  
                     DECLARE offset INT; 
@@ -235,10 +268,9 @@ export const seed = (knex, Promise) => {
                     LIMIT offset, page_size;
                     SET total_count = FOUND_ROWS(); 
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_roles;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_roles\`(IN current_page INT,IN page_size INT,INOUT total_count INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_roles\`(IN current_page INT,IN page_size INT,INOUT total_count INT)
                   BEGIN
                     DECLARE offset INT;
                     SET offset = (current_page - 1) * page_size;
@@ -249,10 +281,9 @@ export const seed = (knex, Promise) => {
                     LIMIT offset, page_size;
                     SET total_count = FOUND_ROWS();
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_user_add_or_minus_permission_groups;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_user_add_or_minus_permission_groups\` (IN flag INT,
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_user_add_or_minus_permission_groups\` (IN flag INT,
                   IN user_id INT,IN current_page INT,IN page_size INT,INOUT total_count INT)
                   BEGIN  
                     DECLARE offset INT; 
@@ -275,10 +306,9 @@ export const seed = (knex, Promise) => {
                     END IF;
                     SET total_count = FOUND_ROWS(); 
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_user_info;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_user_info\`(IN user_id INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_user_info\`(IN user_id INT)
                   BEGIN
                      SELECT A.id, A.username, A.auditstat,A.expiry_date,A.created_datetime, B.name,B.sex,B.email,B.tel
                      FROM m_user AS A
@@ -324,10 +354,9 @@ export const seed = (knex, Promise) => {
                      WHERE A.kind = 0) AS C 
                      ORDER BY C.created_datetime;    
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_user_roles;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_user_roles\` (IN user_id INT, IN current_page INT,
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_user_roles\` (IN user_id INT, IN current_page INT,
                                                     IN page_size INT,INOUT total_count INT)
                   BEGIN
                     DECLARE offset INT; 
@@ -340,10 +369,9 @@ export const seed = (knex, Promise) => {
                     LIMIT offset, page_size;
                     SET total_count = FOUND_ROWS(); 
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS get_users;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`get_users\`(IN current_page INT, IN page_size INT, INOUT total_count INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`get_users\`(IN current_page INT, IN page_size INT, INOUT total_count INT)
                   BEGIN
                     DECLARE offset INT;
                     SET offset = (current_page - 1) * page_size;
@@ -354,11 +382,10 @@ export const seed = (knex, Promise) => {
                     LIMIT offset,page_size;
                     SET total_count = FOUND_ROWS();
                   END`);
-      }),
-    knex.raw(`DROP PROCEDURE IF EXISTS processing_user_permission_groups;`)
-      .then(() => {
-        return knex.raw(`CREATE PROCEDURE \`processing_user_permission_groups\`(IN flag INT, IN user_id INT,
-     IN permission_group_id_array VARCHAR(255),IN permission_group_id_array_length INT,IN operator_id INT,INOUT return_code INT)
+    })
+    .then(() => {
+      return knex.raw(`CREATE PROCEDURE \`processing_user_permission_groups\`(IN flag INT, IN user_id INT,
+      IN permission_group_id_array VARCHAR(255),IN permission_group_id_array_length INT,IN operator_id INT,INOUT return_code INT)
                 BEGIN
                    DECLARE _index INT;
                    DECLARE _permission_group_id_str varchar(255);
@@ -389,9 +416,9 @@ export const seed = (knex, Promise) => {
                           IF _index > permission_group_id_array_length THEN
                              LEAVE INS;
                           END IF;
-                          SELECT studio.strSplit(permission_group_id_array,',', _index) INTO _permission_group_id_str;
+                          SELECT strSplit(permission_group_id_array,',', _index) INTO _permission_group_id_str;
                           SET _permission_group_id = CAST(_permission_group_id_str AS SIGNED);
-                          INSERT INTO \`studio\`.\`m_user_permission_group\` (\`user_id\`,\`permission_group_id\`,\`flag\`,
+                          INSERT INTO \`m_user_permission_group\` (\`user_id\`,\`permission_group_id\`,\`flag\`,
                           \`auditstat\`,\`creator_id\`,\`created_datetime\`)
                           VALUES (user_id,_permission_group_id,flag,1,operator_id,NOW());
                        END LOOP INS;
@@ -401,9 +428,9 @@ export const seed = (knex, Promise) => {
                           IF _index > permission_group_id_array_length THEN
                              LEAVE INS;
                           END IF;
-                          SELECT studio.strSplit(permission_group_id_array,',', _index) INTO _permission_group_id_str;
+                          SELECT strSplit(permission_group_id_array,',', _index) INTO _permission_group_id_str;
                           SET _permission_group_id = CAST(_permission_group_id_str AS SIGNED);
-                          INSERT INTO \`studio\`.\`m_user_permission_group\` (\`user_id\`,\`permission_group_id\`,\`flag\`,
+                          INSERT INTO \`m_user_permission_group\` (\`user_id\`,\`permission_group_id\`,\`flag\`,
                           \`auditstat\`,\`creator_id\`,\`created_datetime\`)
                           VALUES (user_id,_permission_group_id,flag,1,operator_id,NOW());
                        END LOOP INS;
@@ -411,6 +438,5 @@ export const seed = (knex, Promise) => {
                      SET return_code = 1;
                    COMMIT;
                 END`);
-      })
-  );
+    })
 };

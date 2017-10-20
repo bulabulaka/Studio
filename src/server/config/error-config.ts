@@ -1,6 +1,7 @@
 import * as express from 'express';
+import * as NodeCache from 'node-cache';
 
-export function errorConfigInit(app: express.Application) {
+export function errorConfigInit(app: express.Application, nodeCache: NodeCache) {
   /*catch 404 and forward to error handler*/
   app.use(function (req, res, next) {
     const err = new Error('Not Found');

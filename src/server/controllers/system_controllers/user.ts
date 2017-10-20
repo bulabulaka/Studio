@@ -1,9 +1,10 @@
 import * as bcrypt from 'bcryptjs';
 import {knex} from '../../db/connection';
-import {comparePass, ReturnModel} from '../../shared/index';
+import {comparePass, ReturnModel, dataDefine} from '../../shared/index';
 import {RegisterModel, m_user, LoginModel, UserModel, RoleModel, PermissionGroupModel, PermissionModel} from '../../../shared/index';
 import jwt = require('jsonwebtoken');
 import {QueryError, RowDataPacket} from 'mysql';
+import * as NodeCache from 'node-cache';
 import * as _ from 'lodash';
 
 /*get userinfo by userId*/
@@ -87,7 +88,7 @@ export function registerUser(_register: RegisterModel, callback: (returnVal: Ret
 }
 
 /*login*/
-export function login(paramObj: LoginModel, callback: (returnVal: ReturnModel<UserModel>) => void) {
+export function login(paramObj: LoginModel, nodeCache: NodeCache, callback: (returnVal: ReturnModel<UserModel>) => void) {
   knex('m_user').where('username', paramObj.username).first()
     .then((user) => {
       if (!user) {
@@ -97,6 +98,15 @@ export function login(paramObj: LoginModel, callback: (returnVal: ReturnModel<Us
         return callback(new ReturnModel<UserModel>(parseInt(process.env.FAIL_CODE, 10), 'User not found'));
       } else {
         const token = jwt.sign(user.id, process.env.JWT_SECRET);
+        /*cache the loginTime of the token and the startTime of the token*/
+        const obj = {};
+        obj[dataDefine.LoginTime] = new Date().getTime();
+        obj[dataDefine.StartTime] = new Date().getTime();
+        nodeCache.set(token, obj, (err, success) => {
+          if (err) {
+            console.log(err);
+          }
+        });
         return callback(new ReturnModel(parseInt(process.env.SUCCESS_CODE, 10), 'OK', user, null, 0, token));
       }
     })

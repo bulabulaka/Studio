@@ -6,13 +6,14 @@ import * as nunjucks from 'nunjucks';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
 import * as Knex from 'knex';
+import * as NodeCache from 'node-cache';
 import flash = require('connect-flash');
 import {logOperate} from '../controllers/system_controllers/log';
 
 // *** load environment variables *** //
 dotenv.config();
 
-export function mainConfigInit(knex: Knex, app: express.Application) {
+export function mainConfigInit(knex: Knex, app: express.Application, nodeCache: NodeCache) {
 
   // *** view folders *** //
   const viewFolders = [path.join(__dirname, '..', 'views')];

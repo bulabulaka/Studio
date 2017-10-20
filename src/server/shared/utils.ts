@@ -1,6 +1,8 @@
 import {ResultValue} from '../../shared/index';
-import {ReturnModel} from './models/index';
+import {ReturnModel, dataDefine} from './models/index';
+import * as NodeCache from 'node-cache';
 import jwt = require('jsonwebtoken');
+import * as _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
 import * as express from 'express';
 
@@ -31,13 +33,34 @@ export function handleReturn<T>(returnVal: ReturnModel<T>, res: express.Response
 }
 
 /*check token is valid*/
-export function verifyToken(req: express.Request, res: express.Response, next: express.NextFunction): void {
+export function verifyToken(nodeCache: NodeCache, req: express.Request, res: express.Response, next: express.NextFunction): void {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return next(err);
       }
+      nodeCache.get(token, (error, value) => {
+        if (error) {
+          return next(error);
+        }
+        /*check token is expired*/
+        const obj = new Object(value);
+        console.log(obj);
+        const startTime = obj[dataDefine.StartTime];
+        const visitTime = new Date().getTime();
+        if (((visitTime - startTime) / (1000 * 60)) > dataDefine.ExpireIn) {
+          return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10),
+            'Token is Expired.', null);
+        }
+        /*update token startTime*/
+        obj[dataDefine.StartTime] = new Date().getTime();
+        nodeCache.set(token, obj, (_error, _success) => {
+          if (_error) {
+            console.log(_error);
+          }
+        });
+      });
       res.locals.userId = decoded;
       return next();
     })
@@ -60,3 +83,4 @@ export function normalizePort(val: string): number {
 export function comparePass(userPassword, databasePassword) {
   return bcrypt.compareSync(userPassword, databasePassword);
 }
+

@@ -7,9 +7,10 @@ import {roleRouter} from '../routes/role';
 import {verifyToken, handleResponse, handleReturn, ReturnModel} from '../shared/index';
 import {RegisterModel, LoginModel, UserModel} from '../../shared/index';
 import {registerUser, login, verifyPermission} from '../controllers/system_controllers/user';
+import * as NodeCache from 'node-cache';
 import * as path from 'path';
 
-export function routeConfigInit(app: express.Application) {
+export function routeConfigInit(app: express.Application, nodeCache: NodeCache) {
 
   app.get('', (req: express.Request, res: express.Response) => {
     res.sendFile(path.join(path.resolve(process.env.DIST_PATH), 'main.html'));
@@ -26,21 +27,19 @@ export function routeConfigInit(app: express.Application) {
   /*login*/
   app.post('/api/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const _loginModel: LoginModel = req.body;
-    login(_loginModel, (returnVal: ReturnModel<UserModel>) => {
+    login(_loginModel, nodeCache, (returnVal: ReturnModel<UserModel>) => {
       handleReturn(returnVal, res, next);
     });
   });
 
   /*checkout token isValid*/
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    verifyToken(req, res, next);
+    verifyToken(nodeCache, req, res, next);
   });
   /*checkout user permission*/
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     const _path = req.path;
     const _method = req.method;
-    console.log(_path);
-    console.log(_method);
     verifyPermission(res.locals.userId, _path, _method, (returnVal: ReturnModel<boolean>) => {
       if (returnVal.RCode === parseInt(process.env.SUCCESS_CODE, 10)) {
         next();

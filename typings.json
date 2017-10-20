@@ -13,6 +13,7 @@
     "mime": "registry:dt/mime#0.0.0+20160428043022",
     "morgan": "registry:dt/morgan#1.7.0+20160726064905",
     "mysql": "registry:npm/mysql#2.11.1+20161114232222",
+    "node-cache": "github:DefinitelyTyped/DefinitelyTyped/types/node-cache/index.d.ts#a8babf29ffbaeccc15ce1c9032c5c15aa5fed160",
     "nunjucks": "registry:dt/nunjucks#0.0.0+20160803221903",
     "serve-static": "registry:dt/serve-static#1.7.1+20161128184045"
   },

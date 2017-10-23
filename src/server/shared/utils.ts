@@ -46,6 +46,10 @@ export function verifyToken(nodeCache: NodeCache, req: express.Request, res: exp
         }
         /*check token is expired*/
         const obj = new Object(value);
+        if (_.isEmpty(obj)) {
+          return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10),
+            'Token is Expired.', null);
+        }
         console.log(obj);
         const startTime = obj[dataDefine.StartTime];
         const visitTime = new Date().getTime();
@@ -60,9 +64,9 @@ export function verifyToken(nodeCache: NodeCache, req: express.Request, res: exp
             console.log(_error);
           }
         });
+        res.locals.userId = decoded;
+        return next();
       });
-      res.locals.userId = decoded;
-      return next();
     })
   } else {
     return handleResponse(res, parseInt(process.env.HTTP_STATUS_OK, 10), parseInt(process.env.FAIL_CODE, 10), 'No token exists.', null);

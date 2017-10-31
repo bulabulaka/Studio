@@ -25,4 +25,5 @@ knex seed:run
 
 
 Clean up Database
+
 knex migrate:roolback

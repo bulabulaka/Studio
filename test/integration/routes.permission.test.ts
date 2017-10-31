@@ -5,6 +5,7 @@ import chaiHttp = require('chai-http');
 import {knex} from '../../src/server/db/connection';
 import {PermissionModel, PermissionGroupModel} from '../../src/shared/index';
 import {simulateUser} from './utils';
+import * as Promise from 'bluebird';
 
 const should = chai.should();
 chai.use(chaiHttp);
@@ -26,7 +27,8 @@ describe('routes : /api/permission', () => {
 
   describe('POST /api/permission/add_permission', () => {
     it('should add a new permission（service api）', (done) => {
-      simulateUser('admin', 'johnson123', (token: string) => {
+      const promise = simulateUser('admin', 'johnson123');
+      promise.then((token) => {
         const new_permission = new PermissionModel();
         new_permission.auditstat = 1;
         new_permission.name = 'test';
@@ -52,77 +54,89 @@ describe('routes : /api/permission', () => {
       });
     });
     it('should add a new permission (page)', (done) => {
-      const new_permission = new PermissionModel();
-      new_permission.auditstat = 1;
-      new_permission.name = 'test';
-      new_permission.kind = 0;
-      new_permission.description = 'tests';
-      new_permission.creator_id = 1;
-      new_permission.order_no = 1;
-      new_permission.route = 'tests';
-      chai.request(initConfig())
-        .post('/api/permission/add_permission')
-        .send({
-          permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.eql(200);
-          res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(1);
-          done();
-        });
+      const promise = simulateUser('admin', 'johnson123');
+      promise.then((token) => {
+        const new_permission = new PermissionModel();
+        new_permission.auditstat = 1;
+        new_permission.name = 'test';
+        new_permission.kind = 0;
+        new_permission.description = 'tests';
+        new_permission.creator_id = 1;
+        new_permission.order_no = 1;
+        new_permission.route = 'tests';
+        chai.request(initConfig())
+          .post('/api/permission/add_permission')
+          .send({
+            permission: new_permission,
+            token: token
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.status.should.eql(200);
+            res.type.should.eql('application/json');
+            res.body.resultValue.RCode.should.eql(1);
+            done();
+          });
+      })
     });
     it('when an error occur,it should rollback', (done) => {
-      const new_permission = new PermissionModel();
-      new_permission.auditstat = 1;
-      new_permission.name = 'test';
-      new_permission.kind = 1;
-      new_permission.description = 'tests';
-      new_permission.creator_id = 1;
-      new_permission.order_no = 1;
-      new_permission.route = 'tests';
-      chai.request(initConfig())
-        .post('/api/permission/add_permission')
-        .send({
-          permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
-        })
-        .end((err, res) => {
-          should.exist(err);
-          res.status.should.eql(500);
-          res.type.should.eql('application/json');
-          done();
-        });
+      const promise = simulateUser('admin', 'johnson123');
+      promise.then((token) => {
+        const new_permission = new PermissionModel();
+        new_permission.auditstat = 1;
+        new_permission.name = 'test';
+        new_permission.kind = 1;
+        new_permission.description = 'tests';
+        new_permission.creator_id = 1;
+        new_permission.order_no = 1;
+        new_permission.route = 'tests';
+        chai.request(initConfig())
+          .post('/api/permission/add_permission')
+          .send({
+            permission: new_permission,
+            token: token
+          })
+          .end((err, res) => {
+            should.exist(err);
+            res.status.should.eql(500);
+            res.type.should.eql('application/json');
+            done();
+          });
+      })
+
     })
   });
 
   describe('PUT /api/permission/update_permission', () => {
     it('should update a permission (service api)', (done) => {
-      const new_permission = new PermissionModel();
-      new_permission.id = 2;
-      new_permission.auditstat = 1;
-      new_permission.name = 'test';
-      new_permission.kind = 1;
-      new_permission.description = 'tests';
-      new_permission.modifier_id = 1;
-      new_permission.order_no = 1;
-      new_permission.route = 'tests';
-      new_permission.method = 'post';
-      chai.request(initConfig())
-        .put('/api/permission/update_permission')
-        .send({
-          permission: new_permission,
-          token: 'eyJhbGciOiJIUzI1NiJ9.MQ.IvPF3tP5GHowtWyZMqn_2yxJ8fbh3gYp2pdTdXg4ERs'
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.eql(200);
-          res.type.should.eql('application/json');
-          res.body.resultValue.RCode.should.eql(1);
-          done();
-        });
+      const promise = simulateUser('admin', 'johnson123');
+      promise.then((token) => {
+        const new_permission = new PermissionModel();
+        new_permission.id = 2;
+        new_permission.auditstat = 1;
+        new_permission.name = 'test';
+        new_permission.kind = 1;
+        new_permission.description = 'tests';
+        new_permission.modifier_id = 1;
+        new_permission.order_no = 1;
+        new_permission.route = 'tests';
+        new_permission.method = 'post';
+        chai.request(initConfig())
+          .put('/api/permission/update_permission')
+          .send({
+            permission: new_permission,
+            token: token
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.status.should.eql(200);
+            res.type.should.eql('application/json');
+            console.log(res.body.resultValue);
+            res.body.resultValue.RCode.should.eql(1);
+            done();
+          });
+      })
+
     })
   });
 

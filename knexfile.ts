@@ -1,14 +1,14 @@
 import {Config} from 'knex';
 
 /*const databaseName = 'studio';*/
-const databaseName = 'wjl_studio';
+const databaseName = 'Studio';
 const development: Config = {
   client: 'mysql',
   connection: {
     database: databaseName,
     port: 3306,
     user: 'root',
-    password: 'WJL52wld',
+    password: 'Studio9527',
     multipleStatements: true,
     host: 'localhost'
   },
@@ -22,11 +22,10 @@ const development: Config = {
 const test: Config = {
   client: 'mysql',
   connection: {
-    /*database: databaseName + '_test',*/
-    database: 'studio_test',
+    database: databaseName + '_test',
     port: 3306,
     user: 'root',
-    password: 'WJL52wld',
+    password: 'Studio9527',
     multipleStatements: true,
     host: 'localhost'
   },
